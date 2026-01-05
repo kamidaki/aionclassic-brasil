@@ -1,17 +1,9 @@
-/*
- *  Aion Classic Emu based on Aion Encom Source Files
- *
- *  ENCOM Team based on Aion-Lighting Open Source
- *  All Copyrights : "Data/Copyrights/AEmu-Copyrights.text
- *
- *  iMPERIVM.FUN - AION DEVELOPMENT FORUM
- *  Forum: <http://https://imperivm.fun/>
- *
- */
+
 package com.aionemu.gameserver.configs.main;
 
 import com.aionemu.commons.configuration.Property;
-
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 public class GeoDataConfig {
@@ -75,5 +67,25 @@ public class GeoDataConfig {
 	 * List of world IDs to preload navigation meshes for
 	 */
 	@Property(key = "gameserver.geodata.nav.warmup.worlds", defaultValue = "")
-	public static Set<Integer> GEO_NAV_PRELOAD_WORLDS;
+	public static String GEO_NAV_PRELOAD_WORLDS;
+
+	public static Set<Integer> getPreloadWorlds() {
+		if (GEO_NAV_PRELOAD_WORLDS == null || GEO_NAV_PRELOAD_WORLDS.trim().isEmpty()) {
+			return Collections.emptySet();
+		}
+
+		Set<Integer> worlds = new HashSet<>();
+		for (String token : GEO_NAV_PRELOAD_WORLDS.split(",")) {
+			String trimmed = token.trim();
+			if (trimmed.isEmpty()) {
+				continue;
+			}
+			try {
+				worlds.add(Integer.parseInt(trimmed));
+			} catch (NumberFormatException e) {
+				// Ignore invalid entries to keep server startup robust
+			}
+		}
+		return worlds;
+	}
 }

@@ -37,8 +37,8 @@ public final class NavService {
 		}
 
 		LOG.info("NavMesh está habilitado.");
-		if (GeoDataConfig.GEO_NAV_PRELOAD_WORLDS != null && !GeoDataConfig.GEO_NAV_PRELOAD_WORLDS.isEmpty()) {
-			navData.preloadNavMaps(GeoDataConfig.GEO_NAV_PRELOAD_WORLDS);
+		if (!GeoDataConfig.getPreloadWorlds().isEmpty()) {
+			navData.preloadNavMaps(GeoDataConfig.getPreloadWorlds());
 		} else {
 			LOG.info("NAVMESH: Pré-carregamento automático desativado, malhas serão carregadas sob demanda.");
 		}
