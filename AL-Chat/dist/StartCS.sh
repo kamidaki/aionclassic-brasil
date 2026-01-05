@@ -1,14 +1,17 @@
 #!/bin/bash
 
-echo "Starting Aion BeckUp 2.4 Classic Chat Server."
+export LANG=pt_BR.UTF-8
+export LC_ALL=pt_BR.UTF-8
 
-/usr/lib/jvm/zulu8/bin/java  -Xms512m -Xmx1024m -ea -Xbootclasspath/p:./libs/jsr166.jar -cp ./libs/*:AL-Chat.jar com.aionemu.chatserver.ChatServer
+echo "Inicializando o Servidor de Bate-Papo"
+
+java -Dfile.encoding=UTF-8 -Xms512m -Xmx1024m -ea -Xbootclasspath/p:./libs/jsr166.jar -cp ./libs/*:AL-Chat.jar com.aionemu.chatserver.ChatServer
 
 if [ $? -eq 2 ]; then
-echo "Administrator Restart..."
+echo "Reiniciando..."
 bash $0
 elif [ $? -eq 1 ]; then
-echo "Server terminated abnormally..."
+echo "Servidor de Bate-Papo terminou de forma brusca..."
 else
-echo "Server terminated..."
+echo "Servidor de Bate-Papo terminou..."
 fi

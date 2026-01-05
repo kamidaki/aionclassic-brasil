@@ -22,6 +22,7 @@ import java.util.ArrayList;
  * for navigational queries (it's used for pathfinding).
  *
  * @author KAMIDAKI
+ * Restructured for Aion Classic 2.4 based on the OLD CLASS of Aion Live Clássico.
  */
 public final class NavService {
 

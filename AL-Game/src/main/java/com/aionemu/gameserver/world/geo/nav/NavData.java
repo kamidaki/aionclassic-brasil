@@ -24,7 +24,7 @@ import com.aionemu.gameserver.model.templates.world.WorldMapTemplate;
 import com.aionemu.gameserver.utils.CityMapUtil;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
-/*
+/**
  * Similar to {@link com.aionemu.gameserver.world.geo.GeoData GeoData}, this class stores
  * {@link GeoMap GeoMaps} that represent navigable space within a level. These maps are holding
  * Nav Meshes that can be used to pathfind.
@@ -32,6 +32,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
  * @author KAMIDAKI
  * Restructured for Aion Classic 2.4 based on the OLD CLASS of Aion Live Clássico.
  */
+
 public class NavData {
 
 	private static final Logger LOG = LoggerFactory.getLogger(NavData.class);

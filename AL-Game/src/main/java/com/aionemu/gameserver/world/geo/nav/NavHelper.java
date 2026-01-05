@@ -13,7 +13,8 @@ import com.aionemu.gameserver.world.geo.nav.NavService.NavPathway;
 /**
  * Implements a pathfinding algorithm similar to A* to traverse through {@link NavGeometry}.
  *
- * @author Yon (Aion Reconstruction Project)
+ * @author KAMIDAKI
+ * Restructured for Aion Classic 2.4 based on the OLD CLASS of Aion Live Clássico.
  */
 class NavHelper {
 

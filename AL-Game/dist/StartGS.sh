@@ -1,14 +1,17 @@
 #!/bin/bash
 
-echo "Starting Aion 2.4 Classic Game Server."
+export LANG=pt_BR.UTF-8
+export LC_ALL=pt_BR.UTF-8
 
-/usr/lib/jvm/zulu8/bin/java -Xmx8g -ea -cp ./lib/*:./lib/AL-Game.jar com.aionemu.gameserver.GameServer
+echo "Inicializando Servidor do Jogo."
+
+java -Dfile.encoding=UTF-8 -Xmx8g -ea -cp ./lib/*:./lib/AL-Game.jar com.aionemu.gameserver.GameServer
 
 if [ $? -eq 2 ]; then
-echo "Administrator Restart..."
+echo "Reiniciando..."
 bash $0
 elif [ $? -eq 1 ]; then
-echo "Server terminated abnormally..."
+echo "Servidor do Jogo terminou de forma brusca..."
 else
-echo "Server terminated..."
+echo "Servidor do Jogo terminou..."
 fi

@@ -1,4 +1,5 @@
 @ECHO off
+chcp 65001 >nul
 TITLE Servidor de LOGIN
 SET PATH="COLOQUE O CAMINHO DO SEU JAVA 1.8 AQUI"
 @COLOR 0C
@@ -14,7 +15,7 @@ echo.
 
 REM -------------------------------------
 REM Configuração padrão para servidores básicos
-java -cp ./lib/*;AL-Login.jar com.aionemu.loginserver.LoginServer
+java -Dfile.encoding=UTF-8 -cp ./lib/*;AL-Login.jar com.aionemu.loginserver.LoginServer
 REM -------------------------------------
 SET CLASSPATH=%OLDCLASSPATH%
 
