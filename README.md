@@ -22,21 +22,23 @@ Este é o emulador mais avançado e completo para o MMORPG **Aion: Classic 2.4 ~
 
 Nota Adicional: 
 
-A estrutura base foi feita pela Aion Lightning utilizando emuladores Retail, não por nós, sendo assim, ainda é necessário corrigir centenas de classes até que esteja totalmente preparado para ser jogável e isso poderá levar anos, caso você baixe esse emulador de nosso repositório, estará sozinho nessa jornada, nossa equipe não fornece suporte ou ajuda a problemas.
+A estrutura base foi feita pela Aion Lightning utilizando emuladores Retail, não por nós, sendo assim, ainda é necessário corrigir centenas de classes até que esteja totalmente preparado para ser jogável e isso poderá levar anos, caso você baixe esse emulador de nosso repositório, tenha em mente que ele não está nem perto de estar bom. Nossa equipe não fornece suporte ou ajuda a problemas.
+
+Caso queira fazer parte da equipe de desenvolvimento, você terá que fazer parte do Discord do Aion Live Clássico e entender que a equipe tem uma vida pessoal e fazemos as correções somente em horas de puro tédio, e as vezes 1 vez por mês apenas.
 
 ### Arquivos: .GEO e .NAV
 
 Link: https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9?usp=sharing
 
-Instruções: Basta copiar ambas pastas para dentro do diretório AL_Game/data/, no final você terá uma árvore como abaixo:
-"
-geo 
-nav 
-packets 
-scripts
-static_data
-...
-"
+Instruções: Basta copiar ambas pastas para dentro do diretório AL_Game/data/, no final você terá uma árvore como:
+
+- geo 
+- nav 
+- packets 
+- scripts
+- static_data
+- ...
+
 
 ### Como Contribuir (Não membros da equipe)
 
