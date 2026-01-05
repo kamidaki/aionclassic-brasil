@@ -19,7 +19,7 @@
 ## Visão Geral
 
 Este repositório contém um **emulador avançado** para o MMORPG **Aion: Classic (EU) versões 2.4 até 2.8**.  
-O objetivo do projeto é preservar a experiência clássica original, mantendo fidelidade ao conteúdo retail, ao mesmo tempo em que evolui a base técnica com correções, otimizações e sistemas personalizados.
+O objetivo do projeto é preservar a experiência clássica original, mantendo fidelidade ao conteúdo classic, ao mesmo tempo em que evolui a base técnica com correções, otimizações e sistemas personalizados.
 
 ---
 
@@ -56,11 +56,7 @@ Para participar do desenvolvimento, é **obrigatório** estar no Discord oficial
 
 ### Download
 
-```
-
-[https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9](https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9)
-
-```
+https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9
 
 ### Instalação
 
@@ -93,11 +89,9 @@ AL_Game/data/
 ### Client 2.4
 
 **Download:**  
-```
 
-[https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9](https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9)
+https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9
 
-````
 
 **Observação:**  
 Esta versão **não possui a classe MONK**.
@@ -123,6 +117,7 @@ Utilizado exclusivamente para testes locais:
 ```bat
 start "" /affinity 7FFFFFFF "bin64\aionclassic.bin" -ip:127.0.0.1 -port:2106 -cc:2 -lang:ENG
 ````
+Nota: Não utilize shugo console durante execuções de teste, isso afetará a análise precisa da qualidade do client.
 
 ---
 
@@ -168,19 +163,9 @@ start "" /affinity 7FFFFFFF "bin64\aionclassic.bin" -ip:127.0.0.1 -port:2106 -cc
 
 </div>
 
----
-
-## Licença
-
-Este projeto é distribuído sob a licença **GPL v3**.
-Consulte o arquivo [LICENSE](LICENSE) para mais informações.
-
----
-
 <div align="center">
 
 <strong>Aion Live Clássico — Desenvolvimento independente e contínuo</strong>
 
 
 </div>
-```
