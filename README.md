@@ -1,16 +1,16 @@
-# Aion Classic 2.4 ~ 2.8 - EU
+# Aion Classic 2.4 ~ 2.8 (EU)
 
 <div align="center">
 
-[![Discord](https://img.shields.io/badge/Discord-5865f2?logo=discord&logoColor=white)](https://discord.gg/SKCVjHd7j9)
-[![Versão](https://img.shields.io/badge/Version-2.4%20-blue)](http://aionclassicbrasil.com/oldclass-server/download/)
+[![Discord](https://img.shields.io/badge/Discord-5865f2?logo=discord&logoColor=white)](https://discord.gg/RbXr9cuACR)
+[![Versão](https://img.shields.io/badge/Version-2.4~2.8%20-blue)](http://aionclassicbrasil.com/)
 [![Java](https://img.shields.io/badge/Java-8+-orange)](https://www.oracle.com/java/technologies/javase-downloads.html)
 [![Licença](https://img.shields.io/badge/License-GPL%20v3-green)](LICENSE)
-[![Situação atual do desenvolvimento](https://img.shields.io/badge/Build-Contrução_Ativa-brightgreen)](https://github.com/kamidaki/old-class-server)
+[![Build](https://img.shields.io/badge/Build-Construção_Ativa-brightgreen)](https://github.com/kamidaki/aionclassic-brasil)
 
-**O emulador mais completo e estável para Aion Classic 2.4 ~ 2.8 - Nova Era**
+<br>
 
-[Discord](https://img.shields.io/badge/Discord-5865f2?logo=discord&logoColor=white)
+<strong>O emulador mais completo e tecnicamente avançado para Aion Classic 2.4 ~ 2.8</strong>
 
 </div>
 
@@ -18,70 +18,169 @@
 
 ## Visão Geral
 
-Este é o emulador mais avançado e completo para o MMORPG **Aion: Classic 2.4 ~ 2.8**. Nossa estrutura tenta oferecer uma experiência autêntica e nostálgica, mas com melhorias modernas e sistemas exclusivos.
+Este repositório contém um **emulador avançado** para o MMORPG **Aion: Classic (EU) versões 2.4 até 2.8**.  
+O objetivo do projeto é preservar a experiência clássica original, mantendo fidelidade ao conteúdo retail, ao mesmo tempo em que evolui a base técnica com correções, otimizações e sistemas personalizados.
 
-Nota Adicional: 
+---
 
-A estrutura base foi feita pela Aion Lightning utilizando emuladores Retail, não por nós, sendo assim, ainda é necessário corrigir centenas de classes até que esteja totalmente preparado para ser jogável e isso poderá levar anos, caso você baixe esse emulador de nosso repositório, tenha em mente que ele não está nem perto de estar bom. Nossa equipe não fornece suporte ou ajuda a problemas.
+## Aviso Importante
 
-Caso queira fazer parte da equipe de desenvolvimento, você terá que fazer parte do Discord do Aion Live Clássico e entender que a equipe tem uma vida pessoal e fazemos as correções somente em horas de puro tédio, e as vezes 1 vez por mês apenas.
+> **ATENÇÃO**  
+>  
+> A base estrutural deste emulador **não foi criada do zero por esta equipe**.  
+> Ela deriva do projeto **Aion Lightning**, originalmente desenvolvido com foco em versões **Retail**.  
+>
+> Como consequência:
+>
+> - Centenas de classes ainda **necessitam correções profundas**
+> - O projeto **não está em estado jogável**
+> - O processo de correção pode levar **anos**
+>
+> **Não oferecemos suporte, ajuda ou troubleshooting** para quem apenas clonar o repositório.
 
-### Arquivos: .GEO e .NAV
+---
 
-Link: https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9?usp=sharing
+## Participação no Desenvolvimento
 
-Instruções: Basta copiar ambas pastas para dentro do diretório AL_Game/data/, no final você terá uma árvore como:
+> Este projeto é mantido por uma equipe reduzida, com tempo limitado.
 
-- geo 
-- nav 
-- packets 
-- scripts
-- static_data
-- ...
+- As correções são feitas de forma **esporádica**
+- Não há prazos definidos
+- Em alguns períodos, alterações podem ocorrer apenas **uma vez por mês**
 
-### Arquivos: CLIENT CLASSIC
+Para participar do desenvolvimento, é **obrigatório** estar no Discord oficial do **Aion Live Clássico**.
 
-Link Client EU 2.4: https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9?usp=sharing
-Nota.: Não possui MONK nessa versão.
+---
 
-Link Client EU 2.8: Procurando uma versão estável...
-Nota.: possui MONK nessa versão.
+## Arquivos Essenciais (.GEO e .NAV)
 
-Observação.: 
-O executável 127.0.0.1 é para testar offline em seu próprio computador, ARG.: start "" /affinity 7FFFFFFF "bin64\aionclassic.bin" -ip:127.0.0.1 -port:2106 -cc:2 -lang:ENG
-O executável Development Server ALC é para conectar diretamente no servidor de testes da equipe Aion Live Clássico, e serve apenas como um laborátorio, não é um ambiente para jogadores e sim pessoas que estão vistoriando bugs para corrigir nesse repositório.
+### Download
 
-para ter acesso ao executável Development Server ALC é necessário fazer parte do Discord Aion Live Clássico.
+```
 
-### Como Contribuir (Não membros da equipe)
+[https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9](https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9)
 
-1. **Fork** o repositório
-2. **Crie** uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. **Commit** suas mudanças (`git commit -m 'Adiciona nova feature'`)
-4. **Push** para a branch (`git push origin feature/nova-feature`)
-5. **Abra** um Pull Request
+```
 
-### Canais de Comunicação
+### Instalação
+
+Copie as pastas `geo` e `nav` para:
+
+```
+
+AL_Game/data/
+
+```
+
+### Estrutura esperada
+
+```
+
+AL_Game/data/
+├─ geo
+├─ nav
+├─ packets
+├─ scripts
+├─ static_data
+└─ ...
+
+```
+
+---
+
+## Client Aion Classic (EU)
+
+### Client 2.4
+
+**Download:**  
+```
+
+[https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9](https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9)
+
+````
+
+**Observação:**  
+Esta versão **não possui a classe MONK**.
+
+---
+
+### Client 2.8
+
+**Status:**  
+Versão estável **ainda não definida**.
+
+**Observação:**  
+Esta versão **possui a classe MONK**.
+
+---
+
+## Executáveis e Modos de Uso
+
+### Modo Offline (127.0.0.1)
+
+Utilizado exclusivamente para testes locais:
+
+```bat
+start "" /affinity 7FFFFFFF "bin64\aionclassic.bin" -ip:127.0.0.1 -port:2106 -cc:2 -lang:ENG
+````
+
+---
+
+### Development Server ALC
+
+* Conecta diretamente ao **servidor de testes interno**
+* Ambiente **não destinado a jogadores**
+* Usado apenas para **validação e correção de bugs**
+
+> O acesso a este executável é restrito a membros do Discord oficial.
+
+---
+
+## Como Contribuir (Não Membros da Equipe)
+
+1. Faça um **Fork** do repositório
+2. Crie uma branch para sua alteração
+
+   ```bash
+   git checkout -b feature/nova-feature
+   ```
+3. Realize o commit
+
+   ```bash
+   git commit -m "Adiciona nova feature"
+   ```
+4. Envie para o seu fork
+
+   ```bash
+   git push origin feature/nova-feature
+   ```
+5. Abra um **Pull Request**
+
+---
+
+## Canais Oficiais
 
 <div align="center">
 
-[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/SKCVjHd7j9)
-[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:oldclassaion@gmail.com)
-[![Website](https://img.shields.io/badge/Website-000000?style=for-the-badge&logo=About.me&logoColor=white)](http://aionclassicbrasil.com)
+[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge\&logo=discord\&logoColor=white)](https://discord.gg/RbXr9cuACR)
+[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge\&logo=gmail\&logoColor=white)](mailto:oldclassaion@gmail.com)
+[![Website](https://img.shields.io/badge/Website-000000?style=for-the-badge\&logo=About.me\&logoColor=white)](http://aionclassicbrasil.com)
 
 </div>
 
+---
 
-## 📄 Licença
+## Licença
 
-Este projeto está licenciado sob a **GPL v3 License** - veja o arquivo [LICENSE](LICENSE) para detalhes.
+Este projeto é distribuído sob a licença **GPL v3**.
+Consulte o arquivo [LICENSE](LICENSE) para mais informações.
 
 ---
 
 <div align="center">
 
-**Feito com ❤️ pela equipe Aion Live Clássico**
+<strong>Aion Live Clássico — Desenvolvimento independente e contínuo</strong>
 
-[⬆ Voltar ao topo](#-old-class-aion-server)
 
 </div>
+```
