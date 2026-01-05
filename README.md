@@ -39,6 +39,19 @@ Instruções: Basta copiar ambas pastas para dentro do diretório AL_Game/data/,
 - static_data
 - ...
 
+### Arquivos: CLIENT CLASSIC
+
+Link Client EU 2.4: https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9?usp=sharing
+Nota.: Não possui MONK nessa versão.
+
+Link Client EU 2.8: Procurando uma versão estável...
+Nota.: possui MONK nessa versão.
+
+Observação.: 
+O executável 127.0.0.1 é para testar offline em seu próprio computador, ARG.: start "" /affinity 7FFFFFFF "bin64\aionclassic.bin" -ip:127.0.0.1 -port:2106 -cc:2 -lang:ENG
+O executável Development Server ALC é para conectar diretamente no servidor de testes da equipe Aion Live Clássico, e serve apenas como um laborátorio, não é um ambiente para jogadores e sim pessoas que estão vistoriando bugs para corrigir nesse repositório.
+
+para ter acesso ao executável Development Server ALC é necessário fazer parte do Discord Aion Live Clássico.
 
 ### Como Contribuir (Não membros da equipe)
 
