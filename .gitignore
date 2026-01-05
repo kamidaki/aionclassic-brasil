@@ -1,0 +1,63 @@
+# =========================
+# Diretórios de build e cache
+# =========================
+AL-Commons/build/
+AL-Chat/build/
+AL-Game/build/
+AL-Login/build/
+Ant/
+
+# Logs
+AL-Commons/log/
+AL-Chat/log/
+AL-Game/log/
+AL-Login/log/
+
+# Cache e dados locais do servidor
+AL-Game/cache/
+AL-Game/data/geo/
+AL-Game/data/nav/
+
+
+# =========================
+# IDEs (IntelliJ, Eclipse, etc.)
+# =========================
+**/.idea/
+**/.settings/
+**/*.iml
+**/.classpath
+**/.project
+
+
+# bloqueia builds do Electron
+A - CLIENT UI FILES/Launcher React/dist-electron/
+*.asar
+*.exe
+
+# =========================
+# Node.js
+# =========================
+webshop/node_modules/
+
+# =========================
+# Visual Studio
+# =========================
+.vs/
+*.vsidx
+*.user
+*.suo
+*.cache
+*.db
+
+# =========================
+# Mídia e arquivos grandes
+# =========================
+*.mp4
+*.mp3
+*.mwg   # <-- ignora todos arquivos .mwg (qualquer pasta)
+
+# =========================
+# Binários e builds
+# =========================
+bin/
+obj/
