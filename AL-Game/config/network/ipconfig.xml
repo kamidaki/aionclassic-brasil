@@ -1,8 +1,16 @@
-<ipconfig default="127.0.0.1">
-	<!--
-	<iprange min="10.0.0.0" max="10.255.255.255" address="10.0.0.0"/>
-	<iprange min="172.16.0.0" max="172.31.255.255" address="172.16.0.0"/>
-	<iprange min="192.168.0.14" max="192.168.255.255" address="192.168.0.14"/>
-	<iprange min="127.0.0.1" max="127.0.255.255" address="127.0.0.1"/>
-	-->
-</ipconfig>
+
+<!--
+OFFLINE:
+ Se você for jogar localmente (Offline), mantenha <ipconfig default="127.0.0.1">
+
+ONLINE:
+ Se você for jogar online, vá até o site https://meuip.com.br/ e coloque seu IP Público <ipconfig default="25.110.11.43">
+
+ Observação.: Esse é o único lugar que você precisa definir entre IP Privado e IP Público, em qualquer outro lugar você PODE E DEVE colocar o IP LOCAL.
+
+ Em resumo, aqui é o único ponto que precisa colocar o IP PUBLICO pra jogar online.
+
+ Depois libere as portas CS,LS e GS no Firewall para permitir conexão pela porta 2106 do loginserver.
+-->
+
+<ipconfig default="127.0.0.1"/>

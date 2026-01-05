@@ -64,7 +64,8 @@ public class AionPacketHandler {
 		AionClientPacket res = prototype.clonePacket();
 		res.setBuffer(buf);
 		res.setConnection(con);
-		if (con.getState().equals(AionConnection.State.IN_GAME) && con.getActivePlayer().getPlayerAccount().getAccessLevel() == 5 && NetworkConfig.DISPLAY_PACKETS) {
+		// Removendo a restrição de STAFF, para que todos do desenvolvimento possam ver os pacotes.
+		if (con.getState().equals(AionConnection.State.IN_GAME) && NetworkConfig.DISPLAY_PACKETS) {
 			log.info("0x" + Integer.toHexString(res.getOpcode()).toUpperCase() + " : " + res.getPacketName());
 			PacketSendUtility.sendMessage(con.getActivePlayer(), ColorChat.colorChat("0x" +Integer.toHexString(res.getOpcode()).toUpperCase() + " : " + res.getPacketName(), "1 0 5 0"));
 		}

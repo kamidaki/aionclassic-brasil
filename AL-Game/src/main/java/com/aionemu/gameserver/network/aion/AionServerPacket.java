@@ -75,7 +75,8 @@ public abstract class AionServerPacket extends BaseServerPacket {
 	 * @param buf
 	 */
 	public final void write(AionConnection con, ByteBuffer buffer) {
-		if (con.getState().equals(AionConnection.State.IN_GAME) && con.getActivePlayer().getPlayerAccount().getAccessLevel() == 5 && NetworkConfig.DISPLAY_PACKETS) {
+		// Removendo a restrição de STAFF, para que todos do desenvolvimento possam ver os pacotes.
+		if (con.getState().equals(AionConnection.State.IN_GAME) && NetworkConfig.DISPLAY_PACKETS) {
 			if (!this.getPacketName().equals("SM_MESSAGE")) {
 				PacketSendUtility.sendMessage(con.getActivePlayer(), "0x" + Integer.toHexString(this.getOpcode()).toUpperCase() + " : " + this.getPacketName());
 			}

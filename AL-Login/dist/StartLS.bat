@@ -1,7 +1,6 @@
 @ECHO off
-TITLE Aion 2.4 Classic - Login Server Console
-REM Set correct Path, im using Zulu8
-SET PATH="..\Zulu8\bin"
+TITLE Servidor de LOGIN
+SET PATH="COLOQUE O CAMINHO DO SEU JAVA 1.8 AQUI"
 @COLOR 0C
 
 :START
@@ -9,12 +8,12 @@ CLS
 
 echo.
 
-echo Starting Aion 2.4 Classic Login Server.
+echo Inicializando o servidor de LOGIN.
 
 echo.
 
 REM -------------------------------------
-REM Default parameters for a basic server.
+REM Configuração padrão para servidores básicos
 java -cp ./lib/*;AL-Login.jar com.aionemu.loginserver.LoginServer
 REM -------------------------------------
 SET CLASSPATH=%OLDCLASSPATH%
@@ -26,20 +25,20 @@ IF ERRORLEVEL 0 GOTO END
 REM Restart...
 :restart
 echo.
-echo Administrator Restart ...
+echo Reiniciando ...
 echo.
 goto start
 
 REM Error...
 :error
 echo.
-echo Server terminated abnormaly ...
+echo O servidor parou de forma brusca...
 echo.
 goto end
 
 REM End...
 :end
 echo.
-echo Server terminated ...
+echo O Servidor parou...
 echo.
 pause

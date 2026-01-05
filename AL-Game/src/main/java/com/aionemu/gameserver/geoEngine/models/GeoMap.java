@@ -1,10 +1,6 @@
 package com.aionemu.gameserver.geoEngine.models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import com.aionemu.gameserver.configs.main.GeoDataConfig;
@@ -27,8 +23,8 @@ import javolution.util.FastMap;
 public class GeoMap extends Node {
 
 	private short[] terrainData;
-	private List<BoundingBox> tmpBox = new ArrayList<BoundingBox>();
-	private Map<String, DoorGeometry> doors = new FastMap<String, DoorGeometry>();
+	private final List<BoundingBox> tmpBox = new ArrayList<>();
+	private final Map<String, DoorGeometry> doors = new FastMap<>();
 
 	/**
 	 * @param name
@@ -115,15 +111,15 @@ public class GeoMap extends Node {
 	}
 
 	public float getZ(float x, float y) {
-		CollisionResults results = new CollisionResults(CollisionIntention.PHYSICAL.getId(), false, 1);
+		CollisionResults results = new CollisionResults(CollisionIntention.PHYSICAL.getId(), 1, false);
 		Vector3f pos = new Vector3f(x, y, 4000);
 		Vector3f dir = new Vector3f(x, y, 0);
-		Float limit = pos.distance(dir);
-		dir.subtractLocal(pos).normalizeLocal();
+		float limit = pos.distance(dir);
+		Objects.requireNonNull(dir.subtractLocal(pos)).normalizeLocal();
 		Ray r = new Ray(pos, dir);
 		r.setLimit(limit);
 		collideWith(r, results);
-		Vector3f terrain = null;
+		Vector3f terrain;
 		if (terrainData.length == 1) {
 			terrain = new Vector3f(x, y, terrainData[0] / 32f);
 		}
@@ -141,11 +137,11 @@ public class GeoMap extends Node {
 	}
 
 	public float getZ(float x, float y, float z, int instanceId) {
-		CollisionResults results = new CollisionResults(CollisionIntention.PHYSICAL.getId(), false, instanceId);
+		CollisionResults results = new CollisionResults(CollisionIntention.PHYSICAL.getId(), instanceId, false);
 		Vector3f pos = new Vector3f(x, y, z + 2);
 		Vector3f dir = new Vector3f(x, y, z - 100);
-		Float limit = pos.distance(dir);
-		dir.subtractLocal(pos).normalizeLocal();
+		float limit = pos.distance(dir);
+		Objects.requireNonNull(dir.subtractLocal(pos)).normalizeLocal();
 		Ray r = new Ray(pos, dir);
 		r.setLimit(limit);
 		collideWith(r, results);
@@ -182,10 +178,10 @@ public class GeoMap extends Node {
 		Vector3f pos = new Vector3f(x, y, z);
 		Vector3f dir = new Vector3f(targetX, targetY, targetZ);
 
-		CollisionResults results = new CollisionResults(intentions, false, instanceId);
+		CollisionResults results = new CollisionResults(intentions, instanceId, false);
 
-		Float limit = pos.distance(dir);
-		dir.subtractLocal(pos).normalizeLocal();
+		float limit = pos.distance(dir);
+		Objects.requireNonNull(dir.subtractLocal(pos)).normalizeLocal();
 		Ray r = new Ray(pos, dir);
 		r.setLimit(limit);
 		Vector3f terrain = calculateTerrainCollision(start.x, start.y, start.z, end.x, end.y, end.z, r);
@@ -249,10 +245,10 @@ public class GeoMap extends Node {
 		Vector3f pos = new Vector3f(x, y, z);
 		Vector3f dir = new Vector3f(targetX, targetY, targetZ);
 
-		CollisionResults results = new CollisionResults(intentions, false, instanceId);
+		CollisionResults results = new CollisionResults(intentions, instanceId, false);
 
-		Float limit = pos.distance(dir);
-		dir.subtractLocal(pos).normalizeLocal();
+		float limit = pos.distance(dir);
+		Objects.requireNonNull(dir.subtractLocal(pos)).normalizeLocal();
 		Ray r = new Ray(pos, dir);
 		r.setLimit(limit);
 		Vector3f terrain = calculateTerrainCollision(start.x, start.y, start.z, end.x, end.y, end.z, r);
@@ -363,7 +359,7 @@ public class GeoMap extends Node {
 				return false;
 			}
 		}
-		CollisionResults results = new CollisionResults((byte) (CollisionIntention.PHYSICAL.getId() | CollisionIntention.DOOR.getId()), false, instanceId);
+		CollisionResults results = new CollisionResults((byte) (CollisionIntention.PHYSICAL.getId() | CollisionIntention.DOOR.getId()), instanceId, false);
 		int collisions = this.collideWith(r, results);
 		return (results.size() == 0 && collisions == 0);
 	}
@@ -385,9 +381,9 @@ public class GeoMap extends Node {
 		}
 		super.updateModelBound();
 	}
-	
+
 	private int[] terrainCutoutData;
-	
+
 	public void setTerrainCutouts(int[] cutoutData) {
 		int[] arr = cutoutData.clone();
 		Arrays.sort(arr);

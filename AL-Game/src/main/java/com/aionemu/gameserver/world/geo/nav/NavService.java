@@ -1,26 +1,12 @@
-/**
- * This file is part of the Aion Reconstruction Project Server.
- *
- * The Aion Reconstruction Project Server is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * The Aion Reconstruction Project Server is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with the Aion Reconstruction Project Server. If not, see
- * <http://www.gnu.org/licenses/>.
- *
- * @AionReconstructionProjectTeam
- */
 package com.aionemu.gameserver.world.geo.nav;
 
-import java.util.ArrayList;
-
+import com.aionemu.gameserver.utils.CityMapUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aionemu.gameserver.configs.main.GeoDataConfig;
 import com.aionemu.gameserver.geoEngine.bounding.BoundingBox;
+import com.aionemu.gameserver.geoEngine.collision.CollisionResult;
 import com.aionemu.gameserver.geoEngine.collision.CollisionResults;
 import com.aionemu.gameserver.geoEngine.math.Ray;
 import com.aionemu.gameserver.geoEngine.math.Vector3f;
@@ -29,32 +15,35 @@ import com.aionemu.gameserver.geoEngine.scene.NavGeometry;
 import com.aionemu.gameserver.geoEngine.scene.Spatial;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 
+import java.util.ArrayList;
+
 /**
  * Similar to {@link com.aionemu.gameserver.world.geo.GeoService GeoService}, this class is the entry point
  * for navigational queries (it's used for pathfinding).
- * 
- * @author Yon (Aion Reconstruction Project)
+ *
+ * @author KAMIDAKI
  */
 public final class NavService {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(NavService.class);
 	private final NavData navData = NavData.getInstance();
-	
+
 	private NavService() {};
-	
+
 	public void initializeNav() {
-		if (GeoDataConfig.GEO_NAV_ENABLE) {
-			LOG.info("Navigational Data is Enabled.");
-			if (!navData.isLoaded()) {
-				navData.loadNavMaps();
-			} else {
-				LOG.warn("Attempted Double Loading of Navigational Data.");
-			}
+		if (!GeoDataConfig.GEO_NAV_ENABLE) {
+			LOG.info("NavMesh está desativado.");
+			return;
+		}
+
+		LOG.info("NavMesh está habilitado.");
+		if (GeoDataConfig.GEO_NAV_PRELOAD_WORLDS != null && !GeoDataConfig.GEO_NAV_PRELOAD_WORLDS.isEmpty()) {
+			navData.preloadNavMaps(GeoDataConfig.GEO_NAV_PRELOAD_WORLDS);
 		} else {
-			LOG.info("Navigational Data is Disabled.");
+			LOG.info("NAVMESH: Pré-carregamento automático desativado, malhas serão carregadas sob demanda.");
 		}
 	}
-	
+
 	/**
 	 * This method checks if one entity (creature) can pull (forcibly move) another (target) by checking if the
 	 * navmesh is continuous between the creature and the target. This method will immediately return true if the
@@ -66,24 +55,29 @@ public final class NavService {
 	 * It's assumed that the entities can see eachother.
 	 * <p>
 	 * If {@link GeoDataConfig#GEO_NAV_ENABLE} is set to false, this method will immediately return true.
-	 * 
+	 *
 	 * @param creature -- The entity attempting to pull {@code target}.
 	 * @param target -- The target entity that {@code creature} is attempting to pull.
 	 * @return true if the target can be pulled, false otherwise.
 	 */
 	public boolean canPullTarget(Creature creature, Creature target) {
 		if (!GeoDataConfig.GEO_NAV_ENABLE) return true;
+		if (creature == null || target == null) return true;
+		int worldId = creature.getWorldId();
+		if (CityMapUtil.isDefaultPathfinding(worldId)) return true;
 		if (target.isFlying()) return true;
 		float x1 = creature.getX(), y1 = creature.getY(), z1 = creature.getZ();
-		NavGeometry tile1 = getNavTile(creature.getWorldId(), x1, y1, z1);
+		NavGeometry tile1 = getNavTile(worldId, x1, y1, z1);
 		if (tile1 == null) {
-			tile1 = getNavTileWithBox(creature.getWorldId(), x1, y1, z1);
+			tile1 = getNavTileWithBox(worldId, x1, y1, z1);
 			if (tile1 == null) return false;
 		}
 		float x2 = target.getX(), y2 = target.getY(), z2 = target.getZ();
-		NavGeometry tile2 = getNavTile(target.getWorldId(), x2, y2, z2);
+		int targetWorldId = target.getWorldId();
+		if (CityMapUtil.isDefaultPathfinding(targetWorldId)) return true;
+		NavGeometry tile2 = getNavTile(targetWorldId, x2, y2, z2);
 		if (tile2 == null) {
-			tile2 = getNavTileWithBox(target.getWorldId(), x2, y2, z2);
+			tile2 = getNavTileWithBox(targetWorldId, x2, y2, z2);
 			if (tile2 == null) return false;
 		}
 		//They're flipped around because the path needs to exist from the target (though it doesn't actually matter)
@@ -91,7 +85,7 @@ public final class NavService {
 		if (path != null && path.length == 1) return true;
 		return false;
 	}
-	
+
 	private float[][] attemptStraightLinePath(NavGeometry tile1, NavGeometry tile2, float x1, float y1, float z1, float x2, float y2, float z2) {
 		//basic checks
 		assert tile1 != null:"NavService#validateStraightLinePath() tile1 is null!";
@@ -163,7 +157,7 @@ public final class NavService {
 		}
 		return null;
 	}
-	
+
 	public float[][] navigateToTarget(Creature pathOwner, Creature target) {
 		//basic checks
 		if (pathOwner == null) return null;
@@ -171,25 +165,28 @@ public final class NavService {
 		if (target == null) return null;
 //		if (target.getLifeStats().isAlreadyDead()) return null;
 		if (pathOwner.getWorldId() != target.getWorldId()) return null;
-		
+
 		int worldId = pathOwner.getWorldId();
+		if (CityMapUtil.isDefaultPathfinding(worldId)) return null;
 		float x1 = pathOwner.getX(), y1 = pathOwner.getY(), z1 = pathOwner.getZ();
 		float x2 = target.getX(), y2 = target.getY(), z2 = target.getZ();
 		//TO-DO: Use Cached Tile for Creature
 		return navigateFromLocationToLocation(worldId, null, null, x1, y1, z1, x2, y2, z2);
 	}
-	
+
 	public float[][] navigateToLocation(Creature pathOwner, float x, float y, float z) {
 		//basic checks
 		if (pathOwner == null) return null;
 		if (pathOwner.getLifeStats().isAlreadyDead()) return null;
 		int worldId = pathOwner.getWorldId();
+		if (CityMapUtil.isDefaultPathfinding(worldId)) return null;
 		float x1 = pathOwner.getX(), y1 = pathOwner.getY(), z1 = pathOwner.getZ();
 		//TO-DO: Use Cached Tile for Creature
 		return navigateFromLocationToLocation(worldId, null, null, x1, y1, z1, x, y, z);
 	}
-	
+
 	private float[][] navigateFromLocationToLocation(int worldId, NavGeometry tile, NavGeometry tile2, float x1, float y1, float z1, float x2, float y2, float z2) {
+		if (CityMapUtil.isDefaultPathfinding(worldId)) return null;
 		boolean boxed = false;
 		if (tile == null) {
 			tile = getNavTile(worldId, x1, y1, z1);
@@ -201,6 +198,9 @@ public final class NavService {
 		}
 		if (tile2 == null) {
 			tile2 = getNavTile(worldId, x2, y2, z2);
+		}
+		if (tile2 == null) {
+			tile2 = getNavTileWithBox(worldId, x2, y2, z2);
 		}
 		if (tile == tile2) {
 			return new float[][] {{x2, y2, z2}};
@@ -228,7 +228,7 @@ public final class NavService {
 		helper.destroy();
 		return funnelPathway(pathway, tile2 != null, x1, y1, z1, x2, y2, z2);
 	}
-	
+
 	private static float[][] funnelPathway(NavPathway[] pathway, boolean includeTargetPoint, float x1, float y1, float z1, float x2, float y2, float z2) {
 		if (pathway == null) return null; //Mob will ignore all obstacles
 		if (pathway.length == 0) return new float[][] {{x1, y1, z1}}; //Mob will not move
@@ -359,12 +359,12 @@ public final class NavService {
 		}
 		return ret.toArray(new float[0][]);
 	}
-	
+
 	private static boolean areEqualPoints(float[] p1, float[] p2) {
 		assert p1.length == 3 && p2.length == 3;
 		return p1[0] == p2[0] && p1[1] == p2[1] && p1[2] == p2[2];
 	}
-	
+
 	private static boolean compareFunnelCross(float crossZ, boolean positive, boolean zeroAllowed) {
 		if (crossZ == 0) return zeroAllowed;
 		if (positive) {
@@ -373,25 +373,30 @@ public final class NavService {
 			return crossZ < 0;
 		}
 	}
-	
+
 	private static float crossZ(float[] vec1, float[] vec2/*, float x1, float y1, float x2, float y2*/) {
 		return ((vec1[0] * vec2[1]) - (vec1[1] * vec2[0]));
 //		return ((x1 * y2) - (y1 * x2));
 	}
-	
+
 	private NavGeometry getNavTile(int worldId, float x, float y, float z) {
+		if (CityMapUtil.isDefaultPathfinding(worldId)) return null;
 		GeoMap navMap = navData.getNavMap(worldId);
 		if (navMap == null) return null;
 		Vector3f pos = Vector3f.newInstance().set(x, y, z + 1F),
-				 dir = Vector3f.newInstance().set(0, 0, -1F);
+				dir = Vector3f.newInstance().set(0, 0, -1F);
 		Ray ray = new Ray(pos, dir);
 		ray.setLimit(5F);
-		CollisionResults results = new CollisionResults((byte) 1, false, 0); //Instance ID shouldn't be needed
+		CollisionResults results = new CollisionResults((byte) 1, 0); //Instance ID shouldn't be needed
 		int collisionCount = navMap.collideWith(ray, results);
 		Vector3f.recycle(pos);
 		Vector3f.recycle(dir);
 		if (collisionCount == 0) return null;
-		Spatial ret = results.getClosestCollision().getGeometry();
+		CollisionResult closestCollision = results.getClosestCollision();
+		if (closestCollision == null) {
+			return null;
+		}
+		Spatial ret = closestCollision.getGeometry();
 		assert ret instanceof NavGeometry;
 		try {
 			return (NavGeometry) ret;
@@ -400,19 +405,27 @@ public final class NavService {
 		}
 		return null;
 	}
-	
+
 	private NavGeometry getNavTileWithBox(int worldId, float x, float y, float z) {
+		if (CityMapUtil.isDefaultPathfinding(worldId)) return null;
 		GeoMap navMap = navData.getNavMap(worldId);
 		if (navMap == null) return null;
-		Vector3f min = Vector3f.newInstance().set(x - 0.5F, y - 0.5F, z - 4),
-				 max = Vector3f.newInstance().set(x + 0.5F, y + 0.5F, z + 1);
-		BoundingBox box = new BoundingBox(new Vector3f(), new Vector3f());
-		CollisionResults results = new CollisionResults((byte) 1, false, 0); //Instance ID shouldn't be needed
+		Vector3f min = Vector3f.newInstance().set(x - 0.8F, y - 0.8F, z - 1),
+				max = Vector3f.newInstance().set(x + 0.8F, y + 0.8F, z + 4),
+				center = Vector3f.newInstance().set(x, y, z + 0.2F);
+		BoundingBox box = new BoundingBox(min,max);
+		box.setCenter(center);
+		CollisionResults results = new CollisionResults((byte) 1, 0); //Instance ID shouldn't be needed
 		int collisionCount = navMap.collideWith(box, results);
 		Vector3f.recycle(min);
 		Vector3f.recycle(max);
+		Vector3f.recycle(center);
 		if (collisionCount == 0) return null;
-		Spatial ret = results.getClosestCollision().getGeometry();
+		CollisionResult closestCollision = results.getClosestCollision();
+		if (closestCollision == null) {
+			return null;
+		}
+		Spatial ret = closestCollision.getGeometry();
 		assert ret instanceof NavGeometry;
 		try {
 			return (NavGeometry) ret;
@@ -421,39 +434,39 @@ public final class NavService {
 		}
 		return null;
 	}
-	
+
 	static class NavPathway {
 		NavGeometry tile;
 		byte edge; //Values are 0, 1, 2, or 3
-		
+
 		NavPathway(NavGeometry tile, byte edge) {
 			this.tile = tile;
 			this.edge = edge;
 		}
-		
+
 		float[][] getEndpoints() {
 			float[][] ret;
 			switch (edge) {
-			case 0:
-				//Means the target was inside the starting tile
-				return null;
-			case 1:
-			case 2:
-			case 3:
-				ret = tile.getEndpoints(edge); 
-				break;
-			default:
-				assert false:"Incorrect NavPathway Creation";
-				return null;
+				case 0:
+					//Means the target was inside the starting tile
+					return null;
+				case 1:
+				case 2:
+				case 3:
+					ret = tile.getEndpoints(edge);
+					break;
+				default:
+					assert false:"Incorrect NavPathway Creation";
+					return null;
 			}
 			return ret;
 		}
 	}
-	
+
 	public static final NavService getInstance() {
 		return SingletonHolder.INSTANCE;
 	}
-	
+
 	private static final class SingletonHolder {
 		protected static final NavService INSTANCE = new NavService();
 	}

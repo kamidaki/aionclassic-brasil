@@ -1,14 +1,13 @@
-#!/bin/bash
 
-echo "Starting Aion 2.4 Classic Login Server."
+echo "Inicializando o servidor de LOGIN."
 
-/usr/lib/jvm/zulu8/bin/java -Xms64m -Xmx128m -ea -Xbootclasspath/p:./lib/jsr166-1.7.0.jar -cp ./lib/*:AL-Login.jar com.aionemu.loginserver.LoginServer
+java -Xms64m -Xmx128m -ea -Xbootclasspath/p:./lib/jsr166-1.7.0.jar -cp ./lib/*:AL-Login.jar com.aionemu.loginserver.LoginServer
 
 if [ $? -eq 2 ]; then
-echo "Administrator Restart..."
+echo "Reiniciando..."
 bash $0
 elif [ $? -eq 1 ]; then
-echo "Server terminated abnormally..."
+echo "O servidor parou de forma brusca..."
 else
-echo "Server terminated..."
+echo "O Servidor parou..."
 fi
