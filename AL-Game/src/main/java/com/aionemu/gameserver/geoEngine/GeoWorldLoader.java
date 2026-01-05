@@ -40,7 +40,7 @@ public class GeoWorldLoader {
 
 	@SuppressWarnings("unused")
 	private static final Logger log = LoggerFactory.getLogger(GeoWorldLoader.class);
-	private static String GEO_DIR = "data/geo/";
+	private static final String GEO_DIR = "data/geo/";
 	private static boolean DEBUG = false;
 
 	public static void setDebugMod(boolean debug) {
@@ -49,10 +49,10 @@ public class GeoWorldLoader {
 
 	@SuppressWarnings("resource")
 	public static Map<String, Spatial> loadMeshs(String fileName) throws IOException {
-		Map<String, Spatial> geoms = new HashMap<String, Spatial>();
+		Map<String, Spatial> geoms = new HashMap<>();
 		File geoFile = new File(fileName);
-		FileChannel roChannel = null;
-		MappedByteBuffer geo = null;
+		FileChannel roChannel;
+		MappedByteBuffer geo;
 		roChannel = new RandomAccessFile(geoFile, "r").getChannel();
 		int size = (int) roChannel.size();
 		geo = roChannel.map(FileChannel.MapMode.READ_ONLY, 0, size).load();
@@ -83,7 +83,7 @@ public class GeoWorldLoader {
 					indexes.put(geo.getShort());
 				}
 
-				Geometry geom = null;
+				Geometry geom;
 				m.setCollisionFlags(geo.getShort());
 				if ((m.getIntentions() & CollisionIntention.MOVEABLE.getId()) != 0) {
 					// TODO: skip moveable collisions (ships, shugo boxes), not handled yet
@@ -131,8 +131,8 @@ public class GeoWorldLoader {
 	@SuppressWarnings("resource")
 	public static boolean loadWorld(int worldId, Map<String, Spatial> models, GeoMap map) throws IOException {
 		File geoFile = new File(GEO_DIR + worldId + ".geo");
-		FileChannel roChannel = null;
-		MappedByteBuffer geo = null;
+		FileChannel roChannel;
+		MappedByteBuffer geo;
 		roChannel = new RandomAccessFile(geoFile, "r").getChannel();
 		geo = roChannel.map(FileChannel.MapMode.READ_ONLY, 0, (int) roChannel.size()).load();
 		geo.order(ByteOrder.LITTLE_ENDIAN);
@@ -190,7 +190,7 @@ public class GeoWorldLoader {
 					else {
 						nodeClone = attachChild(map, node, matrix3f, loc, scale);
 						List<Spatial> children = ((Node) node).descendantMatches("child\\d+_" + name.replace("\\", "\\\\"));
-						if (children.size() == 0) {
+						if (children.isEmpty()) {
 							createZone(nodeClone, worldId, 0);
 						}
 						else {
@@ -204,7 +204,7 @@ public class GeoWorldLoader {
 				}
 			}
 			catch (Throwable t) {
-				System.out.println(t);
+				log.error(String.valueOf(t));
 			}
 		}
 		destroyDirectByteBuffer(geo);

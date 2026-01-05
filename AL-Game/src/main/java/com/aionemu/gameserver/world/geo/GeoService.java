@@ -40,7 +40,6 @@ public class GeoService {
     }
 
     /**
-     * @param object
      * @return
      */
     public float getZAfterMoveBehind(int worldId, float x, float y, float z, int instanceId) {

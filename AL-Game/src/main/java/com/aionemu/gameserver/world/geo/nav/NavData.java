@@ -16,8 +16,11 @@ import com.aionemu.gameserver.geoEngine.scene.NavGeometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.geoEngine.models.GeoMap;
 import com.aionemu.gameserver.configs.main.GeoDataConfig;
+import com.aionemu.gameserver.model.templates.world.WorldMapTemplate;
 import com.aionemu.gameserver.utils.CityMapUtil;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
@@ -26,7 +29,8 @@ import gnu.trove.map.hash.TIntObjectHashMap;
  * {@link GeoMap GeoMaps} that represent navigable space within a level. These maps are holding
  * Nav Meshes that can be used to pathfind.
  *
- * @author  KAMIDAKI
+ * @author KAMIDAKI
+ * Restructured for Aion Classic 2.4 based on the OLD CLASS of Aion Live Clássico.
  */
 public class NavData {
 
@@ -88,7 +92,12 @@ public class NavData {
 			return null;
 		}
 
-		GeoMap geoMap = new GeoMap(worldId);
+		WorldMapTemplate worldTemplate = DataManager.WORLD_MAPS_DATA.getTemplate(worldId);
+		if (worldTemplate == null) {
+			LOG.info("NAVMESH: Template não encontrado para o mapa {}.", worldId);
+			return null;
+		}
+		GeoMap geoMap = new GeoMap(Integer.toString(worldId), worldTemplate.getWorldSize());
 		try {
 			if (!loadNav(worldId, geoMap)) {
 				LOG.warn("NAVMESH: Arquivo de navegação não encontrado para o mapa {}.", worldId);
