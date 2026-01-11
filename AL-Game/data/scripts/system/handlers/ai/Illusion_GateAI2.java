@@ -10,14 +10,14 @@
  */
 package ai;
 
-import com.aionemu.gameserver.ai2.AIName;
-import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.AI2Request;
+import com.aionemu.gameserver.ai2.AIName;
+import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -59,7 +59,7 @@ public class Illusion_GateAI2 extends NpcAI2
 				}
 			});
 		} else {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SKILL_CAN_NOT_USE_GROUPGATE_NO_RIGHT);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SKILL_CAN_NOT_USE_GROUPGATE_NO_RIGHT);
 		}
 	}
 }

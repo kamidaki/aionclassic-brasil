@@ -13,11 +13,11 @@ package ai.siege;
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AIState;
 import com.aionemu.gameserver.ai2.AISummon;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.controllers.SiegeWeaponController;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.summons.SummonMode;
-import com.aionemu.gameserver.controllers.SiegeWeaponController;
 import com.aionemu.gameserver.services.summons.SummonsService;
 
 /****/

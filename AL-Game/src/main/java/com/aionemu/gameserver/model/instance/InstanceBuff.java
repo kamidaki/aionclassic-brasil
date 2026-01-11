@@ -10,6 +10,10 @@
  */
 package com.aionemu.gameserver.model.instance;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.stats.calc.StatOwner;
@@ -21,10 +25,6 @@ import com.aionemu.gameserver.model.templates.instance_bonusatrr.InstanceBonusAt
 import com.aionemu.gameserver.model.templates.instance_bonusatrr.InstancePenaltyAttr;
 import com.aionemu.gameserver.skillengine.change.Func;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * @author Ranastic (Encom)

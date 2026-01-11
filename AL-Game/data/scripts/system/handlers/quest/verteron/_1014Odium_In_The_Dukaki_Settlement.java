@@ -10,17 +10,17 @@
  */
 package quest.verteron;
 
-import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.Item;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
+import com.aionemu.gameserver.questEngine.handlers.HandlerResult;
+import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.questEngine.model.QuestDialog;
-import com.aionemu.gameserver.questEngine.handlers.HandlerResult;
-import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
-import com.aionemu.gameserver.services.*;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.services.QuestService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.zone.ZoneName;
@@ -112,7 +112,7 @@ public class _1014Odium_In_The_Dukaki_Settlement extends QuestHandler
 							return closeDialogWindow(env);
 						} else if (var == 11 && strikingRod == 0) {
 							///I need a Striking Rod!
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111204, player.getObjectId(), 2));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111204, player.getObjectId(), 2));
 							return closeDialogWindow(env);
 						}
 					}

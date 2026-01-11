@@ -10,26 +10,24 @@
  */
 package ai.instance.beshmundirTemple;
 
-import ai.AggressiveNpcAI2;
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.aionemu.commons.utils.Rnd;
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
-import com.aionemu.gameserver.ai2.AIName;
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.AI2Actions;
-import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
-import com.aionemu.gameserver.spawnengine.SpawnEngine;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.NpcShoutsService;
-import com.aionemu.gameserver.utils.MathUtil;
+import com.aionemu.gameserver.spawnengine.SpawnEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -68,7 +66,7 @@ public class Ahbana_The_WickedAI2 extends AggressiveNpcAI2
 		///I curse you all. From the depths of the Abyss, a curse upon all who disturb the graves!
 		sendMsg(342047, getObjectId(), false, 4000);
 		//The Subjugated Souls have been released!
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDCatacombs_Boss_Spectre_Buff, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDCatacombs_Boss_Spectre_Buff, 0);
 		rndSpawn(281538, 3);
 		ThreadPoolManager.getInstance().schedule(new Runnable() {
 			@Override

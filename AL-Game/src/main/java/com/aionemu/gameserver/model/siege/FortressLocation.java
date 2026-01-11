@@ -1,7 +1,9 @@
 package com.aionemu.gameserver.model.siege;
 
-import com.aionemu.gameserver.model.Race;
+import java.util.List;
+
 import com.aionemu.gameserver.model.DescriptionId;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Kisk;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -13,8 +15,6 @@ import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.WorldPosition;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
-
-import java.util.*;
 
 public class FortressLocation extends SiegeLocation
 {

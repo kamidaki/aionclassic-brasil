@@ -1,13 +1,14 @@
 package com.aionemu.gameserver.services.toypet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.gameobjects.Pet;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_FUNCTIONAL_PET;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.audit.AuditLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PetMoodService
 {
@@ -36,7 +37,7 @@ public class PetMoodService
 			return;
 		} if (pet.getMaster().getInventory().isFull()) {
 			//Your cube is full. Wait before asking for a gift.
-			PacketSendUtility.sendPacket(pet.getMaster(), S_MESSAGE_CODE.STR_PET_CONDITION_REWARD_FULL_INVEN);
+			PacketSendUtility.sendPacket(pet.getMaster(), SM_SYSTEM_MESSAGE.STR_PET_CONDITION_REWARD_FULL_INVEN);
 			return;
 		}
 		pet.getCommonData().clearMoodStatistics();

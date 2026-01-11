@@ -10,13 +10,18 @@
  */
 package ai.portals;
 
+import java.util.List;
+
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.dataholders.DataManager;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.DialogAction;
 import com.aionemu.gameserver.model.autogroup.AutoGroupType;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.portal.PortalPath;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_MATCHMAKER_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PARTY_MATCH;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
@@ -24,8 +29,6 @@ import com.aionemu.gameserver.questEngine.model.QuestStatus;
 import com.aionemu.gameserver.services.QuestService;
 import com.aionemu.gameserver.services.teleport.PortalService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.*;
 
 /****/
 /** Author Rinzler (Encom)
@@ -123,7 +126,7 @@ public class PortalDialogAI2 extends PortalAI2
 					if (qs3200 == null || qs3200.getStatus() != QuestStatus.COMPLETE) {
 						PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getObjectId(), 1055, 0));
 						///You cannot use it as the required quest has not been completed.
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
 					} else {
 						PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getObjectId(), 1011, 0));
 					}
@@ -133,7 +136,7 @@ public class PortalDialogAI2 extends PortalAI2
 					if (qs4200 == null || qs4200.getStatus() != QuestStatus.COMPLETE) {
 						PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getObjectId(), 1055, 0));
 						///You cannot use it as the required quest has not been completed.
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
 					} else {
 						PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getObjectId(), 1011, 0));
 					}

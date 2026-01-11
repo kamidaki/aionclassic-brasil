@@ -10,24 +10,21 @@
  */
 package instance;
 
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
+import java.util.List;
 
+import com.aionemu.commons.network.util.ThreadPoolManager;
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.instance.handlers.GeneralInstanceHandler;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.services.NpcShoutsService;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-
-import javolution.util.*;
-
-import java.util.*;
 
 /****/
 /** Author Rinzler (Encom)
@@ -116,7 +113,7 @@ public class Fire_Temple extends GeneralInstanceHandler
 		switch (npc.getNpcId()) {
 			case 700237: //Sacred Chalice.
 				///It was a fake Sacred Chalice!
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1100727, player.getObjectId(), 2));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1100727, player.getObjectId(), 2));
 			break;
 			case 730048: //Fire Temple Exit.
 				if (player.getRace() == Race.ELYOS) {

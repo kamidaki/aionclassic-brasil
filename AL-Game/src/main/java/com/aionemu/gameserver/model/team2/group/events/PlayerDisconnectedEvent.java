@@ -15,8 +15,8 @@ import com.aionemu.gameserver.model.team2.TeamEvent;
 import com.aionemu.gameserver.model.team2.common.legacy.GroupEvent;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_PARTY_MEMBER_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.google.common.base.Predicate;
 
@@ -56,7 +56,7 @@ public class PlayerDisconnectedEvent implements Predicate<Player>, TeamEvent {
     @Override
     public boolean apply(Player member) {
         if (!member.equals(player)) {
-            PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_PARTY_HE_BECOME_OFFLINE(player.getName()));
+            PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_PARTY_HE_BECOME_OFFLINE(player.getName()));
             PacketSendUtility.sendPacket(member, new S_PARTY_MEMBER_INFO(group, player, GroupEvent.DISCONNECTED));
             // disconnect other group members on logout? check
             PacketSendUtility.sendPacket(player, new S_PARTY_MEMBER_INFO(group, member, GroupEvent.DISCONNECTED));

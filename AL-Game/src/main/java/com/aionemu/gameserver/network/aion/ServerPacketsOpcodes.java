@@ -21,72 +21,71 @@ public class ServerPacketsOpcodes
 	static {
 		Set<Integer> idSet = new HashSet<Integer>();
 
-		addPacketOpcode(S_VERSION_CHECK.class, 0x00, idSet);
-		addPacketOpcode(S_STATUS.class, 0x01, idSet);
-		//S_STATUS_OTHER	= Opcode(0x02)
-		addPacketOpcode(S_HIT_POINT.class, 0x03, idSet);
-		addPacketOpcode(S_MANA_POINT.class, 0x04, idSet);
-		addPacketOpcode(S_HIT_POINT_OTHER.class, 0x05, idSet);
-		addPacketOpcode(S_DP.class, 0x06, idSet);
-		addPacketOpcode(S_DP_USER.class, 0x07, idSet);
-		addPacketOpcode(S_EXP.class, 0x08, idSet);
+		addPacketOpcode(SM_VERSION_CHECK.class, 0x00, idSet); // [S_VERSION_CHECK]
+		addPacketOpcode(SM_STATS_INFO.class, 0x01, idSet); // [S_STATUS]
+		//addPacketOpcode(SM_GM_SHOW_PLAYER_STATUS.class, 0x02, idSet); // [S_STATUS_OTHER]
+		addPacketOpcode(SM_STATUPDATE_HP.class, 0x03, idSet);  // [S_HIT_POINT]
+		addPacketOpcode(SM_STATUPDATE_MP.class, 0x04, idSet); // [S_MANA_POINT]
+		addPacketOpcode(SM_ATTACK_STATUS.class, 0x05, idSet); // [S_HIT_POINT_OTHER]
+		addPacketOpcode(SM_STATUPDATE_DP.class, 0x06, idSet); // [S_DP]
+		addPacketOpcode(SM_DP_INFO.class, 0x07, idSet); // [S_DP_USER]
+		addPacketOpcode(SM_STATUPDATE_EXP.class, 0x08, idSet); // [S_EXP]
 		//S_LOGIN_CHECK                        = Opcode(0x09)
-		addPacketOpcode(S_CUTSCENE_NPC_INFO.class, 0x0A, idSet);
-		addPacketOpcode(S_CHANGE_GUILD_MEMBER_NICKNAME.class, 0x0B, idSet);
-		addPacketOpcode(S_GUILD_HISTORY.class, 0x0C, idSet);
-		addPacketOpcode(S_ENTER_WORLD_CHECK.class, 0x0D, idSet);
-		addPacketOpcode(S_PUT_NPC.class, 0x0E, idSet);
-		addPacketOpcode(S_WORLD.class, 0x0F, idSet);
+		addPacketOpcode(SM_NPC_ASSEMBLER.class, 0x0A, idSet); // [S_CUTSCENE_NPC_INFO]
+		addPacketOpcode(SM_LEGION_UPDATE_NICKNAME.class, 0x0B, idSet); // [S_CHANGE_GUILD_MEMBER_NICKNAME]
+		addPacketOpcode(SM_LEGION_HISTORY.class, 0x0C, idSet); // [S_GUILD_HISTORY]
+		addPacketOpcode(SM_ENTER_WORLD_CHECK.class, 0x0D, idSet); // [S_ENTER_WORLD_CHECK]
+		addPacketOpcode(SM_NPC_INFO.class, 0x0E, idSet); // [S_PUT_NPC]
+		addPacketOpcode(SM_PLAYER_SPAWN.class, 0x0F, idSet); // [S_WORLD]
 		//S_DUMMY_PACKET                       = Opcode(0x10)
-		addPacketOpcode(S_PUT_OBJECT.class, 0x11, idSet);
+		addPacketOpcode(SM_GATHERABLE_INFO.class, 0x11, idSet); // [S_PUT_OBJECT]
 		//S_PUT_VEHICLE                        = Opcode(0x12)
-		//S_BUILDER_RESULT                     = Opcode(0x13)
-		//addPacketOpcode(S_BUILDER_RESULT.class, 0x13, idSet);
-		addPacketOpcode(S_REQUEST_TELEPORT.class, 0x14, idSet);
-		addPacketOpcode(S_BLINK.class, 0x15, idSet);
-		addPacketOpcode(S_REMOVE_OBJECT.class, 0x16, idSet);
-		addPacketOpcode(S_WAIT_LIST.class, 0x17, idSet);
-		addPacketOpcode(S_MESSAGE.class, 0x18, idSet);
-		addPacketOpcode(S_MESSAGE_CODE.class, 0x19, idSet);
-		addPacketOpcode(S_LOAD_INVENTORY.class, 0x1A, idSet);
-		addPacketOpcode(S_ADD_INVENTORY.class, 0x1B, idSet);
-		addPacketOpcode(S_REMOVE_INVENTORY.class, 0x1C, idSet);
-		addPacketOpcode(S_CHANGE_ITEM_DESC.class, 0x1D, idSet);
-		addPacketOpcode(S_LOAD_CLIENT_SETTINGS.class, 0x1E, idSet);
-		addPacketOpcode(S_CHANGE_STANCE.class, 0x1F, idSet);
-		addPacketOpcode(S_PUT_USER.class, 0x20, idSet);
-		addPacketOpcode(S_USE_SKILL.class, 0x21, idSet);
-		addPacketOpcode(S_GATHER_OTHER.class, 0x22, idSet);
-		addPacketOpcode(S_GATHER.class, 0x23, idSet);
-		addPacketOpcode(S_WIELD.class, 0x24, idSet);
-		addPacketOpcode(S_ACTION.class, 0x25, idSet);
-		addPacketOpcode(S_TIME.class, 0x26, idSet);
-		addPacketOpcode(S_SYNC_TIME.class, 0x27, idSet);
-		addPacketOpcode(S_NPC_CHANGED_TARGET.class, 0x28, idSet);
-		addPacketOpcode(S_TARGET_INFO.class, 0x29, idSet);
-		addPacketOpcode(S_SKILL_CANCELED.class, 0x2A, idSet);
-		addPacketOpcode(S_SKILL_SUCCEDED.class, 0x2B, idSet);
-		addPacketOpcode(S_ADD_SKILL.class, 0x2C, idSet);
-		addPacketOpcode(S_DELETE_SKILL.class, 0x2D, idSet);
-		addPacketOpcode(S_TOGGLE_SKILL_ON_OFF.class, 0x2E, idSet);
+		//addPacketOpcode(SM_GM_SEARCH.class, 0x13, idSet); // [S_BUILDER_RESULT]
+		addPacketOpcode(SM_TELEPORT_LOC.class, 0x14, idSet); // [S_REQUEST_TELEPORT]
+		addPacketOpcode(SM_POSITION_SELF.class, 0x15, idSet); // [S_BLINK]
+		addPacketOpcode(SM_DELETE.class, 0x16, idSet); // [S_REMOVE_OBJECT]
+		addPacketOpcode(SM_LOGIN_QUEUE.class, 0x17, idSet); // [S_WAIT_LIST]
+		addPacketOpcode(SM_MESSAGE.class, 0x18, idSet); // [S_MESSAGE]
+		addPacketOpcode(SM_SYSTEM_MESSAGE.class, 0x19, idSet); // [S_MESSAGE_CODE]
+		addPacketOpcode(SM_INVENTORY_INFO.class, 0x1A, idSet); // [S_LOAD_INVENTORY]
+		addPacketOpcode(SM_INVENTORY_ADD_ITEM.class, 0x1B, idSet); // [S_ADD_INVENTORY]
+		addPacketOpcode(SM_DELETE_ITEM.class, 0x1C, idSet); // [S_REMOVE_INVENTORY]
+		addPacketOpcode(SM_INVENTORY_UPDATE_ITEM.class, 0x1D, idSet); // [S_CHANGE_ITEM_DESC]
+		addPacketOpcode(SM_UI_SETTINGS.class, 0x1E, idSet); // [S_LOAD_CLIENT_SETTINGS]
+		addPacketOpcode(SM_PLAYER_STANCE.class, 0x1F, idSet); // [S_CHANGE_STANCE]
+		addPacketOpcode(SM_PLAYER_INFO.class, 0x20, idSet); // [S_PUT_USER]
+		addPacketOpcode(SM_CASTSPELL.class, 0x21, idSet); // [S_USE_SKILL]
+		addPacketOpcode(SM_GATHER_ANIMATION.class, 0x22, idSet); // [S_GATHER_OTHER]
+		addPacketOpcode(SM_GATHER_UPDATE.class, 0x23, idSet); // [S_GATHER]
+		addPacketOpcode(SM_UPDATE_PLAYER_APPEARANCE.class, 0x24, idSet); // [S_WIELD]
+		addPacketOpcode(SM_EMOTION.class, 0x25, idSet); // [S_ACTION]
+		addPacketOpcode(SM_GAME_TIME.class, 0x26, idSet); // [S_TIME]
+		addPacketOpcode(SM_TIME_CHECK.class, 0x27, idSet); // [S_SYNC_TIME]
+		addPacketOpcode(SM_LOOKATOBJECT.class, 0x28, idSet); // [S_NPC_CHANGED_TARGET]
+		addPacketOpcode(SM_TARGET_SELECTED.class, 0x29, idSet); // [S_TARGET_INFO]
+		addPacketOpcode(SM_SKILL_CANCEL.class, 0x2A, idSet); // [S_SKILL_CANCELED]
+		addPacketOpcode(SM_CASTSPELL_RESULT.class, 0x2B, idSet); // [S_SKILL_SUCCEDED]
+		addPacketOpcode(SM_SKILL_LIST.class, 0x2C, idSet); // [S_ADD_SKILL]
+		addPacketOpcode(SM_SKILL_REMOVE.class, 0x2D, idSet); // [S_DELETE_SKILL]
+		addPacketOpcode(SM_SKILL_ACTIVATION.class, 0x2E, idSet); // [S_TOGGLE_SKILL_ON_OFF]
 		//S_ADD_MAINTAIN_SKILL                 = Opcode(0x2F)
 		//S_DELETE_MAINTAIN_SKILL              = Opcode(0x30)
 		addPacketOpcode(S_ABNORMAL_STATUS.class, 0x31, idSet);
 		addPacketOpcode(S_ABNORMAL_STATUS_OTHER.class, 0x32, idSet);
 		addPacketOpcode(S_LOAD_SKILL_COOLTIME.class, 0x33, idSet);
 		addPacketOpcode(S_ASK.class, 0x34, idSet);
-		//S_CANCEL_ASK                         = Opcode(0x35)
+		addPacketOpcode(SM_CLOSE_QUESTION_WINDOW.class, 0x35, idSet); // [S_CANCEL_ASK]
 		addPacketOpcode(S_ATTACK.class, 0x36, idSet);
 		addPacketOpcode(S_MOVE_NEW.class, 0x37, idSet);
 		//S_MOVE_OBJECT                        = Opcode(0x38)
 		addPacketOpcode(S_CHANGE_DIRECTION.class, 0x39, idSet);
 		addPacketOpcode(S_POLYMORPH.class, 0x3A, idSet);
-		//S_SKILL_OTHER                        = Opcode(0x3B)
+		//addPacketOpcode(SM_GM_SHOW_PLAYER_SKILLS.class, 0x3B, idSet); // [S_SKILL_OTHER]
 		addPacketOpcode(S_NPC_HTML_MESSAGE.class, 0x3C, idSet);
-		//S_GUILD_OTHER_INFO                   = Opcode(0x3F)
-		//S_ADD_BOOKMARK                       = Opcode(0x40)
+		addPacketOpcode(SM_GM_SHOW_LEGION_INFO.class, 0x3F, idSet); // [S_GUILD_OTHER_INFO]
+		addPacketOpcode(SM_GM_BOOKMARK_ADD.class, 0x40, idSet); // [S_ADD_BOOKMARK]
 		addPacketOpcode(S_ITEM_LIST.class, 0x41, idSet);
-		//S_GUILD_OTHER_MEMBER_INFO            = Opcode(0x42)
+		//addPacketOpcode(SM_GM_SHOW_LEGION_MEMBERLIST.class, 0x42, idSet); // [S_GUILD_OTHER_MEMBER_INFO]
 		addPacketOpcode(S_WEATHER.class, 0x43, idSet);
 		addPacketOpcode(S_INVISIBLE_LEVEL.class, 0x44, idSet);
 		//S_RECALLED_BY_OTHER                  = Opcode(0x45)
@@ -124,21 +123,21 @@ public class ServerPacketsOpcodes
 		//S_GET_ON_VEHICLE                     = Opcode(0x6A)
 		//S_GET_OFF_VEHICLE                    = Opcode(0x6B)
 		//S_KICK                               = Opcode(0x6D)
-		addPacketOpcode(S_GUILD_INFO.class, 0x6E, idSet);
+		addPacketOpcode(SM_LEGION_INFO.class, 0x6E, idSet); // [S_GUILD_INFO]
 		addPacketOpcode(S_ADD_GUILD_MEMBER.class, 0x6F, idSet);
 		addPacketOpcode(S_DELETE_GUILD_MEMBER.class, 0x70, idSet);
 		addPacketOpcode(S_CHANGE_GUILD_MEMBER_INFO.class, 0x71, idSet);
 		addPacketOpcode(S_CHANGE_GUILD_OTHER.class, 0x72, idSet);
-		//S_ATTACK_RESULT                      = Opcode(0x73)
+		addPacketOpcode(SM_ATTACK_RESPONSE.class, 0x73, idSet); // [S_ATTACK_RESULT]
 		//S_DYNCODE_DATA                       = Opcode(0x75)
 		//S_SNDC_CHECK_MESSAGE                 = Opcode(0x76)
 		addPacketOpcode(S_CHANGE_GUILD_MEMBER_INTRO.class, 0x77, idSet);
-		//S_WANTED_LOGIN                       = Opcode(0x78)
+		//addPacketOpcode(SM_RIFT_STATUS.class.class, 0x78, idSet); // [S_WANTED_LOGIN]
 		addPacketOpcode(S_INSTANT_DUNGEON_INFO.class, 0x79, idSet);
 		addPacketOpcode(S_MATCHMAKER_INFO.class, 0x7A, idSet);
 		addPacketOpcode(S_LOAD_FINISHEDQUEST.class, 0x7B, idSet);
 		addPacketOpcode(S_QUEST.class, 0x7C, idSet);
-		//S_NCGUARD                            = Opcode(0x7D)
+		addPacketOpcode(SM_GAMEGUARD.class, 0x7D, idSet); // [S_NCGUARD]
 		addPacketOpcode(S_UPDATE_ZONE_QUEST.class, 0x7F, idSet);
 		addPacketOpcode(S_PING.class, 0x80, idSet);
 		//S_SHOP_RESULT                        = Opcode(0x81)
@@ -158,7 +157,7 @@ public class ServerPacketsOpcodes
 		addPacketOpcode(S_PLACEABLE_BINDSTONE_INFO.class, 0x90, idSet);
 		addPacketOpcode(S_PERSONAL_SHOP.class, 0x91, idSet);
 		addPacketOpcode(S_VENDOR.class, 0x92, idSet);
-		//S_ENTER_WORLD_NOTIFY                 = Opcode(0x93)
+		addPacketOpcode(SM_INSTANCE_COUNT_INFO.class, 0x93, idSet); // [S_ENTER_WORLD_NOTIFY]
 		addPacketOpcode(S_CUSTOM_ANIM.class, 0x94, idSet);
 		//S_SHOPAGENT2                         = Opcode(0x95)
 		addPacketOpcode(S_TRADE_IN.class, 0x97, idSet);
@@ -166,7 +165,7 @@ public class ServerPacketsOpcodes
 		addPacketOpcode(S_REMOVE_PET.class, 0x9A, idSet);
 		addPacketOpcode(S_CHANGE_PET_STATUS.class, 0x9B, idSet);
 		addPacketOpcode(S_CHANGE_MASTER.class, 0x9C, idSet);
-		addPacketOpcode(S_GUILD_MEMBER_INFO.class, 0x9D, idSet);
+		addPacketOpcode(SM_LEGION_MEMBERLIST.class, 0x9D, idSet); // [S_GUILD_MEMBER_INFO]
 		addPacketOpcode(S_CHANGE_GUILD_INFO.class, 0x9E, idSet);
 		addPacketOpcode(S_SHOP_POINT_INFO.class, 0x9F, idSet);
 		//S_CHANGE_NPC_STATUS                  = Opcode(0xA0)
@@ -174,7 +173,7 @@ public class ServerPacketsOpcodes
 		addPacketOpcode(S_ALLOW_PET_USE_SKILL.class, 0xA2, idSet);
 		addPacketOpcode(S_WIND_PATH_RESULT.class, 0xA3, idSet);
 		addPacketOpcode(S_WIND_STATE_INFO.class, 0xA4, idSet);
-		//S_LOAD_GATHERCOMBINE_COOLTIME        = Opcode(0xA5)
+		//addPacketOpcode(SM_RECIPE_COOLDOWN.class, 0xA5, idSet); // [S_LOAD_GATHERCOMBINE_COOLTIME]
 		addPacketOpcode(S_PARTY_MATCH.class, 0xA6, idSet);
 		addPacketOpcode(S_USER_SELL_HISTORY_LIST.class, 0xA7, idSet);
 		addPacketOpcode(S_LOAD_WAREHOUSE.class, 0xA8, idSet);
@@ -186,7 +185,8 @@ public class ServerPacketsOpcodes
 		addPacketOpcode(S_SHOP_GOODS_INFO.class, 0xAE, idSet);
 		addPacketOpcode(S_TITLE.class, 0xB0, idSet);
 		addPacketOpcode(S_2ND_PASSWORD.class, 0xB1, idSet);
-		//S_FATIGUE_KOREA                      = Opcode(0xB3)
+		addPacketOpcode(SM_GROUP_DATA_EXCHANGE.class, 0xB2, idSet); // [S_CLIENT_BROADCAST]
+		//addPacketOpcode(SM_BROKER_REGISTERED_LIST.class, 0xB3, idSet); // [S_FATIGUE_KOREA]
 		addPacketOpcode(S_COMBINE_OTHER.class, 0xB4, idSet);
 		addPacketOpcode(S_COMBINE.class, 0xB5, idSet);
 		addPacketOpcode(S_PLAY_MODE.class, 0xB6, idSet);
@@ -224,7 +224,7 @@ public class ServerPacketsOpcodes
 		addPacketOpcode(S_GUILD_EMBLEM_IMG_DATA.class, 0xD6, idSet);
 		addPacketOpcode(S_GUILD_EMBLEM_UPDATED.class, 0xD7, idSet);
 		//addPacketOpcode(S_SKILL_PENALTY_STATUS.class, 0xD8, idSet);//Todo
-		//S_SKILL_PENALTY_STATUS_OTHER         = Opcode(0xD9)
+		addPacketOpcode(SM_PLAYER_REGION.class, 0xD9, idSet); //S_SKILL_PENALTY_STATUS_OTHER
 		addPacketOpcode(S_ABYSS_SHIELD_INFO.class, 0xDA, idSet);
 		addPacketOpcode(S_ARTIFACT_INFO.class, 0xDD, idSet);
 		addPacketOpcode(S_BUDDY_RESULT.class, 0xDF, idSet);
@@ -261,7 +261,7 @@ public class ServerPacketsOpcodes
 		addPacketOpcode(S_RECONNECT_KEY.class, 0x100, idSet);
 		addPacketOpcode(S_LOAD_PROMOTION.class, 0x10A, idSet);
 		//S_WEB_NOTI                           = Opcode(0x101)
-		addPacketOpcode(S_BM_PACK_LIST.class, 0x102, idSet);
+		addPacketOpcode(SM_PACKAGE_INFO_NOTIFY.class, 0x102, idSet); // [S_BM_PACK_LIST]
 
 
 		//addPacketOpcode(S_SELECT_ITEM.class, 0x105, idSet);
@@ -323,8 +323,6 @@ public class ServerPacketsOpcodes
 		//S_GLOBAL_EVENT_BOOST_LIST            = Opcode(0x128)
 		//S_CHANNEL_CHATTING_PERMISSION        = Opcode(0x129)
 		//S_PROTOCOL_MAX                       = Opcode(0x148)
-
-
 		addPacketOpcode(S_STORE_PURCHASE_INFO.class, 0x3E, idSet);//TODO for what?
 		//addPacketOpcode(S_CHANNEL_CHATTING_PERMISSION.class, 0x128, idSet);
 		addPacketOpcode(SM_CUSTOM_PACKET.class, 99999, idSet);

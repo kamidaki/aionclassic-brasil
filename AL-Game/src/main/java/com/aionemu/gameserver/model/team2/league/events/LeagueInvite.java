@@ -15,7 +15,7 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
 import com.aionemu.gameserver.model.team2.league.League;
 import com.aionemu.gameserver.model.team2.league.LeagueService;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 public class LeagueInvite extends RequestResponseHandler
@@ -33,7 +33,7 @@ public class LeagueInvite extends RequestResponseHandler
     public void acceptRequest(Creature requester, Player responder) {
         if (LeagueService.canInvite(inviter, invited)) {
             //%0's Alliance has joined the League.
-			PacketSendUtility.sendPacket(inviter, S_MESSAGE_CODE.STR_UNION_ENTER_HIM(invited.getName()));
+			PacketSendUtility.sendPacket(inviter, SM_SYSTEM_MESSAGE.STR_UNION_ENTER_HIM(invited.getName()));
 			League league = inviter.getPlayerAlliance2().getLeague();
             if (league == null) {
                 league = LeagueService.createLeague(inviter, invited);
@@ -50,6 +50,6 @@ public class LeagueInvite extends RequestResponseHandler
     @Override
     public void denyRequest(Creature requester, Player responder) {
         //%0's Alliance has declined your invitation to join the League.
-		PacketSendUtility.sendPacket(inviter, S_MESSAGE_CODE.STR_UNION_REJECT_HIM(responder.getName()));
+		PacketSendUtility.sendPacket(inviter, SM_SYSTEM_MESSAGE.STR_UNION_REJECT_HIM(responder.getName()));
     }
 }

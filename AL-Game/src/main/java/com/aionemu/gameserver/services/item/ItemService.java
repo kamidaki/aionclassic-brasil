@@ -1,5 +1,11 @@
 package com.aionemu.gameserver.services.item;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.configs.main.LoggingConfig;
 import com.aionemu.gameserver.dao.ItemStoneListDAO;
@@ -18,7 +24,7 @@ import com.aionemu.gameserver.model.templates.item.ArmorType;
 import com.aionemu.gameserver.model.templates.item.Improvement;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
 import com.aionemu.gameserver.model.templates.quest.QuestItems;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.item.ItemPacketService.ItemAddType;
 import com.aionemu.gameserver.services.item.ItemPacketService.ItemUpdateType;
 import com.aionemu.gameserver.services.player.BattlePassService;
@@ -28,11 +34,6 @@ import com.aionemu.gameserver.utils.idfactory.IDFactory;
 import com.aionemu.gameserver.world.World;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author KID
@@ -110,7 +111,7 @@ public class ItemService {
             count = addNonStackableItem(player, itemTemplate, count, sourceItem, predicate, enchantLevel, augment);
         } if (inventory.isFull(itemTemplate.getExtraInventoryId()) && count > 0) {
 			///You cannot acquire the item because there is no space in the inventory.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_INVEN_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_INVEN_ERROR);
 		} if (player.isInInstance()) {
             player.getPosition().getWorldMapInstance().getInstanceHandler().onInventory(player, itemTemplate);
         } else {
@@ -234,11 +235,11 @@ public class ItemService {
 		Storage inventory = player.getInventory();
 		if (slotReq > 0 && inventory.getFreeSlots() < slotReq) {
 			///You cannot acquire the item because there is no space in the inventory.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_INVEN_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_INVEN_ERROR);
 			return false;
 		} if (specialSlot > 0 && inventory.getSpecialCubeFreeSlots() < specialSlot) {
 			///You cannot acquire the item because there is no space in the inventory.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_INVEN_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_INVEN_ERROR);
 			return false;
 		} for (QuestItems qi : questItems) {
 			addItem(player, qi.getItemId(), qi.getCount(), predicate);

@@ -6,7 +6,11 @@ import com.aionemu.gameserver.dao.PlayerDAO;
 import com.aionemu.gameserver.model.gameobjects.player.BlockedPlayer;
 import com.aionemu.gameserver.model.gameobjects.player.Friend;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.S_BLOCK_LIST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_BLOCK_RESULT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_BUDDY_LIST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_BUDDY_RESULT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NOTIFY_BUDDY;
 import com.aionemu.gameserver.services.player.PlayerService;
 import com.aionemu.gameserver.world.World;
 

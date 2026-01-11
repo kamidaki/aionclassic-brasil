@@ -5,7 +5,7 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.team2.TeamMember;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_TARGET_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_TARGET_SELECTED;
 import com.aionemu.gameserver.network.aion.serverpackets.S_USER_CHANGED_TARGET;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -56,7 +56,7 @@ public class C_CHANGE_TARGET extends AionClientPacket
 		} else {
 			player.setTarget(null);
 		}
-		sendPacket(new S_TARGET_INFO(player));
+		sendPacket(new SM_TARGET_SELECTED(player));
 		PacketSendUtility.broadcastPacket(player, new S_USER_CHANGED_TARGET(player));
 	}
 }

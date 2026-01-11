@@ -11,9 +11,9 @@ import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.Summon;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.summons.SummonMode;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.LOG;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.TYPE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.LOG;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.TYPE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.skillengine.effect.EffectTemplate;
 import com.aionemu.gameserver.skillengine.model.Effect;
 import com.aionemu.gameserver.skillengine.model.HealType;
@@ -151,7 +151,7 @@ public class AttackShieldObserver extends AttackCalcObserver {
 					attacker.getController().onAttack(effect.getEffected(), reflectedHit, false);
 					
 					if (effect.getEffected() instanceof Player) {
-						PacketSendUtility.sendPacket((Player) effect.getEffected(), S_MESSAGE_CODE.STR_SKILL_PROC_EFFECT_OCCURRED(effect.getSkillTemplate().getNameId()));
+						PacketSendUtility.sendPacket((Player) effect.getEffected(), SM_SYSTEM_MESSAGE.STR_SKILL_PROC_EFFECT_OCCURRED(effect.getSkillTemplate().getNameId()));
 					}
 				}
 				break;

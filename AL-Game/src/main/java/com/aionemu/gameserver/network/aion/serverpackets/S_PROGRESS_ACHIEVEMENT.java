@@ -1,10 +1,10 @@
 package com.aionemu.gameserver.network.aion.serverpackets;
 
+import java.util.List;
+
 import com.aionemu.gameserver.model.gameobjects.player.battlePass.BattlePassQuest;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-
-import java.util.List;
 
 public class S_PROGRESS_ACHIEVEMENT extends AionServerPacket {
 

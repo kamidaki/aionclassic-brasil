@@ -10,6 +10,13 @@
  */
 package com.aionemu.gameserver.model.autogroup;
 
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.select;
+import static org.hamcrest.Matchers.equalTo;
+
+import java.util.List;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -17,15 +24,10 @@ import com.aionemu.gameserver.model.instance.instancereward.TiakReward;
 import com.aionemu.gameserver.model.team2.TeamType;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.instance.TiakResearchBaseService;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.List;
-
-import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.equalTo;
 
 public class AutoTiakResearchBaseInstance extends AutoInstance
 {
@@ -75,7 +77,7 @@ public class AutoTiakResearchBaseInstance extends AutoInstance
 			} else {
 				player.getPortalCooldownList().addEntry(instance.getMapId());
 				//You have successfully entered the area, consuming one of your permitted entries.
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_DUNGEON_COUNT_USE);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_DUNGEON_COUNT_USE);
 			}
         } else if (!playersByRace.isEmpty() && playersByRace.get(0).isInGroup2()) {
             PlayerGroupService.addPlayer(playersByRace.get(0).getPlayerGroup2(), player);
@@ -84,7 +86,7 @@ public class AutoTiakResearchBaseInstance extends AutoInstance
 			} else {
 				player.getPortalCooldownList().addEntry(instance.getMapId());
 				//You have successfully entered the area, consuming one of your permitted entries.
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_DUNGEON_COUNT_USE);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_DUNGEON_COUNT_USE);
 			}
         }
         Integer object = player.getObjectId();

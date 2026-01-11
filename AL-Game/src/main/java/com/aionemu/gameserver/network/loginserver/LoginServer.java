@@ -16,6 +16,16 @@
  */
 package com.aionemu.gameserver.network.loginserver;
 
+import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
+import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.network.Dispatcher;
 import com.aionemu.commons.network.NioServer;
 import com.aionemu.commons.utils.Rnd;
@@ -26,20 +36,20 @@ import com.aionemu.gameserver.model.account.AccountTime;
 import com.aionemu.gameserver.model.account.PlayerAccountData;
 import com.aionemu.gameserver.model.gameobjects.blackcloud.BlackcloudLetter;
 import com.aionemu.gameserver.network.aion.AionConnection;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.S_L2AUTH_LOGIN_CHECK;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPSHOP_GOODS_COUNT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_READY_ENTER_WORLD;
+import com.aionemu.gameserver.network.aion.serverpackets.S_RECONNECT_KEY;
+import com.aionemu.gameserver.network.aion.serverpackets.S_REPLY_NP_AUTH_TOKEN;
+import com.aionemu.gameserver.network.aion.serverpackets.S_REPLY_NP_LOGIN_GAMESVR;
 import com.aionemu.gameserver.network.loginserver.LoginServerConnection.State;
-import com.aionemu.gameserver.network.loginserver.serverpackets.*;
+import com.aionemu.gameserver.network.loginserver.serverpackets.SM_ACCOUNT_AUTH;
+import com.aionemu.gameserver.network.loginserver.serverpackets.SM_ACCOUNT_DISCONNECTED;
+import com.aionemu.gameserver.network.loginserver.serverpackets.SM_ACCOUNT_RECONNECT_KEY;
+import com.aionemu.gameserver.network.loginserver.serverpackets.SM_BAN;
+import com.aionemu.gameserver.network.loginserver.serverpackets.SM_LS_CONTROL;
 import com.aionemu.gameserver.services.AccountService;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.nio.channels.SelectionKey;
-import java.nio.channels.SocketChannel;
-import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Utill class for connecting GameServer to LoginServer.

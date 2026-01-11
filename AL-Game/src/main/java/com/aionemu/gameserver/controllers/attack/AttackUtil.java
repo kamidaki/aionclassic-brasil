@@ -16,6 +16,10 @@
  */
 package com.aionemu.gameserver.controllers.attack;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.SkillElement;
@@ -26,7 +30,7 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.stats.container.StatEnum;
 import com.aionemu.gameserver.model.templates.item.ItemAttackType;
 import com.aionemu.gameserver.model.templates.item.WeaponType;
-import com.aionemu.gameserver.network.aion.serverpackets.S_TARGET_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_TARGET_SELECTED;
 import com.aionemu.gameserver.skillengine.change.Func;
 import com.aionemu.gameserver.skillengine.effect.modifier.ActionModifier;
 import com.aionemu.gameserver.skillengine.model.Effect;
@@ -35,10 +39,6 @@ import com.aionemu.gameserver.skillengine.model.SkillTemplate;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.stats.StatFunctions;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author ATracer
@@ -681,11 +681,11 @@ public class AttackUtil
 				if (validateSee && observer.getTarget() == object) {
 					if (!observer.canSee(object)) {
 						observer.setTarget(null);
-						PacketSendUtility.sendPacket(observer, new S_TARGET_INFO(observer));
+						PacketSendUtility.sendPacket(observer, new SM_TARGET_SELECTED(observer));
 					}
 				} else if (observer.getTarget() == object) {
 					observer.setTarget(null);
-					PacketSendUtility.sendPacket(observer, new S_TARGET_INFO(observer));
+					PacketSendUtility.sendPacket(observer, new SM_TARGET_SELECTED(observer));
 				}
 			}
 		});

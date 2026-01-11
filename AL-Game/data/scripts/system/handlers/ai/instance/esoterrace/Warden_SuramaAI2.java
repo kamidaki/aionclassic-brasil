@@ -10,29 +10,26 @@
  */
 package ai.instance.esoterrace;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import com.aionemu.commons.utils.Rnd;
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
 import com.aionemu.gameserver.ai2.AIName;
-import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.AIState;
 import com.aionemu.gameserver.ai2.manager.EmoteManager;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
-import com.aionemu.gameserver.controllers.effect.*;
 import com.aionemu.gameserver.model.EmotionType;
-import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.skillengine.SkillEngine;
+import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.NpcShoutsService;
+import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -92,7 +89,7 @@ public class Warden_SuramaAI2 extends AggressiveNpcAI2
 				getOwner().getMoveController().moveToPoint(getOwner().getSpawn().getX(), getOwner().getSpawn().getY(), getOwner().getSpawn().getZ());
 				WalkManager.startWalking(Warden_SuramaAI2.this);
 				getOwner().setState(1);
-				PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
+				PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
 			}
 		}, 2000);
 		ThreadPoolManager.getInstance().schedule(new Runnable() {
@@ -104,7 +101,7 @@ public class Warden_SuramaAI2 extends AggressiveNpcAI2
 				///I'll show you what real power looks like!
 				sendMsg(1500203, getObjectId(), false, 5000);
 				//Management Director Surama uses Collapsing Earth.
-				PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDF4Re_Drana_10, 4000);
+				PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDF4Re_Drana_10, 4000);
 				SkillEngine.getInstance().getSkill(getOwner(), 19332, 60, getTarget()).useNoAnimationSkill(); //Collapsing Earth.
 			}
 		}, 6000);
@@ -135,7 +132,7 @@ public class Warden_SuramaAI2 extends AggressiveNpcAI2
 					setStateIfNot(AIState.WALKING);
 					getOwner().setState(1);
 					getOwner().getMoveController().moveToTargetObject();
-					PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
+					PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
 					///I'll... kill you all...
 					sendMsg(1500198, getObjectId(), false, 3000);
 					ThreadPoolManager.getInstance().schedule(new Runnable() {
@@ -151,7 +148,7 @@ public class Warden_SuramaAI2 extends AggressiveNpcAI2
 	
 	private void startAirWave() {
 		//The Surkana Steam Jet has generated an updraft.
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDF4Re_Drana_09, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDF4Re_Drana_09, 0);
 		spawn(282171, 1316.7438f, 1145.0411f, 51.536953f, (byte) 0, 595);
 		spawn(282172, 1342.0642f, 1170.9083f, 51.539276f, (byte) 0, 596);
 		spawn(282173, 1316.7826f, 1196.8873f, 51.544514f, (byte) 0, 598);

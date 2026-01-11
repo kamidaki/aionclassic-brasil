@@ -6,7 +6,7 @@ import com.aionemu.gameserver.model.ChatType;
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.items.storage.Storage;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.player.PlayerChatService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.PlayerCommand;
@@ -43,7 +43,7 @@ public class cmd_faction extends PlayerCommand {
 			if (sender.getKinah() > CustomConfig.FACTION_USE_PRICE)
 				sender.decreaseKinah(CustomConfig.FACTION_USE_PRICE);
 			else {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_NOT_ENOUGH_MONEY);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_NOT_ENOUGH_MONEY);
 				return;
 			}
 		}

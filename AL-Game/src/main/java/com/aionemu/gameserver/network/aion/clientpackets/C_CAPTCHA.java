@@ -10,17 +10,18 @@
  */
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.main.SecurityConfig;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.TYPE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.TYPE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_CAPTCHA;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.PunishmentService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Cura
@@ -69,7 +70,7 @@ public class C_CAPTCHA extends AionClientPacket
 		switch (type) {
 			case 0x02:
 				if (player.getCaptchaWord().equalsIgnoreCase(word)) {
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400270));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400270));
 					PacketSendUtility.sendPacket(player, new S_CAPTCHA(true, 0));
 
 					PunishmentService.setIsNotGatherable(player, 0, false, 0);
@@ -81,11 +82,11 @@ public class C_CAPTCHA extends AionClientPacket
 							* count;
 
 					if (count < 3) {
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400271, 3 - count));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400271, 3 - count));
 						PacketSendUtility.sendPacket(player, new S_CAPTCHA(false, banTime));
 						PunishmentService.setIsNotGatherable(player, count, true, banTime * 1000L);
 					} else {
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400272));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400272));
 						PunishmentService.setIsNotGatherable(player, count, true, banTime * 1000L);
 					}
 				}

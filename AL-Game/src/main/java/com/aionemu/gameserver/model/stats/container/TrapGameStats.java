@@ -12,8 +12,6 @@ package com.aionemu.gameserver.model.stats.container;
 
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.stats.calc.Stat2;
-import com.aionemu.gameserver.model.stats.container.NpcGameStats;
-import com.aionemu.gameserver.model.stats.container.StatEnum;
 
 public class TrapGameStats extends NpcGameStats
 {

@@ -12,12 +12,12 @@ package quest.theobomos;
 
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.zone.ZoneName;
 
@@ -88,7 +88,7 @@ public class _3090In_Search_Of_Pippi_The_Porgus extends QuestHandler
                             qs.setQuestVar(2);
 							updateQuestStatus(env);
 							///I found Pippi's red ribbon!
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111007, player.getObjectId(), 2));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111007, player.getObjectId(), 2));
 							return true;
                         }
 					}
@@ -137,7 +137,7 @@ public class _3090In_Search_Of_Pippi_The_Porgus extends QuestHandler
 				if (zoneName == ZoneName.get("LF2A_SENSORY_AREA_Q3090_210060000")) {
 					changeQuestStep(env, 0, 1, false, 1);
 					///These must be Pippi's footprints!
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111006, player.getObjectId(), 2));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111006, player.getObjectId(), 2));
 					return true;
 				}
 			}

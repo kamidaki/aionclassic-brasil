@@ -11,10 +11,9 @@
 package ai.worlds.heiron.exedil;
 
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
+import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.NpcAI2;
-import com.aionemu.gameserver.ai2.AI2Actions;
 
 /****/
 /** Author Rinzler (Encom)

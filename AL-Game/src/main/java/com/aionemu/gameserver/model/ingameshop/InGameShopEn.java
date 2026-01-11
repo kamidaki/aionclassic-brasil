@@ -1,5 +1,16 @@
 package com.aionemu.gameserver.model.ingameshop;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.ingameshop.InGameShopProperty;
 import com.aionemu.gameserver.configs.main.AdvCustomConfig;
 import com.aionemu.gameserver.configs.main.InGameShopConfig;
@@ -9,8 +20,8 @@ import com.aionemu.gameserver.model.gameobjects.LetterType;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.PlayerCommonData;
 import com.aionemu.gameserver.model.templates.mail.MailMessage;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_MAIL;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_SHOP_POINT_INFO;
 import com.aionemu.gameserver.network.loginserver.LoginServer;
 import com.aionemu.gameserver.network.loginserver.serverpackets.SM_PREMIUM_CONTROL;
@@ -18,12 +29,9 @@ import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.services.mail.SystemMailService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
+
 import javolution.util.FastList;
 import javolution.util.FastMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /**
  * @author KID
@@ -127,7 +135,7 @@ public class InGameShopEn {
 
 	public void acceptRequest(Player player, int itemObjId) {
 		if (player.getInventory().isFull()) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_INVEN_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_INVEN_ERROR);
 			return;
 		}
 
@@ -155,7 +163,7 @@ public class InGameShopEn {
 
 	public void sendRequest(Player player, String receiver, String message, int itemObjId) {
 		if (receiver.equalsIgnoreCase(player.getName())) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INGAMESHOP_CANNOT_GIVE_TO_ME);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INGAMESHOP_CANNOT_GIVE_TO_ME);
 			return;
 		}
 
@@ -165,13 +173,13 @@ public class InGameShopEn {
 		}
 
 		if (!PlayerDAO.isNameUsed(receiver)) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INGAMESHOP_NO_USER_TO_GIFT);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INGAMESHOP_NO_USER_TO_GIFT);
 			return;
 		}
 
 		PlayerCommonData recipientCommonData = PlayerDAO.loadPlayerCommonDataByName(receiver);
 		if (recipientCommonData.getMailboxLetters() >= 100) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MAIL_MSG_RECIPIENT_MAILBOX_FULL(recipientCommonData.getName()));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MAIL_MSG_RECIPIENT_MAILBOX_FULL(recipientCommonData.getName()));
 			return;
 		}
 
@@ -208,29 +216,29 @@ public class InGameShopEn {
 				Player player = World.getInstance().findPlayer(request.playerId);
 				if (player != null) {
 					if (result == 1) {
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INGAMESHOP_ERROR);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INGAMESHOP_ERROR);
 					}
 					else if (result == 2) {
 						IGItem item = getIGItem(request.itemObjId);
 						if (item == null) {
-							PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INGAMESHOP_ERROR);
+							PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INGAMESHOP_ERROR);
 							log.error("player " + player.getName() + " requested " + request.itemObjId + " that was not exists in list.");
 							return;
 						}
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_INGAMESHOP_NOT_ENOUGH_CASH("Toll"));
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_INGAMESHOP_NOT_ENOUGH_CASH("Toll"));
 						PacketSendUtility.sendPacket(player, new S_SHOP_POINT_INFO(toll));
 					}
 					else if (result == 3) {
 						IGItem item = getIGItem(request.itemObjId);
 						if (item == null) {
-							PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INGAMESHOP_ERROR);
+							PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INGAMESHOP_ERROR);
 							log.error("player " + player.getName() + " requested " + request.itemObjId + " that was not exists in list.");
 							return;
 						}
 
 						if (request.gift) {
 							SystemMailService.getInstance().sendMail(player.getName(), request.receiver, "In Game Shop", request.message, item.getItemId(), item.getItemCount(), 0L, LetterType.BLACKCLOUD);
-							PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INGAMESHOP_GIFT_SUCCESS);
+							PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INGAMESHOP_GIFT_SUCCESS);
 							player.getClientConnection().getAccount().setToll(toll);
 						}
 						else {

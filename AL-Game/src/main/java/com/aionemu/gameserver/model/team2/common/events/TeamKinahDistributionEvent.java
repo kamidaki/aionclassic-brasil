@@ -13,7 +13,7 @@ package com.aionemu.gameserver.model.team2.common.events;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.team2.TeamMember;
 import com.aionemu.gameserver.model.team2.TemporaryPlayerTeam;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 /**
@@ -55,10 +55,10 @@ public class TeamKinahDistributionEvent<T extends TemporaryPlayerTeam<? extends 
             if (member.equals(eventPlayer)) {
                 member.getInventory().decreaseKinah(amount);
                 member.getInventory().increaseKinah(rewardPerPlayer);
-                PacketSendUtility.sendPacket(eventPlayer, new S_MESSAGE_CODE(1390247, amount, teamSize, rewardPerPlayer));
+                PacketSendUtility.sendPacket(eventPlayer, new SM_SYSTEM_MESSAGE(1390247, amount, teamSize, rewardPerPlayer));
             } else {
                 member.getInventory().increaseKinah(rewardPerPlayer);
-                PacketSendUtility.sendPacket(member, new S_MESSAGE_CODE(1390248, eventPlayer.getName(), amount, teamSize,
+                PacketSendUtility.sendPacket(member, new SM_SYSTEM_MESSAGE(1390248, eventPlayer.getName(), amount, teamSize,
                         rewardPerPlayer));
             }
         }

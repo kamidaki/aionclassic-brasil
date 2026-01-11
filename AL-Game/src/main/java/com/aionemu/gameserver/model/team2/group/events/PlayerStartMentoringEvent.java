@@ -15,9 +15,9 @@ import com.aionemu.gameserver.model.team2.common.events.AlwaysTrueTeamEvent;
 import com.aionemu.gameserver.model.team2.common.legacy.GroupEvent;
 import com.aionemu.gameserver.model.team2.group.PlayerFilters.MentorSuiteFilter;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ETC_STATUS;
 import com.aionemu.gameserver.network.aion.serverpackets.S_PARTY_MEMBER_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.audit.AuditLogger;
 import com.google.common.base.Predicate;
@@ -42,7 +42,7 @@ public class PlayerStartMentoringEvent extends AlwaysTrueTeamEvent implements Pr
             return;
         }
         player.setMentor(true);
-        PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_MENTOR_START);
+        PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_MENTOR_START);
         group.applyOnMembers(this);
         PacketSendUtility.broadcastPacketAndReceive(player, new S_ETC_STATUS(2, player));
     }
@@ -50,7 +50,7 @@ public class PlayerStartMentoringEvent extends AlwaysTrueTeamEvent implements Pr
     @Override
     public boolean apply(Player member) {
         if (!player.equals(member)) {
-            PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_MSG_MENTOR_START_PARTYMSG(player.getName()));
+            PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_MSG_MENTOR_START_PARTYMSG(player.getName()));
         }
         PacketSendUtility.sendPacket(member, new S_PARTY_MEMBER_INFO(group, player, GroupEvent.MOVEMENT));
         return true;

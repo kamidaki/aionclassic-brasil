@@ -7,6 +7,7 @@ import com.aionemu.gameserver.model.team2.TemporaryPlayerTeam;
 import com.aionemu.gameserver.model.templates.InstanceCooltime;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
+
 import javolution.util.FastMap;
 
 public class S_INSTANCE_DUNGEON_COOLTIMES extends AionServerPacket

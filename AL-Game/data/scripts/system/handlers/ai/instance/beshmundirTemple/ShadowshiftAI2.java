@@ -10,25 +10,24 @@
  */
 package ai.instance.beshmundirTemple;
 
-import ai.AggressiveNpcAI2;
-
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
-
-import com.aionemu.gameserver.ai2.AIName;
-import com.aionemu.gameserver.ai2.AI2Actions;
-import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.services.NpcShoutsService;
-import com.aionemu.gameserver.utils.PacketSendUtility;
-import com.aionemu.gameserver.world.WorldMapInstance;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.aionemu.commons.network.util.ThreadPoolManager;
+import com.aionemu.commons.utils.Rnd;
+import com.aionemu.gameserver.ai2.AI2Actions;
+import com.aionemu.gameserver.ai2.AIName;
+import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.services.NpcShoutsService;
+import com.aionemu.gameserver.skillengine.SkillEngine;
+import com.aionemu.gameserver.world.WorldMapInstance;
+
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)

@@ -10,13 +10,18 @@
  */
 package com.aionemu.gameserver.skillengine.effect;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+
 import com.aionemu.gameserver.geoEngine.collision.CollisionIntention;
 import com.aionemu.gameserver.geoEngine.math.Vector3f;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.S_POLYMORPH;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_TARGET_SELECTED;
 import com.aionemu.gameserver.skillengine.model.DashStatus;
 import com.aionemu.gameserver.skillengine.model.Effect;
 import com.aionemu.gameserver.skillengine.model.Skill;
@@ -26,11 +31,6 @@ import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.geo.GeoService;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 
 /****/
 /** Author Rinzler (Encom)
@@ -58,7 +58,7 @@ public class RandomMoveLocEffect extends EffectTemplate
             ThreadPoolManager.getInstance().schedule(new Runnable() {
                 @Override
                 public void run() {
-                    PacketSendUtility.sendPacket(effector, new S_TARGET_INFO(effector));
+                    PacketSendUtility.sendPacket(effector, new SM_TARGET_SELECTED(effector));
                 }
             }, 200);
         }
@@ -76,7 +76,7 @@ public class RandomMoveLocEffect extends EffectTemplate
             effectorTarget = effector.getTarget();
         } if (effectorTarget != null && !effectorTarget.getObjectId().equals(effector.getObjectId())) {
             effector.setTarget(null);
-            PacketSendUtility.sendPacket(effector, new S_TARGET_INFO(effector));
+            PacketSendUtility.sendPacket(effector, new SM_TARGET_SELECTED(effector));
         } if (distance != 0.0f) {
 			double radian = Math.toRadians(MathUtil.convertHeadingToDegree(effector.getHeading()));
 			float x1 = (float) (Math.cos(Math.PI * direction + radian) * distance);

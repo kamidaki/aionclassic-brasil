@@ -25,7 +25,8 @@ import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 
-import javolution.util.*;
+import javolution.util.FastList;
+import javolution.util.FastMap;
 
 public class SerialKillerService
 {

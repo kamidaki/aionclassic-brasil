@@ -1,6 +1,5 @@
 package com.aionemu.gameserver.model.stats.container;
 
-import com.aionemu.gameserver.model.gameobjects.Homing;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.stats.calc.Stat2;
 

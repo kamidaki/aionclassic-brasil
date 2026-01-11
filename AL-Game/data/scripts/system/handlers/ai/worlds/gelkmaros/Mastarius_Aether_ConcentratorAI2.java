@@ -10,16 +10,16 @@
  */
 package ai.worlds.gelkmaros;
 
-import ai.ActionItemNpcAI2;
-
-import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AI2Actions;
+import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.knownlist.Visitor;
+
+import ai.ActionItemNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -46,7 +46,7 @@ public class Mastarius_Aether_ConcentratorAI2 extends ActionItemNpcAI2
 				    AI2Actions.useSkill(Mastarius_Aether_ConcentratorAI2.this, 20107); //Defense Aether.
 				} else {
 					//You have failed to use the Empyrean Avatar. You will need to gather power and summon it again.
-				    PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_GODELITE_DEATHBLOW_FAIL, 0);
+				    PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_GODELITE_DEATHBLOW_FAIL, 0);
 				}
 		    break;
 			//Mastarius's Aether Concentrator II
@@ -57,7 +57,7 @@ public class Mastarius_Aether_ConcentratorAI2 extends ActionItemNpcAI2
 				    AI2Actions.useSkill(Mastarius_Aether_ConcentratorAI2.this, 20108); //Elemental Resistance Aether.
 				} else {
 					//You have failed to use the Empyrean Avatar. You will need to gather power and summon it again.
-				    PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_GODELITE_DEATHBLOW_FAIL, 0);
+				    PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_GODELITE_DEATHBLOW_FAIL, 0);
 				}
 			break;
 			//Mastarius's Aether Concentrator III
@@ -69,7 +69,7 @@ public class Mastarius_Aether_ConcentratorAI2 extends ActionItemNpcAI2
 					AI2Actions.useSkill(Mastarius_Aether_ConcentratorAI2.this, 20110); //Magical Aether.
 				} else {
 					//You have failed to use the Empyrean Avatar. You will need to gather power and summon it again.
-				    PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_GODELITE_DEATHBLOW_FAIL, 0);
+				    PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_GODELITE_DEATHBLOW_FAIL, 0);
 				}
 			break;
 		}
@@ -80,7 +80,7 @@ public class Mastarius_Aether_ConcentratorAI2 extends ActionItemNpcAI2
 			@Override
 			public void visit(Player player) {
 				//The first Sphere of Destiny has been activated.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_GODELITE_BUFF_FIRST_OBJECT_ON_DF, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_GODELITE_BUFF_FIRST_OBJECT_ON_DF, 0);
 			}
 		});
 	}
@@ -90,7 +90,7 @@ public class Mastarius_Aether_ConcentratorAI2 extends ActionItemNpcAI2
 			@Override
 			public void visit(Player player) {
 				//The second Sphere of Destiny has been activated. Marchutan's Agent Mastarius prepares to cast the Empyrean Lord's blessing.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_GODELITE_BUFF_SECOND_OBJECT_ON_DF, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_GODELITE_BUFF_SECOND_OBJECT_ON_DF, 0);
 			}
 		});
 	}
@@ -100,7 +100,7 @@ public class Mastarius_Aether_ConcentratorAI2 extends ActionItemNpcAI2
 			@Override
 			public void visit(Player player) {
 				//You may use the Sphere of Destiny again.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_GODELITE_BUFF_CAN_USE_OBJECT_DF, 120000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_GODELITE_BUFF_CAN_USE_OBJECT_DF, 120000);
 			}
 		});
 	}

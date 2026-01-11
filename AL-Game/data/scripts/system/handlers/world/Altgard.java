@@ -10,38 +10,29 @@
  */
 package world;
 
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
+import java.util.List;
 
-import com.aionemu.gameserver.world.handlers.GeneralWorldHandler;
-import com.aionemu.gameserver.world.handlers.WorldID;
-import com.aionemu.gameserver.model.*;
-import com.aionemu.gameserver.model.drop.DropItem;
+import com.aionemu.commons.network.util.ThreadPoolManager;
+import com.aionemu.commons.utils.Rnd;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.*;
-import com.aionemu.gameserver.services.item.ItemService;
-import com.aionemu.gameserver.services.NpcShoutsService;
-import com.aionemu.gameserver.services.instance.InstanceService;
-import com.aionemu.gameserver.services.drop.DropRegistrationService;
-import com.aionemu.gameserver.services.teleport.TeleportService2;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PLAY_CUTSCENE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
+import com.aionemu.gameserver.services.ClassChangeService;
+import com.aionemu.gameserver.services.NpcShoutsService;
+import com.aionemu.gameserver.services.item.ItemService;
+import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.skillengine.model.Effect;
-import com.aionemu.gameserver.skillengine.model.SkillTemplate;
 import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.world.World;
+import com.aionemu.gameserver.world.handlers.GeneralWorldHandler;
+import com.aionemu.gameserver.world.handlers.WorldID;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-import com.aionemu.gameserver.world.*;
-import com.aionemu.gameserver.world.zone.ZoneName;
-import com.aionemu.gameserver.world.zone.ZoneInstance;
 
-import javolution.util.*;
-
-import java.util.*;
-import java.util.concurrent.Future;
+import javolution.util.FastList;
 
 /****/
 /** Author Rinzler (Encom)
@@ -125,7 +116,7 @@ public class Altgard extends GeneralWorldHandler
 					spawn(220030000, 210633, npc.getX(), npc.getY(), npc.getZ(), (byte) 0); //Frightcorn Monster.
 				} else {
 					///You have not acquired this quest.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 				}
 			break;
 			///https://aioncodex.com/3x/quest/2213/
@@ -138,7 +129,7 @@ public class Altgard extends GeneralWorldHandler
 					SkillEngine.getInstance().applyEffectDirectly(1851, player, player, 600000 * 1); //Okaru Poison.
 				} else {
 					///You have not acquired this quest.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 				}
 			break;
 			///https://aioncodex.com/3x/quest/2252/
@@ -164,7 +155,7 @@ public class Altgard extends GeneralWorldHandler
 					}
 				} else {
 					///You have not acquired this quest.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 				}
 			break;
 			///https://aioncodex.com/3x/quest/2018/
@@ -176,7 +167,7 @@ public class Altgard extends GeneralWorldHandler
 					ItemService.addItem(player, 182203022, 1);
 				} else {
 					///You have not acquired this quest.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 				}
 			break;
 			///https://aioncodex.com/3x/quest/2223/
@@ -190,7 +181,7 @@ public class Altgard extends GeneralWorldHandler
 					spawn(220030000, 211621, npc.getX(), npc.getY(), npc.getZ(), (byte) 0); //Infernus.
 				} else {
 					///You have not acquired this quest.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 				}
 			break;
 			///https://aioncodex.com/3x/quest/2014/
@@ -202,7 +193,7 @@ public class Altgard extends GeneralWorldHandler
 					ItemService.addItem(player, 182203015, 1);
 				} else {
 					///You have not acquired this quest.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 				}
 			break;
 			///https://aioncodex.com/3x/quest/2290/
@@ -216,7 +207,7 @@ public class Altgard extends GeneralWorldHandler
 					PacketSendUtility.sendPacket(player, new S_PLAY_CUTSCENE(0, 69));
 				} else {
 					///You have not acquired this quest.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 				}
 			break;
 			///https://aioncodex.com/3x/quest/2042/
@@ -225,7 +216,7 @@ public class Altgard extends GeneralWorldHandler
 					final QuestState qs2042 = player.getQuestStateList().getQuestState(2042); //The Last Checkpoint.
 					if (qs2042 == null || qs2042.getStatus() != QuestStatus.COMPLETE) {
 						///You must first complete the Abyss Entry Quest.
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANNOT_TELEPORT_TO_ABYSS);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANNOT_TELEPORT_TO_ABYSS);
 					} else {
 						primumLanding(player, 1068.0000f, 2850.0000f, 1636.0000f, (byte) 0);
 					}
@@ -300,7 +291,7 @@ public class Altgard extends GeneralWorldHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getWorldId() == map.getMapId() && player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});

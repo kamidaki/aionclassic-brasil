@@ -1,7 +1,11 @@
 package com.aionemu.gameserver.services.siegeservice;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.configs.main.LoggingConfig;
 import com.aionemu.gameserver.configs.main.SiegeConfig;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -9,15 +13,13 @@ import com.aionemu.gameserver.model.siege.ArtifactLocation;
 import com.aionemu.gameserver.model.siege.FortressLocation;
 import com.aionemu.gameserver.model.siege.Influence;
 import com.aionemu.gameserver.model.siege.SiegeRace;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.SiegeService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 
-import javolution.util.*;
-import org.slf4j.*;
-import java.util.*;
+import javolution.util.FastMap;
 
 public class BalaurAssaultService
 {
@@ -148,11 +150,11 @@ public class BalaurAssaultService
                 @Override
                 public void visit(Player player) {
 					///The Balaur have destroyed the Castle Gate.
-                    PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_FIELDABYSS_DRAGON_DOOR_BROKEN, 600000);
+                    PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_FIELDABYSS_DRAGON_DOOR_BROKEN, 600000);
                     ///The Balaur have destroyed the Gate Guardian Stone.
-					PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_FIELDABYSS_DRAGON_REPAIR_BROKEN, 1200000);
+					PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_FIELDABYSS_DRAGON_REPAIR_BROKEN, 1200000);
                     ///The Balaur have destroyed the Aetheric Field Activation Stone.
-					PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_FIELDABYSS_DRAGON_SHIELD_BROKEN, 2400000);
+					PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_FIELDABYSS_DRAGON_SHIELD_BROKEN, 2400000);
                 }
             });
 		} else {

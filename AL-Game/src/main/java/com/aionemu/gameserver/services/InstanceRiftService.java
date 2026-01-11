@@ -10,6 +10,10 @@
  */
 package com.aionemu.gameserver.services;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import com.aionemu.commons.services.CronService;
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.configs.shedule.InstanceSchedule;
@@ -24,19 +28,17 @@ import com.aionemu.gameserver.model.instancerift.InstanceRiftStateType;
 import com.aionemu.gameserver.model.templates.spawns.SpawnGroup2;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
 import com.aionemu.gameserver.model.templates.spawns.instanceriftspawns.InstanceRiftSpawnTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.instanceriftservice.InstanceStartRunnable;
 import com.aionemu.gameserver.services.instanceriftservice.Rift;
 import com.aionemu.gameserver.services.instanceriftservice.RiftInstance;
 import com.aionemu.gameserver.spawnengine.SpawnEngine;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 
 import javolution.util.FastMap;
-
-import java.util.*;
 
 /**
  * @author Rinzler (Encom)
@@ -124,9 +126,9 @@ public class InstanceRiftService
 					@Override
 					public void visit(Player player) {
 						///A dimensional corridor that leads to the Indratu Fortress has appeared.
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_PORTAL_OPEN_IDLF3_Castle_Indratoo, 0);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_PORTAL_OPEN_IDLF3_Castle_Indratoo, 0);
 						///A dimensional corridor that leads to the Draupnir Cave has appeared.
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_PORTAL_OPEN_IDDF3_Dragon, 10000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_PORTAL_OPEN_IDDF3_Dragon, 10000);
 					}
 				});
 			    return true;

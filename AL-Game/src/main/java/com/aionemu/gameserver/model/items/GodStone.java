@@ -1,24 +1,23 @@
 package com.aionemu.gameserver.model.items;
 
-import com.aionemu.commons.utils.Rnd;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.aionemu.gameserver.dataholders.DataManager;
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.controllers.observer.ActionObserver;
 import com.aionemu.gameserver.controllers.observer.ObserverType;
+import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.PersistentState;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.utils.*;
 import com.aionemu.gameserver.model.templates.item.GodstoneInfo;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.skillengine.model.*;
+import com.aionemu.gameserver.skillengine.model.Effect;
 import com.aionemu.gameserver.skillengine.model.Skill;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 
 public class GodStone extends ItemStone
 {
@@ -59,7 +58,7 @@ public class GodStone extends ItemStone
                 if (handProbability > Rnd.get(0, 1000)) {
                     Skill skill = SkillEngine.getInstance().getSkill(player, godstoneInfo.getSkillid(), godstoneInfo.getSkilllvl(), player.getTarget(), godItem);
                     //%effect godstone has been activated.
-                    PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SKILL_PROC_EFFECT_OCCURRED(skill.getSkillTemplate().getNameId()));
+                    PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SKILL_PROC_EFFECT_OCCURRED(skill.getSkillTemplate().getNameId()));
                     skill.setFirstTargetRangeCheck(false);
                     if (skill.canUseSkill()) {
                         Effect effect = new Effect(player, creature, skill.getSkillTemplate(), 1, 0, godItem);

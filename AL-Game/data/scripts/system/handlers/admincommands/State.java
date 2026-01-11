@@ -16,17 +16,17 @@
  */
 package admincommands;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
-import com.aionemu.gameserver.network.aion.serverpackets.S_PUT_USER;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_INFO;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
-
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Rolandas
@@ -113,7 +113,7 @@ public class State extends AdminCommand {
 			creature.setState(newState);
 
 			if (target.equals(admin))
-				PacketSendUtility.sendPacket(admin, new S_PUT_USER(admin, false));
+				PacketSendUtility.sendPacket(admin, new SM_PLAYER_INFO(admin, false));
 
 			admin.clearKnownlist();
 			admin.updateKnownlist();

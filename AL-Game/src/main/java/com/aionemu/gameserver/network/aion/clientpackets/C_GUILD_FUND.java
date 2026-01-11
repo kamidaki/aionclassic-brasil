@@ -18,7 +18,7 @@ import com.aionemu.gameserver.model.team.legion.LegionMember;
 import com.aionemu.gameserver.model.team.legion.LegionPermissionsMask;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.legion.LegionService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -55,7 +55,7 @@ public class C_GUILD_FUND extends AionClientPacket
 				case 0:
 					if (!LM.hasRights(LegionPermissionsMask.WH_DEPOSIT)) {
 						// You do not have the authority to use the Legion warehouse.
-						PacketSendUtility.sendPacket(activePlayer, new S_MESSAGE_CODE(1300322));
+						PacketSendUtility.sendPacket(activePlayer, new SM_SYSTEM_MESSAGE(1300322));
 						return;
 					}
 					if (activePlayer.getStorage(StorageType.LEGION_WAREHOUSE.getId()).tryDecreaseKinah(amount)) {
@@ -66,7 +66,7 @@ public class C_GUILD_FUND extends AionClientPacket
 				case 1:
 					if (!LM.hasRights(LegionPermissionsMask.WH_WITHDRAWAL)) {
 						// You do not have the authority to use the Legion warehouse.
-						PacketSendUtility.sendPacket(activePlayer, new S_MESSAGE_CODE(1300322));
+						PacketSendUtility.sendPacket(activePlayer, new SM_SYSTEM_MESSAGE(1300322));
 						return;
 					}
 					if (activePlayer.getInventory().tryDecreaseKinah(amount)) {

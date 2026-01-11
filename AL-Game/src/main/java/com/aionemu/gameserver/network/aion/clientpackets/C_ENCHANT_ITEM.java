@@ -1,5 +1,8 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
@@ -8,14 +11,11 @@ import com.aionemu.gameserver.model.templates.item.ItemCategory;
 import com.aionemu.gameserver.model.templates.item.actions.EnchantItemAction;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.item.ItemSocketService;
 import com.aionemu.gameserver.services.trade.PricesService;
 import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class C_ENCHANT_ITEM extends AionClientPacket
 {
@@ -96,7 +96,7 @@ public class C_ENCHANT_ITEM extends AionClientPacket
 			case 3: //Remove Manastone.
 				long price = PricesService.getPriceForService(500, player.getRace());
 				if (player.getInventory().getKinah() < price) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_NOT_ENOUGH_KINA(price));
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_NOT_ENOUGH_KINA(price));
 					return;
 				}
 				if (obj != null && obj instanceof Npc && MathUtil.isInRange(player, obj, 10.0f)) {

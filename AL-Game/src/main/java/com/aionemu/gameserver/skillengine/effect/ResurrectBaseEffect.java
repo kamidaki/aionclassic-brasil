@@ -1,19 +1,19 @@
 package com.aionemu.gameserver.skillengine.effect;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+
 import com.aionemu.gameserver.controllers.observer.ActionObserver;
 import com.aionemu.gameserver.controllers.observer.ObserverType;
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
-import com.aionemu.gameserver.network.aion.serverpackets.S_WORLD;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_SPAWN;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.services.player.PlayerReviveService;
 import com.aionemu.gameserver.skillengine.model.Effect;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ResurrectBaseEffect")
@@ -44,8 +44,8 @@ public class ResurrectBaseEffect extends ResurrectEffect
                     } else {
                         PlayerReviveService.bindRevive(effected, skillId);
                     }
-                    PacketSendUtility.broadcastPacket(effected, new S_ACTION(effected, EmotionType.RESURRECT), true);
-                    PacketSendUtility.sendPacket(effected, new S_WORLD(effected));
+                    PacketSendUtility.broadcastPacket(effected, new SM_EMOTION(effected, EmotionType.RESURRECT), true);
+                    PacketSendUtility.sendPacket(effected, new SM_PLAYER_SPAWN(effected));
                 }
             };
             effect.getEffected().getObserveController().attach(observer);

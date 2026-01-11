@@ -1,5 +1,8 @@
 package com.aionemu.gameserver.services.siegeservice;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -9,15 +12,13 @@ import com.aionemu.gameserver.model.siege.SiegeRace;
 import com.aionemu.gameserver.model.team.legion.Legion;
 import com.aionemu.gameserver.model.templates.zone.ZoneType;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.services.legion.LegionService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class ArtifactSiege extends Siege<ArtifactLocation>
@@ -67,9 +68,9 @@ public class ArtifactSiege extends Siege<ArtifactLocation>
 		Legion wLegion = wLegionId != null ? LegionService.getInstance().getLegion(wLegionId) : null;
 		final DescriptionId nameId = new DescriptionId(getSiegeLocation().getTemplate().getNameId());
 		//%0 has captured %1.
-		final AionServerPacket wRacePacket = new S_MESSAGE_CODE(1390203, wRace.getRaceDescriptionId(), nameId);
+		final AionServerPacket wRacePacket = new SM_SYSTEM_MESSAGE(1390203, wRace.getRaceDescriptionId(), nameId);
 		//%0 has lost %1.
-		final AionServerPacket lRacePacket = new S_MESSAGE_CODE(1390204, wRace.getRaceDescriptionId(), nameId);
+		final AionServerPacket lRacePacket = new SM_SYSTEM_MESSAGE(1390204, wRace.getRaceDescriptionId(), nameId);
 		World.getInstance().doOnAllPlayers(new Visitor<Player>() {
 			@Override
 			public void visit(Player player) {

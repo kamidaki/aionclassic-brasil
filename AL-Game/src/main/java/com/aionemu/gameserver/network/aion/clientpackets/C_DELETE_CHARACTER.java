@@ -23,9 +23,9 @@ import com.aionemu.gameserver.model.account.PlayerAccountData;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_2ND_PASSWORD;
 import com.aionemu.gameserver.network.aion.serverpackets.S_DELETE_CHARACTER;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.player.PlayerService;
 
 /**
@@ -92,7 +92,7 @@ public class C_DELETE_CHARACTER extends AionClientPacket
 				client.sendPacket(new S_DELETE_CHARACTER(chaOid, playerAccData.getDeletionTimeInSeconds()));
 			}
 		} else {
-			client.sendPacket(S_MESSAGE_CODE.STR_GUILD_DISPERSE_STAYMODE_CANCEL_1);
+			client.sendPacket(SM_SYSTEM_MESSAGE.STR_GUILD_DISPERSE_STAYMODE_CANCEL_1);
 		}
 	}
 }

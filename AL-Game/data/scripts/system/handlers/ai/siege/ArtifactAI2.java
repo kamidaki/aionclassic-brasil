@@ -10,6 +10,12 @@
  */
 package ai.siege;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
+
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.AI2Request;
 import com.aionemu.gameserver.ai2.AIName;
@@ -27,9 +33,9 @@ import com.aionemu.gameserver.model.siege.ArtifactStatus;
 import com.aionemu.gameserver.model.team.legion.LegionPermissionsMask;
 import com.aionemu.gameserver.model.templates.siegelocation.ArtifactActivation;
 import com.aionemu.gameserver.model.templates.spawns.siegespawns.SiegeSpawnTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ARTIFACT_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_GAUGE;
 import com.aionemu.gameserver.services.SiegeService;
 import com.aionemu.gameserver.skillengine.model.SkillTemplate;
@@ -38,11 +44,6 @@ import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 
 /****/
 /** Author Rinzler (Encom)
@@ -70,7 +71,7 @@ public class ArtifactAI2 extends NpcAI2
 						if (MathUtil.isInRange(requester, responder, 10)) {
 						    onActivate(responder);
 						} else {
-						    PacketSendUtility.sendPacket(responder, S_MESSAGE_CODE.STR_CANNOT_USE_ARTIFACT_FAR_FROM_NPC);
+						    PacketSendUtility.sendPacket(responder, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ARTIFACT_FAR_FROM_NPC);
 							return;
 						}
 					}
@@ -94,11 +95,11 @@ public class ArtifactAI2 extends NpcAI2
 			LoggerFactory.getLogger(ArtifactAI2.class).error("No skill template for <Artifact Id>: " + skillId);
 			return;
 		} if (loc.getCoolDown() > 0 || !loc.getStatus().equals(ArtifactStatus.IDLE)) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_USE_ARTIFACT_OUT_OF_ORDER);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ARTIFACT_OUT_OF_ORDER);
 			return;
 		} if (loc.getLegionId() != 0) {
 			if (!player.isLegionMember() || player.getLegion().getLegionId() != loc.getLegionId() || !player.getLegionMember().hasRights(LegionPermissionsMask.ARTIFACT)) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_USE_ARTIFACT_HAVE_NO_AUTHORITY);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ARTIFACT_HAVE_NO_AUTHORITY);
 				return;
 			}
 		} if (player.getInventory().getItemCountByItemId(itemId) < count) {
@@ -106,7 +107,7 @@ public class ArtifactAI2 extends NpcAI2
 		} if (!loc.getStatus().equals(ArtifactStatus.IDLE)) {
 			return;
 		}
-		final S_MESSAGE_CODE startMessage = S_MESSAGE_CODE.STR_ARTIFACT_CASTING(player.getRace().getRaceDescriptionId(), player.getName(), new DescriptionId(skillTemplate.getNameId()));
+		final SM_SYSTEM_MESSAGE startMessage = SM_SYSTEM_MESSAGE.STR_ARTIFACT_CASTING(player.getRace().getRaceDescriptionId(), player.getName(), new DescriptionId(skillTemplate.getNameId()));
 		loc.setStatus(ArtifactStatus.ACTIVATION);
 		final S_ARTIFACT_INFO artifactInfo = new S_ARTIFACT_INFO(loc.getLocationId());
 		player.getPosition().getWorldMapInstance().doOnAllPlayers(new Visitor<Player>() {
@@ -117,14 +118,14 @@ public class ArtifactAI2 extends NpcAI2
 			}
 		});
 		PacketSendUtility.sendPacket(player, new S_GAUGE(player.getObjectId(), getObjectId(), 10000, 1));
-		PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.START_QUESTLOOT, 0, getObjectId()), true);
+		PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.START_QUESTLOOT, 0, getObjectId()), true);
 		ItemUseObserver observer = new ItemUseObserver() {
 			@Override
 			public void abort() {
 				player.getController().cancelTask(TaskId.ACTION_ITEM_NPC);
-				PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.END_QUESTLOOT, 0, getObjectId()), true);
+				PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.END_QUESTLOOT, 0, getObjectId()), true);
 				PacketSendUtility.sendPacket(player, new S_GAUGE(player.getObjectId(), getObjectId(), 10000, 0));
-				final S_MESSAGE_CODE message = S_MESSAGE_CODE.STR_ARTIFACT_CANCELED(loc.getRace().getDescriptionId(), new DescriptionId(skillTemplate.getNameId()));
+				final SM_SYSTEM_MESSAGE message = SM_SYSTEM_MESSAGE.STR_ARTIFACT_CANCELED(loc.getRace().getDescriptionId(), new DescriptionId(skillTemplate.getNameId()));
 				loc.setStatus(ArtifactStatus.IDLE);
 				final S_ARTIFACT_INFO artifactInfo = new S_ARTIFACT_INFO(loc.getLocationId());
 				getOwner().getPosition().getWorldMapInstance().doOnAllPlayers(new Visitor<Player>() {
@@ -146,11 +147,11 @@ public class ArtifactAI2 extends NpcAI2
 					player.getObserveController().removeObserver(observer);
 				}
 				PacketSendUtility.sendPacket(player, new S_GAUGE(player.getObjectId(), getObjectId(), 10000, 0));
-				PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.END_QUESTLOOT, 0, getObjectId()), true);
+				PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.END_QUESTLOOT, 0, getObjectId()), true);
 				if (!player.getInventory().decreaseByItemId(itemId, count)) {
 					return;
 				}
-				final S_MESSAGE_CODE message = S_MESSAGE_CODE.STR_ARTIFACT_CORE_CASTING(loc.getRace().getDescriptionId(), new DescriptionId(skillTemplate.getNameId()));
+				final SM_SYSTEM_MESSAGE message = SM_SYSTEM_MESSAGE.STR_ARTIFACT_CORE_CASTING(loc.getRace().getDescriptionId(), new DescriptionId(skillTemplate.getNameId()));
 				loc.setStatus(ArtifactStatus.CASTING);
 				final S_ARTIFACT_INFO artifactInfo = new S_ARTIFACT_INFO(loc.getLocationId());
 				player.getPosition().getWorldMapInstance().doOnAllPlayers(new Visitor<Player>() {
@@ -183,14 +184,14 @@ public class ArtifactAI2 extends NpcAI2
 		private SkillTemplate skill;
 		private int runCount = 1;
 		private S_ARTIFACT_INFO pkt;
-		private S_MESSAGE_CODE message;
+		private SM_SYSTEM_MESSAGE message;
 		
 		private ArtifactUseSkill(ArtifactLocation artifact, Player activator, SkillTemplate skill) {
 			this.artifact = artifact;
 			this.player = activator;
 			this.skill = skill;
 			this.pkt = new S_ARTIFACT_INFO(artifact.getLocationId());
-			this.message = S_MESSAGE_CODE.STR_ARTIFACT_FIRE(activator.getRace().getRaceDescriptionId(), player.getName(), new DescriptionId(skill.getNameId()));
+			this.message = SM_SYSTEM_MESSAGE.STR_ARTIFACT_FIRE(activator.getRace().getRaceDescriptionId(), player.getName(), new DescriptionId(skill.getNameId()));
 		}
 		
 		@Override

@@ -6,8 +6,8 @@ import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Equipment;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_ITEM_DESC;
-import com.aionemu.gameserver.network.aion.serverpackets.S_WIELD;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_INVENTORY_UPDATE_ITEM;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_UPDATE_PLAYER_APPEARANCE;
 import com.aionemu.gameserver.services.item.ItemRemodelService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.PlayerCommand;
@@ -27,7 +27,7 @@ public class cmd_remodel extends PlayerCommand
             if (player.getInventory().decreaseByItemId(186000236, 10)) { //Blood Mark.
                 if (remodelItem(player, itemId)) {
                     PacketSendUtility.sendMessage(player, "Successfully remodelled an item of the player!");
-                    PacketSendUtility.broadcastPacket(player, new S_WIELD(player.getObjectId(), player.getEquipment().getEquippedItemsWithoutStigma()), true);
+                    PacketSendUtility.broadcastPacket(player, new SM_UPDATE_PLAYER_APPEARANCE(player.getObjectId(), player.getEquipment().getEquippedItemsWithoutStigma()), true);
                 } else {
                     PacketSendUtility.sendMessage(player, "Was not able to remodel an item of the player!");
                 }
@@ -49,14 +49,14 @@ public class cmd_remodel extends PlayerCommand
             if (item.getItemTemplate().isWeapon()) {
                 if (item.getItemTemplate().getWeaponType() == template.getWeaponType()) {
                     ItemRemodelService.systemRemodelItem(player, item, template);
-                    PacketSendUtility.sendPacket(player, new S_CHANGE_ITEM_DESC(player, item));
+                    PacketSendUtility.sendPacket(player, new SM_INVENTORY_UPDATE_ITEM(player, item));
                     InventoryDAO.store(item, player);
                     return true;
                 }
             } else if (item.getItemTemplate().isArmor()) {
                 if (item.getItemTemplate().getItemSlot() == template.getItemSlot()) {
                     ItemRemodelService.systemRemodelItem(player, item, template);
-                    PacketSendUtility.sendPacket(player, new S_CHANGE_ITEM_DESC(player, item));
+                    PacketSendUtility.sendPacket(player, new SM_INVENTORY_UPDATE_ITEM(player, item));
                     InventoryDAO.store(item, player);
                     return true;
                 }

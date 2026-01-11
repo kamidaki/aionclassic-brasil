@@ -3,8 +3,8 @@ package com.aionemu.gameserver.network.aion.clientpackets;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK_INFO_RESULT;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
 
@@ -29,7 +29,7 @@ public class C_ASK_PC_INFO extends AionClientPacket
 		Player player = getConnection().getActivePlayer();
 		Player target = World.getInstance().findPlayer(playerName);
 		if (target == null) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_ASK_PCINFO_LOGOFF);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_ASK_PCINFO_LOGOFF);
 			return;
 		}
 		if (!player.getKnownList().knowns(target)) {

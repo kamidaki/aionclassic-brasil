@@ -10,11 +10,12 @@
  */
 package com.aionemu.gameserver.network;
 
-import com.aionemu.gameserver.network.aion.AionServerPacket;
+import java.nio.ByteBuffer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.ByteBuffer;
+import com.aionemu.gameserver.network.aion.AionServerPacket;
 
 /**
  * @author cura

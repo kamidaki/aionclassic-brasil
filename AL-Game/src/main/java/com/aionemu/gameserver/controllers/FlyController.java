@@ -5,8 +5,8 @@ import com.aionemu.gameserver.controllers.observer.ObserverType;
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
-import com.aionemu.gameserver.network.aion.serverpackets.S_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.skillengine.effect.AbnormalState;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -36,13 +36,13 @@ public class FlyController
 			} else {
 				player.setFlyState(0);
 				if (removeWings) {
-					PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.LAND, 0, 0), true);
+					PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.LAND, 0, 0), true);
 				}
 				player.getLifeStats().triggerFpRestore();
 			}
 			player.getGameStats().updateStatsAndSpeedVisually();
 			player.getObserveController().removeObserver(glideObserver);
-			PacketSendUtility.sendPacket(player, new S_STATUS(player));
+			PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
 		}
 	}
 	
@@ -52,14 +52,14 @@ public class FlyController
 			player.unsetState(CreatureState.GLIDING);
 			player.unsetState(CreatureState.FLOATING_CORPSE);
 			player.setFlyState(0);
-			PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.START_EMOTE2, 0, 0), true);
+			PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.START_EMOTE2, 0, 0), true);
 			if (forceEndFly) {
-				PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.LAND, 0, 0), true);
+				PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.LAND, 0, 0), true);
 			}
 			player.getLifeStats().triggerFpRestore();
 			player.getGameStats().updateStatsAndSpeedVisually();
 			player.getObserveController().removeObserver(glideObserver);
-			PacketSendUtility.sendPacket(player, new S_STATUS(player));
+			PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
 		}
 	}
 	
@@ -69,8 +69,8 @@ public class FlyController
 		player.setFlyState(1);
 		player.getLifeStats().triggerFpReduce();
 		player.getGameStats().updateStatsAndSpeedVisually();
-		PacketSendUtility.sendPacket(player, new S_STATUS(player));
-		PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.START_EMOTE2, 0, 0), true);
+		PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
+		PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.START_EMOTE2, 0, 0), true);
 		return true;
 	}
 	
@@ -84,7 +84,7 @@ public class FlyController
 			player.setFlyState(2);
 			player.getGameStats().updateStatsAndSpeedVisually();
 			player.getObserveController().addObserver(this.glideObserver);
-			PacketSendUtility.sendPacket(player, new S_STATUS(player));
+			PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
 		}
 	}
 }

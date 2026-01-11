@@ -1,5 +1,10 @@
 package com.aionemu.gameserver.services.siegeservice;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.callbacks.util.GlobalCallbackHelper;
 import com.aionemu.gameserver.dao.PlayerDAO;
 import com.aionemu.gameserver.dao.SiegeDAO;
@@ -9,11 +14,15 @@ import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.PlayerCommonData;
 import com.aionemu.gameserver.model.gameobjects.player.RewardType;
-import com.aionemu.gameserver.model.siege.*;
+import com.aionemu.gameserver.model.siege.ArtifactLocation;
+import com.aionemu.gameserver.model.siege.FortressLocation;
+import com.aionemu.gameserver.model.siege.SiegeLocation;
+import com.aionemu.gameserver.model.siege.SiegeModType;
+import com.aionemu.gameserver.model.siege.SiegeRace;
 import com.aionemu.gameserver.model.templates.siegelocation.SiegeReward;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
 import com.aionemu.gameserver.model.templates.zone.ZoneType;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.services.SiegeService;
@@ -26,10 +35,6 @@ import com.aionemu.gameserver.spawnengine.SpawnEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class FortressSiege extends Siege<FortressLocation>
 {
@@ -56,9 +61,9 @@ public class FortressSiege extends Siege<FortressLocation>
 				@Override
 				public void visit(Player player) {
 					///%0 is marked by the Balaur.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1401588, nameId));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1401588, nameId));
 					///%0 fell to the Balaur&apos;s attack.\nFortify and fight for your faction!
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1401589, nameId));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1401589, nameId));
 				}
 			});
         }

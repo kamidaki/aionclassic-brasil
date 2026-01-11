@@ -1,5 +1,7 @@
 package admincommands;
 
+import java.util.Collection;
+
 import com.aionemu.gameserver.dao.PetitionDAO;
 import com.aionemu.gameserver.dao.PlayerDAO;
 import com.aionemu.gameserver.model.Petition;
@@ -11,8 +13,6 @@ import com.aionemu.gameserver.services.mail.MailService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 import com.aionemu.gameserver.world.World;
-
-import java.util.Collection;
 
 /**
  * @author zdead

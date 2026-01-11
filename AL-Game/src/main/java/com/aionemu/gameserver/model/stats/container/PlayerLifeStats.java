@@ -16,20 +16,20 @@
  */
 package com.aionemu.gameserver.model.stats.container;
 
+import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantLock;
+
 import com.aionemu.gameserver.configs.administration.AdminConfig;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.LOG;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.TYPE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.LOG;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.TYPE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATUPDATE_HP;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATUPDATE_MP;
 import com.aionemu.gameserver.network.aion.serverpackets.S_FLIGHT_POINT;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MANA_POINT;
 import com.aionemu.gameserver.services.LifeStatsRestoreService;
 import com.aionemu.gameserver.taskmanager.tasks.PacketBroadcaster.BroadcastMode;
 import com.aionemu.gameserver.taskmanager.tasks.TeamEffectUpdater;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.concurrent.Future;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author ATracer, sphinx
@@ -116,7 +116,7 @@ public class PlayerLifeStats extends CreatureLifeStats<Player> {
 	}
 
 	public void sendHpPacketUpdateImpl() {
-		PacketSendUtility.sendPacket(owner, new S_HIT_POINT(currentHp, getMaxHp()));
+		PacketSendUtility.sendPacket(owner, new SM_STATUPDATE_HP(currentHp, getMaxHp()));
 	}
 
 	public void sendMpPacketUpdate() {
@@ -124,7 +124,7 @@ public class PlayerLifeStats extends CreatureLifeStats<Player> {
 	}
 
 	public void sendMpPacketUpdateImpl() {
-		PacketSendUtility.sendPacket(owner, new S_MANA_POINT(currentMp, getMaxMp()));
+		PacketSendUtility.sendPacket(owner, new SM_STATUPDATE_MP(currentMp, getMaxMp()));
 	}
 
 	/**

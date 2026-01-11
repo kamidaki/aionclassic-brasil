@@ -1,17 +1,16 @@
 package com.aionemu.gameserver.skillengine.effect;
 
-import com.aionemu.commons.utils.Rnd;
-
-import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_TARGET_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_USER_CHANGED_TARGET;
-import com.aionemu.gameserver.skillengine.model.Effect;
-import com.aionemu.gameserver.utils.PacketSendUtility;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+
+import com.aionemu.commons.utils.Rnd;
+import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_TARGET_SELECTED;
+import com.aionemu.gameserver.network.aion.serverpackets.S_USER_CHANGED_TARGET;
+import com.aionemu.gameserver.skillengine.model.Effect;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TargetChangeEffect")
@@ -32,13 +31,13 @@ public class TargetChangeEffect extends EffectTemplate
 				if (random < 250) {
 					if (effect.getEffector() != null) {
 						effected.setTarget(effect.getEffector());
-						PacketSendUtility.sendPacket((Player) effected, new S_TARGET_INFO((Player) effected));
+						PacketSendUtility.sendPacket((Player) effected, new SM_TARGET_SELECTED((Player) effected));
 						PacketSendUtility.broadcastPacket(effected, new S_USER_CHANGED_TARGET((Player) effected));
 					}
 				}
 			} else {
 				effected.setTarget(null);
-				PacketSendUtility.sendPacket((Player) effected, new S_TARGET_INFO(null));
+				PacketSendUtility.sendPacket((Player) effected, new SM_TARGET_SELECTED(null));
 				PacketSendUtility.broadcastPacket(effected, new S_USER_CHANGED_TARGET((Player) effected));
 			}
 		}

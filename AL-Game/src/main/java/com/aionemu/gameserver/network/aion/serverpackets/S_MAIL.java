@@ -10,6 +10,8 @@
  */
 package com.aionemu.gameserver.network.aion.serverpackets;
 
+import java.util.Collection;
+
 import com.aionemu.gameserver.model.gameobjects.Letter;
 import com.aionemu.gameserver.model.gameobjects.LetterType;
 import com.aionemu.gameserver.model.gameobjects.player.Mailbox;
@@ -18,8 +20,6 @@ import com.aionemu.gameserver.model.templates.mail.MailMessage;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.MailServicePacket;
 import com.aionemu.gameserver.utils.collections.ListSplitter;
-
-import java.util.Collection;
 
 public class S_MAIL extends MailServicePacket
 {

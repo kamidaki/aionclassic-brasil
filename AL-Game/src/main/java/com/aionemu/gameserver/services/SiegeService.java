@@ -10,6 +10,21 @@
  */
 package com.aionemu.gameserver.services;
 
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
+import org.quartz.JobDetail;
+import org.quartz.Trigger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.services.CronService;
 import com.aionemu.gameserver.configs.main.SiegeConfig;
 import com.aionemu.gameserver.configs.shedule.SiegeSchedule;
@@ -23,16 +38,37 @@ import com.aionemu.gameserver.model.assemblednpc.AssembledNpcPart;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.siege.SiegeNpc;
-import com.aionemu.gameserver.model.siege.*;
+import com.aionemu.gameserver.model.siege.ArtifactLocation;
+import com.aionemu.gameserver.model.siege.FortressLocation;
+import com.aionemu.gameserver.model.siege.Influence;
+import com.aionemu.gameserver.model.siege.OutpostLocation;
+import com.aionemu.gameserver.model.siege.SiegeLocation;
+import com.aionemu.gameserver.model.siege.SiegeModType;
+import com.aionemu.gameserver.model.siege.SiegeRace;
 import com.aionemu.gameserver.model.templates.assemblednpc.AssembledNpcTemplate;
 import com.aionemu.gameserver.model.templates.spawns.SpawnGroup2;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
 import com.aionemu.gameserver.model.templates.spawns.siegespawns.SiegeSpawnTemplate;
 import com.aionemu.gameserver.model.templates.world.WeatherEntry;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_NPC_ASSEMBLER;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ABYSS_CHANGE_NEXT_PVP_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ABYSS_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ABYSS_NEXT_PVP_CHANGE_TIME;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ABYSS_SHIELD_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ARTIFACT_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_BALAUREA_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_ABYSS_TELEPORTER_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.S_WORLD_INFO;
 import com.aionemu.gameserver.services.legion.LegionService;
-import com.aionemu.gameserver.services.siegeservice.*;
+import com.aionemu.gameserver.services.siegeservice.ArtifactSiege;
+import com.aionemu.gameserver.services.siegeservice.FortressSiege;
+import com.aionemu.gameserver.services.siegeservice.OutpostSiege;
+import com.aionemu.gameserver.services.siegeservice.Siege;
+import com.aionemu.gameserver.services.siegeservice.SiegeAutoRace;
+import com.aionemu.gameserver.services.siegeservice.SiegeException;
+import com.aionemu.gameserver.services.siegeservice.SiegeStartRunnable;
 import com.aionemu.gameserver.spawnengine.SpawnEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
@@ -43,15 +79,9 @@ import com.aionemu.gameserver.world.knownlist.Visitor;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
 import javolution.util.FastList;
 import javolution.util.FastMap;
-import org.quartz.JobDetail;
-import org.quartz.Trigger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nullable;
-import java.util.*;
 
 public class SiegeService
 {
@@ -467,7 +497,7 @@ public class SiegeService
 
 	public void broadcastUpdate(SiegeLocation loc, DescriptionId nameId) {
 		S_ABYSS_INFO pkt = new S_ABYSS_INFO(loc);
-		S_MESSAGE_CODE info = loc.getLegionId() == 0 ? new S_MESSAGE_CODE(1301039, loc.getRace().getDescriptionId(), nameId) : new S_MESSAGE_CODE(1301038, LegionService.getInstance().getLegion(loc.getLegionId()).getLegionName(), nameId);
+		SM_SYSTEM_MESSAGE info = loc.getLegionId() == 0 ? new SM_SYSTEM_MESSAGE(1301039, loc.getRace().getDescriptionId(), nameId) : new SM_SYSTEM_MESSAGE(1301038, LegionService.getInstance().getLegion(loc.getLegionId()).getLegionName(), nameId);
 		broadcast(pkt, info, loc.getRace());
 	}
 
@@ -483,12 +513,12 @@ public class SiegeService
 	}
 
 	public void broadcastStatusAndUpdate(OutpostLocation outpost, boolean oldSilentraState) {
-		S_MESSAGE_CODE info = null;
+		SM_SYSTEM_MESSAGE info = null;
 		if (oldSilentraState != outpost.isSilenteraAllowed()) {
 			if (outpost.isSilenteraAllowed()) {
-				info = outpost.getLocationId() == 2111 ? S_MESSAGE_CODE.STR_FIELDABYSS_LIGHTUNDERPASS_SPAWN : S_MESSAGE_CODE.STR_FIELDABYSS_DARKUNDERPASS_SPAWN;
+				info = outpost.getLocationId() == 2111 ? SM_SYSTEM_MESSAGE.STR_FIELDABYSS_LIGHTUNDERPASS_SPAWN : SM_SYSTEM_MESSAGE.STR_FIELDABYSS_DARKUNDERPASS_SPAWN;
 			} else {
-				info = outpost.getLocationId() == 2111 ? S_MESSAGE_CODE.STR_FIELDABYSS_LIGHTUNDERPASS_DESPAWN : S_MESSAGE_CODE.STR_FIELDABYSS_DARKUNDERPASS_DESPAWN;
+				info = outpost.getLocationId() == 2111 ? SM_SYSTEM_MESSAGE.STR_FIELDABYSS_LIGHTUNDERPASS_DESPAWN : SM_SYSTEM_MESSAGE.STR_FIELDABYSS_DARKUNDERPASS_DESPAWN;
 			}
 		}
 		broadcast(new S_WORLD_INFO(getOutpost(3111).isSilenteraAllowed(), getOutpost(2111).isSilenteraAllowed()), info);
@@ -546,13 +576,13 @@ public class SiegeService
         Player player = null;
 		while (iter.hasNext()) {
             player = iter.next();
-            PacketSendUtility.sendPacket(player, new S_CUTSCENE_NPC_INFO(npc));
+            PacketSendUtility.sendPacket(player, new SM_NPC_ASSEMBLER(npc));
 			///The Balaur Dredgion has appeared.
-			PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_FIELDABYSS_CARRIER_SPAWN, 0);
+			PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_FIELDABYSS_CARRIER_SPAWN, 0);
 			///The Dredgion has dropped Balaur Troopers.
-			PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_FIELDABYSS_CARRIER_DROP_DRAGON, 300000);
+			PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_FIELDABYSS_CARRIER_DROP_DRAGON, 300000);
 			///The Balaur Dredgion has disappeared.
-			PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_FIELDABYSS_CARRIER_DESPAWN, 600000);
+			PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_FIELDABYSS_CARRIER_DESPAWN, 600000);
         }
     }
 

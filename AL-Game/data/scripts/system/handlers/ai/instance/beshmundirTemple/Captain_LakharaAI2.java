@@ -10,17 +10,18 @@
  */
 package ai.instance.beshmundirTemple;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.NpcShoutsService;
 import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
-import java.util.*;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -72,7 +73,7 @@ public class Captain_LakharaAI2 extends AggressiveNpcAI2
 		///Thou art not bad!
 		sendMsg(1500043, getObjectId(), false, 8000);
 		//Captain Lakhara is preparing his final strike!
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDCatacombs_Boss_TombDrakan, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDCatacombs_Boss_TombDrakan, 0);
 		SkillEngine.getInstance().getSkill(getOwner(), 18891, 60, getTarget()).useNoAnimationSkill(); //Certain Doom.
 	}
 	

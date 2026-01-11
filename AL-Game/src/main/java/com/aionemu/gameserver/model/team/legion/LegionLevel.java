@@ -1,7 +1,5 @@
 package com.aionemu.gameserver.model.team.legion;
 
-import com.aionemu.gameserver.model.PlayerClass;
-
 public enum LegionLevel {
 
     LEVEL1(1, 10000, 0, 0, 24, 24),

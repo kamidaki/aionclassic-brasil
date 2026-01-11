@@ -1,7 +1,7 @@
 package admincommands;
 
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 
@@ -28,6 +28,6 @@ public class SysMessage extends AdminCommand
             PacketSendUtility.sendMessage(admin, "id should number");
             return;
         }
-        PacketSendUtility.sendPacket(admin, new S_MESSAGE_CODE(id));
+        PacketSendUtility.sendPacket(admin, new SM_SYSTEM_MESSAGE(id));
     }
 }

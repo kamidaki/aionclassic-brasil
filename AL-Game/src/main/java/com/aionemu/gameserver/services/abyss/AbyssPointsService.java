@@ -7,10 +7,10 @@ import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.AbyssRank;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.siege.SiegeNpc;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ABYSS_POINT;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ETC_STATUS;
 import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_GUILD_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ETC_STATUS;
 import com.aionemu.gameserver.services.player.BattlePassService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.stats.AbyssRankEnum;
@@ -26,9 +26,9 @@ public class AbyssPointsService
 		if (player == null) {
 			return;
 		} if (value > 0) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_COMBAT_MY_ABYSS_POINT_GAIN(value));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_COMBAT_MY_ABYSS_POINT_GAIN(value));
 		} else {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300965, value * -1));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300965, value * -1));
 		}
 		setAp(player, value);
 		BattlePassService.getInstance().onWinAp(player, value);

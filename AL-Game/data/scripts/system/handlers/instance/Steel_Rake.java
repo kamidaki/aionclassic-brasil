@@ -10,34 +10,36 @@
  */
 package instance;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.controllers.effect.PlayerEffectController;
 import com.aionemu.gameserver.instance.handlers.GeneralInstanceHandler;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.EmotionType;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.drop.DropItem;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.StaticDoor;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.item.ItemService;
-import com.aionemu.gameserver.services.teleport.TeleportService2;
-import com.aionemu.gameserver.services.drop.DropRegistrationService;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
+import com.aionemu.gameserver.services.drop.DropRegistrationService;
+import com.aionemu.gameserver.services.item.ItemService;
+import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.utils.*;
+import com.aionemu.gameserver.utils.MathUtil;
+import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-
-import javolution.util.FastMap;
-
-import java.util.*;
 
 /****/
 /** Author Rinzler (Encom)
@@ -247,7 +249,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 					}, 3000);
 				} else {
 					///I'll need Largimark's Flint.
-			        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111302, player.getObjectId(), 2));
+			        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111302, player.getObjectId(), 2));
 				}
 			break;
 			case 700509: ///Shining Box https://aioncodex.com/3x/quest/1097-2097/
@@ -265,7 +267,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 							});
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 					case ASMODIANS:
@@ -281,7 +283,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 							});
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 				}
@@ -301,7 +303,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 							});
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 					case ASMODIANS:
@@ -317,7 +319,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 							});
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 				}
@@ -337,7 +339,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 							});
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 					case ASMODIANS:
@@ -353,7 +355,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 							});
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 				}
@@ -363,7 +365,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 				    IDShip1FBigCageInDoor(player, 461.0000f, 489.0000f, 879.0000f, (byte) 0);
 				} else {
 					///You need a key to open the door.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300723));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300723));
 				}
 			break;
 			case 730201: //idship_1f_bigcage_outdoor.
@@ -374,7 +376,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 				    IDShip1FBossRoomDoor(player, 660.0000f, 509.0000f, 870.0000f, (byte) 0);
 				} else {
 					///You need a key to open the door.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300723));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300723));
 				}
 			break;
 			case 730203: //idship_3f_cannon_indoor.
@@ -382,7 +384,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 				    IDShip3FCannonInDoor(player, 725.0000f, 508.0000f, 1014.0000f, (byte) 0);
 				} else {
 					///You need a key to open the door.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300723));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300723));
 				}
 			break;
 			case 730204: //idship_3f_cannon_outdoor.
@@ -395,7 +397,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 				player.setState(CreatureState.FLIGHT_TELEPORT);
 				player.unsetState(CreatureState.ACTIVE);
 				player.setFlightTeleportId(73001);
-				PacketSendUtility.sendPacket(player, new S_ACTION(player, EmotionType.START_FLYTELEPORT, 73001, 0));
+				PacketSendUtility.sendPacket(player, new SM_EMOTION(player, EmotionType.START_FLYTELEPORT, 73001, 0));
 			break;
 			case 730209: //idship_anchor.
 			    IDShipAnchor(player, 709.0000f, 459.0000f, 1015.0000f, (byte) 0);
@@ -496,7 +498,7 @@ public class Steel_Rake extends GeneralInstanceHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});

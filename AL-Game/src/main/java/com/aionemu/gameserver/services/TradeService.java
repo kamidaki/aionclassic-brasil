@@ -10,6 +10,15 @@
  */
 package com.aionemu.gameserver.services;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.dataholders.GoodsListData;
 import com.aionemu.gameserver.dataholders.TradeListData;
@@ -17,8 +26,8 @@ import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.AbyssRank;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.items.storage.Storage;
 import com.aionemu.gameserver.model.limiteditems.LimitedItem;
 import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
@@ -30,7 +39,8 @@ import com.aionemu.gameserver.model.templates.tradelist.TradeListTemplate;
 import com.aionemu.gameserver.model.templates.tradelist.TradeListTemplate.TradeTab;
 import com.aionemu.gameserver.model.trade.TradeItem;
 import com.aionemu.gameserver.model.trade.TradeList;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ABYSS_POINT;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
 import com.aionemu.gameserver.services.abyss.AbyssPointsService;
 import com.aionemu.gameserver.services.item.ItemFactory;
@@ -42,10 +52,6 @@ import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.OverfowException;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.SafeMath;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public class TradeService
 {
@@ -58,7 +64,7 @@ public class TradeService
 			return false;
 		} if (player.getInventory().isFullSpecialCube() || player.getInventory().isFull()) {
 			///You cannot acquire the item because there is no space in the inventory.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_INVEN_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_INVEN_ERROR);
 			return false;
 		} if (!validateBuyItems(npc, tradeList, player)) {
 			PacketSendUtility.sendMessage(player, "Some items are not allowed to be sold by this npc.");
@@ -118,12 +124,12 @@ public class TradeService
 				return false;
 			} if (tradeItem.getCount() > 1) {
 				///You have purchased %1 %0s.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300785, new DescriptionId(tradeItem.getItemTemplate().getNameId()), tradeItem.getCount()));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300785, new DescriptionId(tradeItem.getItemTemplate().getNameId()), tradeItem.getCount()));
 				BattlePassService.getInstance().onUpdateBattlePassMission(player , tradeItem.getItemId(), (int) tradeItem.getCount(), BattlePassAction.BUY_NPC);
 			} else {
 				///You have purchased %0.
 				BattlePassService.getInstance().onUpdateBattlePassMission(player , tradeItem.getItemId(), (int) tradeItem.getCount(), BattlePassAction.BUY_NPC);
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300784, new DescriptionId(tradeItem.getItemTemplate().getNameId())));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300784, new DescriptionId(tradeItem.getItemTemplate().getNameId())));
 			}
 		}
 		Map<Integer, Long> requiredItems = tradeList.getRequiredItems();
@@ -141,7 +147,7 @@ public class TradeService
 			return false;
 		} if (player.getInventory().isFullSpecialCube() || player.getInventory().isFull()) {
 			///You cannot acquire the item because there is no space in the inventory.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_INVEN_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_INVEN_ERROR);
 			return false;
 		} if (!validateBuyItems(npc, tradeList, player)) {
 			PacketSendUtility.sendMessage(player, "Some items are not allowed to be selled from this npc");
@@ -153,10 +159,10 @@ public class TradeService
 		if (!tradeList.calculateAbyssBuyListPrice(player)) {
 			return false;
 		} if (tradeList.getRequiredAp() < 0) {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300927));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300927));
 			return false;
 		} if (freeSlots < tradeList.size()) {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300762));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300762));
 			return false;
 		}
 		AbyssPointsService.addAp(player, -tradeList.getRequiredAp());
@@ -202,11 +208,11 @@ public class TradeService
 			} if (tradeItem.getCount() > 1) {
 				///You have purchased %1 %0s.
 				BattlePassService.getInstance().onUpdateBattlePassMission(player , tradeItem.getItemId(), (int) tradeItem.getCount(), BattlePassAction.BUY_AP);
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300785, new DescriptionId(tradeItem.getItemTemplate().getNameId()), tradeItem.getCount()));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300785, new DescriptionId(tradeItem.getItemTemplate().getNameId()), tradeItem.getCount()));
 			} else {
 				///You have purchased %0.
 				BattlePassService.getInstance().onUpdateBattlePassMission(player , tradeItem.getItemId(), (int) tradeItem.getCount(), BattlePassAction.BUY_AP);
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300784, new DescriptionId(tradeItem.getItemTemplate().getNameId())));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300784, new DescriptionId(tradeItem.getItemTemplate().getNameId())));
 			}
 		}
 		Map<Integer, Long> requiredItems = tradeList.getRequiredItems();
@@ -224,7 +230,7 @@ public class TradeService
 			return false;
 		} if (player.getInventory().isFullSpecialCube() || player.getInventory().isFull()) {
 			///You cannot acquire the item because there is no space in the inventory.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_INVEN_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_INVEN_ERROR);
 			return false;
 		} if (!validateBuyItems(npc, tradeList, player)) {
 			PacketSendUtility.sendMessage(player, "Some items are not allowed to be selled from this npc");
@@ -279,11 +285,11 @@ public class TradeService
 			} if (tradeItem.getCount() > 1) {
 				///You have purchased %1 %0s.
 				BattlePassService.getInstance().onUpdateBattlePassMission(player , tradeItem.getItemId(), (int) tradeItem.getCount(), BattlePassAction.BUY_NPC);
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300785, new DescriptionId(tradeItem.getItemTemplate().getNameId()), tradeItem.getCount()));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300785, new DescriptionId(tradeItem.getItemTemplate().getNameId()), tradeItem.getCount()));
 			} else {
 				///You have purchased %0.
 				BattlePassService.getInstance().onUpdateBattlePassMission(player , tradeItem.getItemId(), (int) tradeItem.getCount(), BattlePassAction.BUY_NPC);
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300784, new DescriptionId(tradeItem.getItemTemplate().getNameId())));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300784, new DescriptionId(tradeItem.getItemTemplate().getNameId())));
 			}
 		}
 		Map<Integer, Long> requiredItems = tradeList.getRequiredItems();
@@ -307,7 +313,7 @@ public class TradeService
 				return false;
 			} if (!item.isSellable()) {
 				///%0 is not an item that can be sold.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300344, new DescriptionId(item.getNameId())));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300344, new DescriptionId(item.getNameId())));
 				return false;
 			}
 			Item repurchaseItem = null;
@@ -317,10 +323,10 @@ public class TradeService
 				break;
 			} if (item.getItemCount() - tradeItem.getCount() > 1) {
 				///You have sold %1 %0s.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300787, new DescriptionId(item.getNameId()), item.getItemCount()));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300787, new DescriptionId(item.getNameId()), item.getItemCount()));
 			} else {
 				///You have sold %0.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300786, new DescriptionId(item.getNameId())));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300786, new DescriptionId(item.getNameId())));
 			} if (item.getItemCount() - tradeItem.getCount() < 0) {
 				return false;
 			} else if (item.getItemCount() - tradeItem.getCount() == 0) {
@@ -346,7 +352,7 @@ public class TradeService
 			return false;
 		} if (player.getInventory().isFullSpecialCube() || player.getInventory().isFull()) {
 			///You cannot acquire the item because there is no space in the inventory.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_INVEN_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_INVEN_ERROR);
 			return false;
 		}
 		VisibleObject visibleObject = player.getKnownList().getObject(npcObjectId);
@@ -431,10 +437,10 @@ public class TradeService
 				AbyssPointsService.addAp(player, item.getItemTemplate().getAcquisition().getRequiredAp() * (int) count);
 			} if (count > 1) {
 				///You have sold %1 %0s.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300787, new DescriptionId(item.getNameId()), count));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300787, new DescriptionId(item.getNameId()), count));
 			} else {
 				///You have sold %0.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300786, new DescriptionId(item.getNameId())));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300786, new DescriptionId(item.getNameId())));
 			}
 		}
 		PacketSendUtility.sendPacket(player, new S_ABYSS_POINT(rank));

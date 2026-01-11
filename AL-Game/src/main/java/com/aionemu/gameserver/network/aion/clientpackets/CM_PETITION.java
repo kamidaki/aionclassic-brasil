@@ -20,8 +20,8 @@ import com.aionemu.gameserver.model.Petition;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_PETITION_STATUS;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.PetitionService;
 
 /**
@@ -64,8 +64,8 @@ public class CM_PETITION extends AionClientPacket
 			if (PetitionService.getInstance().hasRegisteredPetition(playerObjId)) {
 				int petitionId = PetitionService.getInstance().getPetition(playerObjId).getPetitionId();
 				PetitionService.getInstance().deletePetition(playerObjId);
-				sendPacket(new S_MESSAGE_CODE(1300552, petitionId));
-				sendPacket(new S_MESSAGE_CODE(1300553, 49));
+				sendPacket(new SM_SYSTEM_MESSAGE(1300552, petitionId));
+				sendPacket(new SM_SYSTEM_MESSAGE(1300553, 49));
 				return;
 			}
 

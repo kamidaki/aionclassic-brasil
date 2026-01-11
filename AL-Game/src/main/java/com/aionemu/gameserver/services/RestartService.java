@@ -10,16 +10,17 @@
  */
 package com.aionemu.gameserver.services;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.services.CronService;
 import com.aionemu.gameserver.ShutdownHook;
-
 import com.aionemu.gameserver.services.player.BattlePassService;
 import com.aionemu.gameserver.services.player.EventWindowService;
 import com.aionemu.gameserver.services.player.SielEnergyService;
-import org.slf4j.*;
-
-import java.sql.Timestamp;
-import java.util.Calendar;
 
 public class RestartService
 {

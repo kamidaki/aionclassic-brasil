@@ -13,8 +13,8 @@ package com.aionemu.gameserver.model.team2.alliance.events;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAlliance;
 import com.aionemu.gameserver.model.team2.common.events.AbstractTeamPlayerEvent;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ALLIANCE_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 public class AssignViceCaptainEvent extends AbstractTeamPlayerEvent<PlayerAlliance>
@@ -45,7 +45,7 @@ public class AssignViceCaptainEvent extends AbstractTeamPlayerEvent<PlayerAllian
             break;
             case PROMOTE:
                 if (team.getViceCaptainIds().size() == 4) {
-                    PacketSendUtility.sendPacket(team.getLeaderObject(), S_MESSAGE_CODE.STR_FORCE_CANNOT_PROMOTE_MANAGER);
+                    PacketSendUtility.sendPacket(team.getLeaderObject(), SM_SYSTEM_MESSAGE.STR_FORCE_CANNOT_PROMOTE_MANAGER);
                     return;
                 }
                 team.getViceCaptainIds().add(eventPlayer.getObjectId());
@@ -67,6 +67,8 @@ public class AssignViceCaptainEvent extends AbstractTeamPlayerEvent<PlayerAllian
             case DEMOTE:
                 messageId = S_ALLIANCE_INFO.FORCE_DEMOTE_MANAGER;
             break;
+		default:
+			break;
         }
         PacketSendUtility.sendPacket(player, new S_ALLIANCE_INFO(team, messageId, eventPlayer.getName()));
         return true;

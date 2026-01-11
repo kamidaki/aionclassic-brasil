@@ -16,6 +16,10 @@
  */
 package com.aionemu.gameserver.model.gameobjects;
 
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.Future;
+
 import com.aionemu.gameserver.ai2.AI2Engine;
 import com.aionemu.gameserver.controllers.CreatureController;
 import com.aionemu.gameserver.controllers.SummonController;
@@ -26,26 +30,15 @@ import com.aionemu.gameserver.controllers.movement.SummonMoveController;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.TribeClass;
-import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.NpcObjectType;
-import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.stats.container.SummonGameStats;
 import com.aionemu.gameserver.model.stats.container.SummonLifeStats;
 import com.aionemu.gameserver.model.summons.SkillOrder;
 import com.aionemu.gameserver.model.summons.SummonMode;
-import com.aionemu.gameserver.model.templates.VisibleObjectTemplate;
 import com.aionemu.gameserver.model.templates.npc.NpcTemplate;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
 import com.aionemu.gameserver.model.templates.stats.SummonStatsTemplate;
 import com.aionemu.gameserver.world.WorldPosition;
-
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.Future;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Summon extends Creature
 {

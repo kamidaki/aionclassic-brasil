@@ -1,8 +1,18 @@
 package com.aionemu.gameserver.services.player;
 
+import java.sql.Timestamp;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.main.AutoGroupConfig;
 import com.aionemu.gameserver.configs.main.GSConfig;
-import com.aionemu.gameserver.dao.*;
+import com.aionemu.gameserver.dao.EventItemsDAO;
+import com.aionemu.gameserver.dao.ItemCooldownsDAO;
+import com.aionemu.gameserver.dao.PlayerCooldownsDAO;
+import com.aionemu.gameserver.dao.PlayerDAO;
+import com.aionemu.gameserver.dao.PlayerEffectsDAO;
+import com.aionemu.gameserver.dao.PlayerLifeStatsDAO;
 import com.aionemu.gameserver.model.account.PlayerAccountData;
 import com.aionemu.gameserver.model.gameobjects.Summon;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -13,7 +23,16 @@ import com.aionemu.gameserver.model.team2.alliance.PlayerAllianceService;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
-import com.aionemu.gameserver.services.*;
+import com.aionemu.gameserver.services.AutoGroupService;
+import com.aionemu.gameserver.services.BrokerService;
+import com.aionemu.gameserver.services.ChatService;
+import com.aionemu.gameserver.services.DuelService;
+import com.aionemu.gameserver.services.ExchangeService;
+import com.aionemu.gameserver.services.FindGroupService;
+import com.aionemu.gameserver.services.KiskService;
+import com.aionemu.gameserver.services.PunishmentService;
+import com.aionemu.gameserver.services.RepurchaseService;
+import com.aionemu.gameserver.services.SerialKillerService;
 import com.aionemu.gameserver.services.drop.DropService;
 import com.aionemu.gameserver.services.instance.InstanceService;
 import com.aionemu.gameserver.services.legion.LegionService;
@@ -22,14 +41,13 @@ import com.aionemu.gameserver.services.toypet.PetSpawnService;
 import com.aionemu.gameserver.taskmanager.tasks.ExpireTimerTask;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.utils.audit.GMService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.sql.Timestamp;
+import com.aionemu.gameserver.world.geo.nav.NavData;
 
 public class PlayerLeaveWorldService
 {
 	private static final Logger log = LoggerFactory.getLogger(PlayerLeaveWorldService.class);
+	private static final NavData navData = NavData.getInstance();
 
 	public static final void startLeaveWorldDelay(final Player player, int delay) {
 		player.getController().stopMoving();
@@ -64,6 +82,9 @@ public class PlayerLeaveWorldService
 			player.setPrisonTimer(prisonTimer);
 			log.debug("Update prison timer to " + prisonTimer / 1000 + " seconds !");
 		}
+		// Notifica o NavData que há um jogador no mapa
+		// Se o mapa não estiver em cache, será carregado assincronamente
+		navData.onPlayerLeaveMap(player.getWorldId());
 		PlayerEffectsDAO.storePlayerEffects(player);
 		PlayerCooldownsDAO.storePlayerCooldowns(player);
 		ItemCooldownsDAO.storeItemCooldowns(player);

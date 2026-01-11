@@ -10,19 +10,21 @@
  */
 package quest.morheim;
 
-import com.aionemu.gameserver.ai2.*;
+import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
-import com.aionemu.gameserver.model.*;
-import com.aionemu.gameserver.model.gameobjects.*;
+import com.aionemu.gameserver.model.EmotionType;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
+import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.questEngine.model.QuestDialog;
-import com.aionemu.gameserver.services.*;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.utils.*;
+import com.aionemu.gameserver.services.NpcShoutsService;
+import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.utils.ThreadPoolManager;
 
 /****/
 /** Author Rinzler (Encom)
@@ -112,9 +114,9 @@ public class _2039Allies_Among_Enemies extends QuestHandler
 						npc.getSpawn().setWalkerId("df2_df2_npcpath_q2039a");
 						WalkManager.startWalking((NpcAI2) npc.getAi2());
 						npc.setState(1);
-						PacketSendUtility.broadcastPacket(npc, new S_ACTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
+						PacketSendUtility.broadcastPacket(npc, new SM_EMOTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
 						///Hurry and escape!
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1100707, player.getObjectId(), 2));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1100707, player.getObjectId(), 2));
 						///Thank you, Daeva!
 						NpcShoutsService.getInstance().sendMsg(npc, 1100708, npc.getObjectId(), 0, 1000);
 						ThreadPoolManager.getInstance().schedule(new Runnable() {
@@ -142,9 +144,9 @@ public class _2039Allies_Among_Enemies extends QuestHandler
 						npc.getSpawn().setWalkerId("df2_df2_npcpath_q2039b");
 						WalkManager.startWalking((NpcAI2) npc.getAi2());
 						npc.setState(1);
-						PacketSendUtility.broadcastPacket(npc, new S_ACTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
+						PacketSendUtility.broadcastPacket(npc, new SM_EMOTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
 						///Hurry and escape!
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1100707, player.getObjectId(), 2));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1100707, player.getObjectId(), 2));
 						///I'm finally frrrree!
 						NpcShoutsService.getInstance().sendMsg(npc, 1100709, npc.getObjectId(), 0, 1000);
 						ThreadPoolManager.getInstance().schedule(new Runnable() {
@@ -172,9 +174,9 @@ public class _2039Allies_Among_Enemies extends QuestHandler
 						npc.getSpawn().setWalkerId("df2_df2_npcpath_q2039c");
 						WalkManager.startWalking((NpcAI2) npc.getAi2());
 						npc.setState(1);
-						PacketSendUtility.broadcastPacket(npc, new S_ACTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
+						PacketSendUtility.broadcastPacket(npc, new SM_EMOTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
 						///Hurry and escape!
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1100707, player.getObjectId(), 2));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1100707, player.getObjectId(), 2));
 						///Thank you. I'll take carrrre of the ressst.
 						NpcShoutsService.getInstance().sendMsg(npc, 1100710, npc.getObjectId(), 0, 1000);
 						ThreadPoolManager.getInstance().schedule(new Runnable() {

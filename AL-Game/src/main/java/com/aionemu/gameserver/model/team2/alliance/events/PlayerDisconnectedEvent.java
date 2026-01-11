@@ -16,8 +16,8 @@ import com.aionemu.gameserver.model.team2.alliance.PlayerAlliance;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAllianceMember;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAllianceService;
 import com.aionemu.gameserver.model.team2.common.legacy.PlayerAllianceEvent;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ALLIANCE_MEMBER_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -62,7 +62,7 @@ public class PlayerDisconnectedEvent implements TeamEvent, Predicate<PlayerAllia
     public boolean apply(PlayerAllianceMember member) {
         Player player = member.getObject();
         if (!disconnected.getObjectId().equals(player.getObjectId())) {
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_FORCE_HE_BECOME_OFFLINE(disconnected.getName()));
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_FORCE_HE_BECOME_OFFLINE(disconnected.getName()));
             PacketSendUtility.sendPacket(player, new S_ALLIANCE_MEMBER_INFO(disconnectedMember,
                     PlayerAllianceEvent.DISCONNECTED));
         }

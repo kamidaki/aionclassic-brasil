@@ -10,20 +10,21 @@
  */
 package com.aionemu.gameserver.services;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.item.RequireSkill;
 import com.aionemu.gameserver.model.templates.item.Stigma;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ADD_SKILL;
-import com.aionemu.gameserver.network.aion.serverpackets.S_DELETE_SKILL;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_LIST;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_REMOVE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * @author Wnkrz (Encom)
@@ -44,13 +45,13 @@ public class StigmaService
             if (shardCount != 0) {
                 if (player.getInventory().getItemCountByItemId(141000001) < shardCount) {
 					///You need %0 Stigma Shard(s) to equip this Stone.
-                    PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_STIGMA_CANNT_EQUIP_STONE_OUT_OF_AVAILABLE_STIGMA_POINT(shardCount));
+                    PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_STIGMA_CANNT_EQUIP_STONE_OUT_OF_AVAILABLE_STIGMA_POINT(shardCount));
                     return false;
                 } if (!player.getInventory().decreaseByItemId(141000001, shardCount)) {
                     return false;
                 }
             }
-			PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player));
+			PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player));
             player.getSkillList().addStigmaSkill(player, skillId, stigmaInfo.getSkilllvl(), true);
         }
         return true;
@@ -64,7 +65,7 @@ public class StigmaService
 			if (itemId == 140000007 || itemId == 140000005) {
                 if (player.getEquipment().isDualWeaponEquipped()) {
 					///The Stigma Stone cannot be removed: All items currently equipped via the skills acquired through this Stigma Stone must be removed first.
-                    PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_STIGMA_CANNT_UNEQUIP_STONE_FIRST_UNEQUIP_CURRENT_EQUIPPED_ITEM);
+                    PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_STIGMA_CANNT_UNEQUIP_STONE_FIRST_UNEQUIP_CURRENT_EQUIPPED_ITEM);
                     return false;
                 }
             } for (Item item : player.getEquipment().getEquippedItemsAllStigma()) {
@@ -74,16 +75,16 @@ public class StigmaService
                 } for (RequireSkill rs : si.getRequireSkill()) {
 					if (rs.getSkillId().contains(skillId)) {
 						///You cannot remove the Stigma Stone because %1 is a prerequisite for the %0th Stigma Stone.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300410, new DescriptionId(resultItem.getItemTemplate().getNameId()), new DescriptionId(item.getItemTemplate().getNameId())));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300410, new DescriptionId(resultItem.getItemTemplate().getNameId()), new DescriptionId(item.getItemTemplate().getNameId())));
 						return false;
 					}
 				}
             }
             int nameId = DataManager.SKILL_DATA.getSkillTemplate(skillId).getNameId();
-			PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player));
-            PacketSendUtility.sendPacket(player, new S_DELETE_SKILL(skillId, stigmaInfo.getSkilllvl(), true));
+			PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player));
+            PacketSendUtility.sendPacket(player, new SM_SKILL_REMOVE(skillId, stigmaInfo.getSkilllvl(), true));
 			///You have removed the Stigma Stone and can no longer use the %0 skill.
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300403, new DescriptionId(nameId)));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300403, new DescriptionId(nameId)));
             SkillLearnService.removeSkill(player, skillId);
             player.getEffectController().removeEffect(skillId);
         }
@@ -100,7 +101,7 @@ public class StigmaService
                     return;
                 }
 				int skillId = stigmaInfo.getSkillid();
-				PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player));
+				PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player));
                 player.getSkillList().addStigmaSkill(player, skillId, stigmaInfo.getSkilllvl(), false);
             }
         } for (Item item : equippedItems) {

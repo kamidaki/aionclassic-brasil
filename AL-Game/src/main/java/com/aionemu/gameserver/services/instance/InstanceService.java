@@ -1,34 +1,40 @@
 package com.aionemu.gameserver.services.instance;
 
+import java.util.Iterator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.main.AutoGroupConfig;
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.configs.main.MembershipConfig;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.instance.InstanceEngine;
-import com.aionemu.gameserver.model.summons.*;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.Summon;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.model.summons.SummonMode;
+import com.aionemu.gameserver.model.summons.UnsummonType;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAlliance;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.league.League;
 import com.aionemu.gameserver.model.templates.world.WorldMapTemplate;
 import com.aionemu.gameserver.network.aion.SystemMessageId;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.AutoGroupService;
 import com.aionemu.gameserver.services.summons.SummonsService;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.spawnengine.SpawnEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
-import com.aionemu.gameserver.world.*;
+import com.aionemu.gameserver.world.World;
+import com.aionemu.gameserver.world.WorldMap;
+import com.aionemu.gameserver.world.WorldMapInstance;
+import com.aionemu.gameserver.world.WorldMapInstanceFactory;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
-import javolution.util.FastList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
+import javolution.util.FastList;
 
 public class InstanceService
 {
@@ -83,7 +89,7 @@ public class InstanceService
 			VisibleObject obj = it.next();
 			if (obj instanceof Player) {
 				Player player = (Player) obj;
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(SystemMessageId.LEAVE_INSTANCE_NOT_PARTY));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(SystemMessageId.LEAVE_INSTANCE_NOT_PARTY));
 				moveToExitPoint((Player) obj);
 			} else {
 				obj.getController().onDelete();
@@ -292,14 +298,14 @@ public class InstanceService
 				return;
 			} else {
 				///You have exited the Instanced Zone. This zone will be reset in 3 minutes.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_LEAVE_INSTANCE(3), 5000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_LEAVE_INSTANCE(3), 5000);
 				///You have exited the Instanced Zone. This zone will be reset in 2 minutes.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_LEAVE_INSTANCE(2), 60000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_LEAVE_INSTANCE(2), 60000);
 				///You have exited the Instanced Zone. This zone will be reset in 1 minute.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_LEAVE_INSTANCE(1), 120000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_LEAVE_INSTANCE(1), 120000);
 				///The zone has been reset. Once reset, you cannot enter the zone again until the reentry time expires.
 				///You can check the reentry time by typing '/CheckEntry'.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_CANNOT_MAKE_INSTANCE_COOL_TIME, 180000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_CANNOT_MAKE_INSTANCE_COOL_TIME, 180000);
 			}
 		}
 	}

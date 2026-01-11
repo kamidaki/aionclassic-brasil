@@ -10,11 +10,11 @@
  */
 package com.aionemu.gameserver.services.rift;
 
+import java.util.Map;
+
 import com.aionemu.gameserver.model.rift.RiftLocation;
 import com.aionemu.gameserver.services.RiftService;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
-
-import java.util.Map;
 
 /****/
 /** Author Rinzler (Encom)

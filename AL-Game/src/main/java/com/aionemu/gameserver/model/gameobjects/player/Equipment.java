@@ -1,5 +1,15 @@
 package com.aionemu.gameserver.model.gameobjects.player;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.controllers.observer.ActionObserver;
 import com.aionemu.gameserver.controllers.observer.ObserverType;
 import com.aionemu.gameserver.dao.InventoryDAO;
@@ -20,7 +30,13 @@ import com.aionemu.gameserver.model.templates.item.ItemTemplate;
 import com.aionemu.gameserver.model.templates.item.ItemUseLimits;
 import com.aionemu.gameserver.model.templates.item.WeaponType;
 import com.aionemu.gameserver.model.templates.itemset.ItemSetTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_INVENTORY_UPDATE_ITEM;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_DELETE_ITEM;
+import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_UPDATE_PLAYER_APPEARANCE;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.services.StigmaService;
@@ -29,11 +45,8 @@ import com.aionemu.gameserver.services.item.ItemPacketService.ItemUpdateType;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.utils.stats.AbyssRankEnum;
-import javolution.util.FastList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import javolution.util.FastList;
 
 public class Equipment
 {
@@ -63,27 +76,27 @@ public class Equipment
 		ItemTemplate itemTemplate = item.getItemTemplate();
 		if (item.getItemTemplate().isClassSpecific(owner.getCommonData().getPlayerClass()) == false) {
 			//Your Class cannot use the selected item.
-			PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_CANNOT_USE_ITEM_INVALID_CLASS);
+			PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ITEM_INVALID_CLASS);
 			return null;
 		}
 		int requiredLevel = item.getItemTemplate().getRequiredLevel(owner.getCommonData().getPlayerClass());
 		if (requiredLevel == -1 || requiredLevel > owner.getLevel()) {
 			//You cannot use %1 until you reach level %0.
-			PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_CANNOT_USE_ITEM_TOO_LOW_LEVEL_MUST_BE_THIS_LEVEL(item.getNameId(), itemTemplate.getLevel()));
+			PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ITEM_TOO_LOW_LEVEL_MUST_BE_THIS_LEVEL(item.getNameId(), itemTemplate.getLevel()));
 			return null;
 		} if (itemTemplate.getRace() != Race.PC_ALL && itemTemplate.getRace() != owner.getRace()) {
 			//Your race cannot use this item.
-			PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_CANNOT_USE_ITEM_INVALID_RACE);
+			PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ITEM_INVALID_RACE);
 			return null;
 		}
 		ItemUseLimits limits = itemTemplate.getUseLimits();
 		if (limits.getGenderPermitted() != null && limits.getGenderPermitted() != owner.getGender()) {
 			//This item cannot be used by your gender.
-			PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_CANNOT_USE_ITEM_INVALID_GENDER);
+			PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ITEM_INVALID_GENDER);
 			return null;
 		} if (!verifyRankLimits(item)) {
 			//You cannot use the selected item until you reach the %0 rank.
-			PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_CANNOT_USE_ITEM_INVALID_RANK(AbyssRankEnum.getRankById(limits.getMinRank()).getDescriptionId()));
+			PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ITEM_INVALID_RANK(AbyssRankEnum.getRankById(limits.getMinRank()).getDescriptionId()));
 			return null;
 		}
 		int itemSlotToEquip = 0;
@@ -193,7 +206,7 @@ public class Equipment
 	 */
 	public Item unEquipItem(int itemUniqueId, int slot) {
 		if (owner.getInventory().isFull()) {
-			PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_UI_INVENTORY_FULL);
+			PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_UI_INVENTORY_FULL);
 			return null;
 		}
 		synchronized (equipment) {
@@ -225,12 +238,12 @@ public class Equipment
 			//Unequip "Weapon" stop Power Shard System.
 			if (itemToUnequip.getItemTemplate().isWeapon()) {
 				owner.unsetState(CreatureState.POWERSHARD);
-				PacketSendUtility.sendPacket(owner, new S_ACTION(owner, EmotionType.POWERSHARD_OFF, 0, 0));
+				PacketSendUtility.sendPacket(owner, new SM_EMOTION(owner, EmotionType.POWERSHARD_OFF, 0, 0));
 			}
 			//Unequip "Power Shard" stop Power Shard System.
 			if (itemToUnequip.getItemTemplate().getArmorType() != ArmorType.SHARD) {
 				owner.unsetState(CreatureState.POWERSHARD);
-				PacketSendUtility.sendPacket(owner, new S_ACTION(owner, EmotionType.POWERSHARD_OFF, 0, 0));
+				PacketSendUtility.sendPacket(owner, new SM_EMOTION(owner, EmotionType.POWERSHARD_OFF, 0, 0));
 			}
 			//Unequip "Stigma Stone"
 			if (!StigmaService.notifyUnequipAction(owner, itemToUnequip) && itemToUnequip.getItemTemplate().isStigma()) {
@@ -287,7 +300,7 @@ public class Equipment
 
 			if (item.getItemTemplate().getArmorType() == ArmorType.SHARD) {
 				owner.setState(CreatureState.POWERSHARD);
-				PacketSendUtility.sendPacket(owner, new S_ACTION(owner, EmotionType.POWERSHARD_ON, 0, 0));
+				PacketSendUtility.sendPacket(owner, new SM_EMOTION(owner, EmotionType.POWERSHARD_ON, 0, 0));
 			}
 
 			item.setEquipped(true);
@@ -326,7 +339,7 @@ public class Equipment
 
 			if (itemToUnequip.getItemTemplate().getArmorType() == ArmorType.SHARD) {
 				owner.unsetState(CreatureState.POWERSHARD);
-				PacketSendUtility.sendPacket(owner, new S_ACTION(owner, EmotionType.POWERSHARD_OFF, 0, 0));
+				PacketSendUtility.sendPacket(owner, new SM_EMOTION(owner, EmotionType.POWERSHARD_OFF, 0, 0));
 			}
 
 			ItemSlot[] allSlots = ItemSlot.getSlotsFor(itemToUnequip.getEquipmentSlot());
@@ -770,7 +783,7 @@ public class Equipment
 			if (powerShardStacks.size() != 0) {
 				equipItem(powerShardStacks.get(0).getObjectId(), powerShardItem.getEquipmentSlot());
 			} else {
-				PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_MSG_WEAPON_BOOST_MODE_BURN_OUT);
+				PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_MSG_WEAPON_BOOST_MODE_BURN_OUT);
 				owner.unsetState(CreatureState.POWERSHARD);
 			}
 		}
@@ -811,7 +824,7 @@ public class Equipment
 			equippedItem.decreaseItemCount(equippedItem.getItemCount());
 		} if (equippedItem.getItemCount() == 0) {
 			equipment.remove(equippedItem.getEquipmentSlot());
-			PacketSendUtility.sendPacket(owner, new S_REMOVE_INVENTORY(equippedItem.getObjectId()));
+			PacketSendUtility.sendPacket(owner, new SM_DELETE_ITEM(equippedItem.getObjectId()));
 			InventoryDAO.store(equippedItem, owner);
 		}
 		ItemPacketService.updateItemAfterInfoChange(owner, equippedItem, ItemUpdateType.STATS_CHANGE);
@@ -838,7 +851,7 @@ public class Equipment
 		} for (Item item : equippedWeapon) {
 			equipment.remove(item.getEquipmentSlot());
 			item.setEquipped(false);
-			PacketSendUtility.sendPacket(owner, new S_CHANGE_ITEM_DESC(owner, item, ItemUpdateType.EQUIP_UNEQUIP));
+			PacketSendUtility.sendPacket(owner, new SM_INVENTORY_UPDATE_ITEM(owner, item, ItemUpdateType.EQUIP_UNEQUIP));
 			if (owner.getGameStats() != null) {
 				if (item.getEquipmentSlot() == ItemSlot.MAIN_HAND.getSlotIdMask() || item.getEquipmentSlot() == ItemSlot.SUB_HAND.getSlotIdMask()) {
 					notifyItemUnequip(item);
@@ -878,7 +891,7 @@ public class Equipment
 		//Switch "Weapon" stop Power Shard System.
 		for (Item item: equippedWeapon) {
 			owner.unsetState(CreatureState.POWERSHARD);
-			PacketSendUtility.sendPacket(owner, new S_ACTION(owner, EmotionType.POWERSHARD_OFF, 0, 0));
+			PacketSendUtility.sendPacket(owner, new SM_EMOTION(owner, EmotionType.POWERSHARD_OFF, 0, 0));
 		}
 		setPersistentState(PersistentState.UPDATE_REQUIRED);
 	}
@@ -980,19 +993,19 @@ public class Equipment
 		if (player.getInventory().getItemByObjId(item.getObjectId()) == null || player.isInState(CreatureState.GLIDING)) {
 			return false;
 		} if (PlayerActions.isAlreadyDead(player)) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SOUL_BOUND_INVALID_STANCE(2800119));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SOUL_BOUND_INVALID_STANCE(2800119));
 			return false;
 		} else if (player.isInState(CreatureState.CHAIR)) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SOUL_BOUND_INVALID_STANCE(2800117));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SOUL_BOUND_INVALID_STANCE(2800117));
 			return false;
 		} else if (player.isInState(CreatureState.RESTING)) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SOUL_BOUND_INVALID_STANCE(2800115));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SOUL_BOUND_INVALID_STANCE(2800115));
 			return false;
 		} else if (player.isInState(CreatureState.FLYING)) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SOUL_BOUND_INVALID_STANCE(2800111));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SOUL_BOUND_INVALID_STANCE(2800111));
 			return false;
 		} else if (player.isInState(CreatureState.WEAPON_EQUIPPED)) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SOUL_BOUND_INVALID_STANCE(2800159));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SOUL_BOUND_INVALID_STANCE(2800159));
 			return false;
 		}
 		RequestResponseHandler responseHandler = new RequestResponseHandler(player) {
@@ -1005,7 +1018,7 @@ public class Equipment
 					@Override
 					public void moved() {
 						player.getController().cancelTask(TaskId.ITEM_USE);
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SOUL_BOUND_ITEM_CANCELED(item.getNameId()));
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SOUL_BOUND_ITEM_CANCELED(item.getNameId()));
 						PacketSendUtility.broadcastPacket(player, new S_USE_ITEM(player.getObjectId(), item.getObjectId(), item.getItemId(), 0, 8), true);
 					}
 				};
@@ -1015,24 +1028,24 @@ public class Equipment
 					public void run() {
 						player.getObserveController().removeObserver(moveObserver);
 						PacketSendUtility.broadcastPacket(player, new S_USE_ITEM(player.getObjectId(), item.getObjectId(), item.getItemId(), 0, 6), true);
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SOUL_BOUND_ITEM_SUCCEED(item.getNameId()));
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SOUL_BOUND_ITEM_SUCCEED(item.getNameId()));
 						item.setSoulBound(true);
 						ItemPacketService.updateItemAfterInfoChange(owner, item);
 						equip(slot, item);
-						PacketSendUtility.broadcastPacket(player, new S_WIELD(player.getObjectId(), getEquippedItemsWithoutStigma()), true);
+						PacketSendUtility.broadcastPacket(player, new SM_UPDATE_PLAYER_APPEARANCE(player.getObjectId(), getEquippedItemsWithoutStigma()), true);
 					}
 				}, 5000));
 			}
 			@Override
 			public void denyRequest(Creature requester, Player responder) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SOUL_BOUND_ITEM_CANCELED(item.getNameId()));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SOUL_BOUND_ITEM_CANCELED(item.getNameId()));
 			}
 		};
 		boolean requested = player.getResponseRequester().putRequest(S_ASK.STR_SOUL_BOUND_ITEM_DO_YOU_WANT_SOUL_BOUND, responseHandler);
 		if (requested) {
 			PacketSendUtility.sendPacket(player, new S_ASK(S_ASK.STR_SOUL_BOUND_ITEM_DO_YOU_WANT_SOUL_BOUND, 0, 0, new DescriptionId(item.getNameId())));
 		} else {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SOUL_BOUND_CLOSE_OTHER_MSG_BOX_AND_RETRY);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SOUL_BOUND_CLOSE_OTHER_MSG_BOX_AND_RETRY);
 		}
 		return false;
 	}
@@ -1051,7 +1064,7 @@ public class Equipment
 		for (Item item : getEquippedItems()) {
 			if (!verifyRankLimits(item)) {
 				unEquipItem(item.getObjectId(), item.getEquipmentSlot());
-				PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_MSG_UNEQUIP_RANKITEM(item.getNameId()));
+				PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_MSG_UNEQUIP_RANKITEM(item.getNameId()));
 			}
 		}
 	 }

@@ -1,16 +1,20 @@
 package com.aionemu.gameserver.questEngine.handlers.template;
 
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
-import com.aionemu.gameserver.questEngine.model.*;
-import com.aionemu.gameserver.services.QuestService;
-import com.aionemu.gameserver.utils.PacketSendUtility;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
+import com.aionemu.gameserver.questEngine.model.QuestActionType;
+import com.aionemu.gameserver.questEngine.model.QuestDialog;
+import com.aionemu.gameserver.questEngine.model.QuestEnv;
+import com.aionemu.gameserver.questEngine.model.QuestState;
+import com.aionemu.gameserver.questEngine.model.QuestStatus;
+import com.aionemu.gameserver.services.QuestService;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 
 public class FountainRewards extends QuestHandler
 {
@@ -60,13 +64,15 @@ public class FountainRewards extends QuestHandler
 									return sendQuestDialog(env, 5);
 								}
 							} else {
-								PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_FULL_INVENTORY);
+								PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_FULL_INVENTORY);
 								return sendQuestSelectionDialog(env);
 							}
 						} else {
 							return sendQuestSelectionDialog(env);
 						}
 					}
+				default:
+					break;
 				}
 			}
 		} else if (qs != null && qs.getStatus() == QuestStatus.REWARD) {

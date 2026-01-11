@@ -127,7 +127,17 @@ public final class CityMapUtil {
      * @return true se o mapa não precisa de IA avançada ou NAV
      */
     public static boolean isDefaultPathfinding(int mapId) {
-        return ReshantaUtil.isReshantaMap(mapId) || NO_AI_MAPS.contains(mapId);
+        return NO_AI_MAPS.contains(mapId);
+    }
+
+    /**
+     * Isola reshanta para desativação opcional, pois após a atualização do NAvData por demanda LRU, reshanta passou a ser incluida na utilização.
+     *
+     * @param mapId ID do mapa a verificar
+     * @return true se o mapa não precisa de IA avançada ou NAV
+     */
+    public static boolean isReshantaMap(int mapId) {
+        return ReshantaUtil.isReshantaMap(mapId);
     }
 
     /**

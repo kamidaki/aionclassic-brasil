@@ -10,25 +10,38 @@
  */
 package com.aionemu.gameserver.controllers.effect;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import com.aionemu.gameserver.model.EmotionType;
-import com.aionemu.gameserver.model.gameobjects.*;
+import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ABNORMAL_STATUS_OTHER;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.skillengine.effect.AbnormalState;
 import com.aionemu.gameserver.skillengine.effect.EffectTemplate;
 import com.aionemu.gameserver.skillengine.effect.EffectType;
-import com.aionemu.gameserver.skillengine.model.*;
+import com.aionemu.gameserver.skillengine.model.DispelCategoryType;
+import com.aionemu.gameserver.skillengine.model.DispelType;
+import com.aionemu.gameserver.skillengine.model.Effect;
+import com.aionemu.gameserver.skillengine.model.EffectResult;
+import com.aionemu.gameserver.skillengine.model.SkillSubType;
+import com.aionemu.gameserver.skillengine.model.SkillTargetSlot;
+import com.aionemu.gameserver.skillengine.model.TransformType;
 import com.aionemu.gameserver.taskmanager.tasks.PacketBroadcaster.BroadcastMode;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import javolution.util.FastMap;
 
-import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import javolution.util.FastMap;
 
 public class EffectController
 {
@@ -384,6 +397,8 @@ public class EffectController
                     number++;
 					break;
                 }
+			default:
+				break;
             }
         }
         return number;
@@ -434,12 +449,14 @@ public class EffectController
                     if (effect.getDispelCategory() == DispelCategoryType.NPC_DEBUFF_PHYSICAL)
                     remove = true;
                 }
+			default:
+				break;
             } if (remove) {
                 if (this.removePower(effect, power)) {
                     effect.endEffect();
                     this.abnormalEffectMap.remove(effect.getStack());
                 } else if (this.owner instanceof Player) {
-                    PacketSendUtility.sendPacket((Player)this.owner, S_MESSAGE_CODE.STR_MSG_NOT_ENOUGH_DISPELCOUNT);
+                    PacketSendUtility.sendPacket((Player)this.owner, SM_SYSTEM_MESSAGE.STR_MSG_NOT_ENOUGH_DISPELCOUNT);
                     count++;
                     power += 10;
                 }
@@ -447,7 +464,7 @@ public class EffectController
                 continue;
             }
             if (!(this.owner instanceof Player)) continue;
-            PacketSendUtility.sendPacket((Player)this.owner, S_MESSAGE_CODE.STR_MSG_NOT_ENOUGH_DISPELLEVEL);
+            PacketSendUtility.sendPacket((Player)this.owner, SM_SYSTEM_MESSAGE.STR_MSG_NOT_ENOUGH_DISPELLEVEL);
         }
     }
 
@@ -468,6 +485,8 @@ public class EffectController
                     remove = true;
 				    break;
                 }
+			default:
+				break;
             } if (remove) {
                 if (this.removePower(effect, power)) {
                     effect.endEffect();
@@ -476,11 +495,11 @@ public class EffectController
                     continue;
                 }
                 if (!(effect.getEffector() instanceof Player)) continue;
-                PacketSendUtility.sendPacket((Player)effect.getEffector(), S_MESSAGE_CODE.STR_MSG_NOT_ENOUGH_DISPELCOUNT);
+                PacketSendUtility.sendPacket((Player)effect.getEffector(), SM_SYSTEM_MESSAGE.STR_MSG_NOT_ENOUGH_DISPELCOUNT);
                 continue;
             }
             if (!(effect.getEffector() instanceof Player)) continue;
-            PacketSendUtility.sendPacket((Player)effect.getEffector(), S_MESSAGE_CODE.STR_MSG_NOT_ENOUGH_DISPELLEVEL);
+            PacketSendUtility.sendPacket((Player)effect.getEffector(), SM_SYSTEM_MESSAGE.STR_MSG_NOT_ENOUGH_DISPELLEVEL);
         }
         return count;
     }
@@ -695,7 +714,7 @@ public class EffectController
         this.abnormals |= mask;
         if (this.owner instanceof Player && this.owner.isInState(CreatureState.RESTING)) {
             this.owner.unsetState(CreatureState.RESTING);
-            PacketSendUtility.broadcastPacket((Player)this.owner, (AionServerPacket)new S_ACTION(this.owner, EmotionType.STAND), true);
+            PacketSendUtility.broadcastPacket((Player)this.owner, (AionServerPacket)new SM_EMOTION(this.owner, EmotionType.STAND), true);
         }
     }
 

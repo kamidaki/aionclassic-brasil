@@ -1,5 +1,11 @@
 package com.aionemu.gameserver.services.item;
 
+import java.util.Collections;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.dao.ItemStoneListDAO;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.DescriptionId;
@@ -10,14 +16,9 @@ import com.aionemu.gameserver.model.items.ManaStone;
 import com.aionemu.gameserver.model.items.storage.Storage;
 import com.aionemu.gameserver.model.templates.item.GodstoneInfo;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.trade.PricesService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.Set;
 
 public class ItemSocketService
 {
@@ -164,12 +165,12 @@ public class ItemSocketService
     public static void socketGodstone(Player player, int weaponId, int stoneId) {
         long socketPrice = PricesService.getPriceForService(100000, player.getRace());
         if (player.getInventory().getKinah() < socketPrice) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_NOT_ENOUGH_MONEY);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_NOT_ENOUGH_MONEY);
             return;
 		}
         Item weaponItem = player.getInventory().getItemByObjId(weaponId);
         if (weaponItem == null) {
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_GIVE_ITEM_PROC_CANNOT_GIVE_PROC_TO_EQUIPPED_ITEM);
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_GIVE_ITEM_PROC_CANNOT_GIVE_PROC_TO_EQUIPPED_ITEM);
             return;
         }
         int weaponItemId = weaponItem.getItemTemplate().getTemplateId();
@@ -182,7 +183,7 @@ public class ItemSocketService
         ItemTemplate itemTemplate = DataManager.ITEM_DATA.getItemTemplate(godStoneItemId);
         GodstoneInfo godstoneInfo = itemTemplate.getGodstoneInfo();
         if (godstoneInfo == null) {
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_GIVE_ITEM_PROC_NO_PROC_GIVE_ITEM);
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_GIVE_ITEM_PROC_NO_PROC_GIVE_ITEM);
             return;
         }
         int godsstoneItemIdmask = Math.round(godStoneItemId / 1000000);
@@ -192,7 +193,7 @@ public class ItemSocketService
             return;
 		}
         weaponItem.addGodStone(godStoneItemId);
-        PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_GIVE_ITEM_PROC_ENCHANTED_TARGET_ITEM(new DescriptionId(weaponItem.getNameId())));
+        PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_GIVE_ITEM_PROC_ENCHANTED_TARGET_ITEM(new DescriptionId(weaponItem.getNameId())));
         player.getInventory().decreaseKinah(socketPrice);
         ItemPacketService.updateItemAfterInfoChange(player, weaponItem);
     }

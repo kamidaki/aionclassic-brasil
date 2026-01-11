@@ -1,7 +1,6 @@
 package com.aionemu.gameserver.skillengine.task;
 
 import com.aionemu.commons.utils.Rnd;
-
 import com.aionemu.gameserver.configs.main.CraftConfig;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.StaticObject;
@@ -10,9 +9,9 @@ import com.aionemu.gameserver.model.templates.item.ItemCategory;
 import com.aionemu.gameserver.model.templates.item.ItemQuality;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
 import com.aionemu.gameserver.model.templates.recipe.RecipeTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_EFFECT;
-import com.aionemu.gameserver.network.aion.serverpackets.S_COMBINE_OTHER;
 import com.aionemu.gameserver.network.aion.serverpackets.S_COMBINE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_COMBINE_OTHER;
+import com.aionemu.gameserver.network.aion.serverpackets.S_EFFECT;
 import com.aionemu.gameserver.services.craft.CraftService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 

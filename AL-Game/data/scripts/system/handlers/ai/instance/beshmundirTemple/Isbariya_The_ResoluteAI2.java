@@ -10,29 +10,30 @@
  */
 package ai.instance.beshmundirTemple;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.aionemu.commons.utils.Rnd;
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
+import com.aionemu.commons.utils.Rnd;
+import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.NpcAI2;
-import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
-import com.aionemu.gameserver.model.*;
-import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.NpcShoutsService;
-import com.aionemu.gameserver.spawnengine.SpawnEngine;
 import com.aionemu.gameserver.skillengine.SkillEngine;
+import com.aionemu.gameserver.spawnengine.SpawnEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -76,9 +77,9 @@ public class Isbariya_The_ResoluteAI2 extends AggressiveNpcAI2
 					    scheduleSkill(18913, 0); //Arcane Combustion.
 						scheduleSkill(18912, 12000); //Seething Explosion.
 						//Isbariya taps into his power to cause a massive explosion!
-						PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDCatacombs_Boss_ArchPriest_Artifact_LightBoom, 0);
+						PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDCatacombs_Boss_ArchPriest_Artifact_LightBoom, 0);
 						//Isbariya releases his magical power!
-						PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDCatacombs_Boss_ArchPriest_Artifact_DarkBoom, 12000);
+						PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDCatacombs_Boss_ArchPriest_Artifact_DarkBoom, 12000);
 					break;
 					case 50:
 					    sacrificialSoul();
@@ -101,34 +102,34 @@ public class Isbariya_The_ResoluteAI2 extends AggressiveNpcAI2
 		scheduleSkill(18913, 6000); //Arcane Combustion.
 		scheduleSkill(18912, 12000); //Seething Explosion.
 		//Isbariya the Resolute inflicts a devastating curse.
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDCatacombs_Boss_ArchPriest_6phase, 6000);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDCatacombs_Boss_ArchPriest_6phase, 6000);
 		//Isbariya the Resolute has summoned a Bodyguard Commissioned Officer.
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDCatacombs_Boss_ArchPriest_5phase, 12000);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDCatacombs_Boss_ArchPriest_5phase, 12000);
 		final Npc sacrificialSoul1 = (Npc) spawn(281645, 1571.0000f, 1543.0000f, 304.0000f, (byte) 18);
 		sacrificialSoul1.getSpawn().setWalkerId("Sacrificial_Soul_1");
 		WalkManager.startWalking((NpcAI2) sacrificialSoul1.getAi2());
 		sacrificialSoul1.setState(1);
-		PacketSendUtility.broadcastPacket(sacrificialSoul1, new S_ACTION(sacrificialSoul1, EmotionType.START_EMOTE2, 0, sacrificialSoul1.getObjectId()));
+		PacketSendUtility.broadcastPacket(sacrificialSoul1, new SM_EMOTION(sacrificialSoul1, EmotionType.START_EMOTE2, 0, sacrificialSoul1.getObjectId()));
 		final Npc sacrificialSoul2 = (Npc) spawn(281645, 1569.0000f, 1544.0000f, 304.0000f, (byte) 17);
 		sacrificialSoul2.getSpawn().setWalkerId("Sacrificial_Soul_2");
 		WalkManager.startWalking((NpcAI2) sacrificialSoul2.getAi2());
 		sacrificialSoul2.setState(1);
-		PacketSendUtility.broadcastPacket(sacrificialSoul2, new S_ACTION(sacrificialSoul2, EmotionType.START_EMOTE2, 0, sacrificialSoul2.getObjectId()));
+		PacketSendUtility.broadcastPacket(sacrificialSoul2, new SM_EMOTION(sacrificialSoul2, EmotionType.START_EMOTE2, 0, sacrificialSoul2.getObjectId()));
 		final Npc sacrificialSoul3 = (Npc) spawn(281645, 1567.0000f, 1546.0000f, 304.0000f, (byte) 17);
 		sacrificialSoul3.getSpawn().setWalkerId("Sacrificial_Soul_3");
 		WalkManager.startWalking((NpcAI2) sacrificialSoul3.getAi2());
 		sacrificialSoul3.setState(1);
-		PacketSendUtility.broadcastPacket(sacrificialSoul3, new S_ACTION(sacrificialSoul3, EmotionType.START_EMOTE2, 0, sacrificialSoul3.getObjectId()));
+		PacketSendUtility.broadcastPacket(sacrificialSoul3, new SM_EMOTION(sacrificialSoul3, EmotionType.START_EMOTE2, 0, sacrificialSoul3.getObjectId()));
 		final Npc sacrificialSoul4 = (Npc) spawn(281645, 1565.0000f, 1547.0000f, 304.0000f, (byte) 17);
 		sacrificialSoul4.getSpawn().setWalkerId("Sacrificial_Soul_4");
 		WalkManager.startWalking((NpcAI2) sacrificialSoul4.getAi2());
 		sacrificialSoul4.setState(1);
-		PacketSendUtility.broadcastPacket(sacrificialSoul4, new S_ACTION(sacrificialSoul4, EmotionType.START_EMOTE2, 0, sacrificialSoul4.getObjectId()));
+		PacketSendUtility.broadcastPacket(sacrificialSoul4, new SM_EMOTION(sacrificialSoul4, EmotionType.START_EMOTE2, 0, sacrificialSoul4.getObjectId()));
 		final Npc sacrificialSoul5 = (Npc) spawn(281645, 1563.0000f, 1549.0000f, 304.0000f, (byte) 17);
 		sacrificialSoul5.getSpawn().setWalkerId("Sacrificial_Soul_5");
 		WalkManager.startWalking((NpcAI2) sacrificialSoul5.getAi2());
 		sacrificialSoul5.setState(1);
-		PacketSendUtility.broadcastPacket(sacrificialSoul5, new S_ACTION(sacrificialSoul5, EmotionType.START_EMOTE2, 0, sacrificialSoul5.getObjectId()));
+		PacketSendUtility.broadcastPacket(sacrificialSoul5, new SM_EMOTION(sacrificialSoul5, EmotionType.START_EMOTE2, 0, sacrificialSoul5.getObjectId()));
 	}
 	
 	private void holyServant() {
@@ -137,7 +138,7 @@ public class Isbariya_The_ResoluteAI2 extends AggressiveNpcAI2
 		scheduleSkill(18913, 0); //Arcane Combustion.
 		scheduleSkill(18912, 12000); //Seething Explosion.
 		//Isbariya the Resolute has boosted his recovery power!
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDCatacombs_Boss_ArchPriest_3phase, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDCatacombs_Boss_ArchPriest_3phase, 0);
 		rndSpawn(281659, 2);
 	}
 	
@@ -146,9 +147,9 @@ public class Isbariya_The_ResoluteAI2 extends AggressiveNpcAI2
 		///Fools! Now dost thou understand the might of the Balaur?
 		sendMsg(1500084, getObjectId(), false, 0);
 		//Isbariya the Resolute unleashes an intense power.
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDCatacombs_Boss_ArchPriest_4phase, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDCatacombs_Boss_ArchPriest_4phase, 0);
 		//Isbariya the Resolute has boosted his attack power!
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDCatacombs_Boss_ArchPriest_2phase, 8000);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDCatacombs_Boss_ArchPriest_2phase, 8000);
 		ThreadPoolManager.getInstance().schedule(new Runnable() {
 			@Override
 			public void run() {

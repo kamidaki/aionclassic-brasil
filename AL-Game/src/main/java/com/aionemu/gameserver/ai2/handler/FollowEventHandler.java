@@ -7,7 +7,7 @@ import com.aionemu.gameserver.ai2.event.AIEventType;
 import com.aionemu.gameserver.ai2.manager.EmoteManager;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -18,7 +18,7 @@ public class FollowEventHandler
 			npcAI.getOwner().setTarget(creature);
 			EmoteManager.emoteStartFollowing(npcAI.getOwner());
 			///You start to guard the target.
-			PacketSendUtility.npcSendPacketTime(npcAI.getOwner(), S_MESSAGE_CODE.STR_MSG_ESCORT_Start, 0);
+			PacketSendUtility.npcSendPacketTime(npcAI.getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_ESCORT_Start, 0);
 		}
 	}
 	

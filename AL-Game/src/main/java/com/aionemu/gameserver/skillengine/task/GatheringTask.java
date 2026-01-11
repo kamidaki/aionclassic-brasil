@@ -6,9 +6,9 @@ import com.aionemu.gameserver.model.gameobjects.Gatherable;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.gather.GatherableTemplate;
 import com.aionemu.gameserver.model.templates.gather.Material;
-import com.aionemu.gameserver.network.aion.serverpackets.S_GATHER_OTHER;
-import com.aionemu.gameserver.network.aion.serverpackets.S_GATHER;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_GATHER_UPDATE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_GATHER_ANIMATION;
 import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -29,8 +29,8 @@ public class GatheringTask extends AbstractCraftTask
 	
     @Override
     protected void onInteractionAbort() {
-        PacketSendUtility.sendPacket(requestor, new S_GATHER(template, material, 0, 0, 5));
-        PacketSendUtility.broadcastPacket(requestor, new S_GATHER_OTHER(requestor.getObjectId(), responder.getObjectId(), 2));
+        PacketSendUtility.sendPacket(requestor, new SM_GATHER_UPDATE(template, material, 0, 0, 5));
+        PacketSendUtility.broadcastPacket(requestor, new SM_GATHER_ANIMATION(requestor.getObjectId(), responder.getObjectId(), 2));
     }
 	
     @Override
@@ -40,10 +40,10 @@ public class GatheringTask extends AbstractCraftTask
 	
     @Override
     protected void onInteractionStart() {
-        PacketSendUtility.sendPacket(requestor, new S_GATHER(template, material, maxSuccessValue, maxFailureValue, 0));
+        PacketSendUtility.sendPacket(requestor, new SM_GATHER_UPDATE(template, material, maxSuccessValue, maxFailureValue, 0));
         this.onInteraction();
-        PacketSendUtility.broadcastPacket(requestor, new S_GATHER_OTHER(requestor.getObjectId(), responder.getObjectId(), 0), true);
-        PacketSendUtility.broadcastPacket(requestor, new S_GATHER_OTHER(requestor.getObjectId(), responder.getObjectId(), 1), true);
+        PacketSendUtility.broadcastPacket(requestor, new SM_GATHER_ANIMATION(requestor.getObjectId(), responder.getObjectId(), 0), true);
+        PacketSendUtility.broadcastPacket(requestor, new SM_GATHER_ANIMATION(requestor.getObjectId(), responder.getObjectId(), 1), true);
     }
 	
     @Override
@@ -62,7 +62,7 @@ public class GatheringTask extends AbstractCraftTask
 	
     @Override
     protected void sendInteractionUpdate() {
-        PacketSendUtility.sendPacket(requestor, new S_GATHER(template, material, currentSuccessValue, currentFailureValue, this.critType.getPacketId()));
+        PacketSendUtility.sendPacket(requestor, new SM_GATHER_UPDATE(template, material, currentSuccessValue, currentFailureValue, this.critType.getPacketId()));
     }
 	
     @Override
@@ -80,17 +80,17 @@ public class GatheringTask extends AbstractCraftTask
 	
     @Override
     protected void onFailureFinish() {
-        PacketSendUtility.sendPacket(requestor, new S_GATHER(template, material, currentSuccessValue, currentFailureValue, 1));
-        PacketSendUtility.sendPacket(requestor, new S_GATHER(template, material, currentSuccessValue, currentFailureValue, 7));
-        PacketSendUtility.broadcastPacket(requestor, new S_GATHER_OTHER(requestor.getObjectId(), responder.getObjectId(), 3), true);
+        PacketSendUtility.sendPacket(requestor, new SM_GATHER_UPDATE(template, material, currentSuccessValue, currentFailureValue, 1));
+        PacketSendUtility.sendPacket(requestor, new SM_GATHER_UPDATE(template, material, currentSuccessValue, currentFailureValue, 7));
+        PacketSendUtility.broadcastPacket(requestor, new SM_GATHER_ANIMATION(requestor.getObjectId(), responder.getObjectId(), 3), true);
     }
 	
     @Override
     protected boolean onSuccessFinish() {
-		PacketSendUtility.sendPacket(requestor, new S_GATHER(template, material, currentSuccessValue, currentFailureValue, 2));
-		PacketSendUtility.sendPacket(requestor, new S_GATHER(template, material, currentSuccessValue, currentFailureValue, 6));
-		PacketSendUtility.broadcastPacket(requestor, new S_GATHER_OTHER(requestor.getObjectId(), responder.getObjectId(), 2), true);
-        PacketSendUtility.sendPacket(requestor, S_MESSAGE_CODE.STR_EXTRACT_GATHER_SUCCESS_1_BASIC(new DescriptionId(material.getNameid())));
+		PacketSendUtility.sendPacket(requestor, new SM_GATHER_UPDATE(template, material, currentSuccessValue, currentFailureValue, 2));
+		PacketSendUtility.sendPacket(requestor, new SM_GATHER_UPDATE(template, material, currentSuccessValue, currentFailureValue, 6));
+		PacketSendUtility.broadcastPacket(requestor, new SM_GATHER_ANIMATION(requestor.getObjectId(), responder.getObjectId(), 2), true);
+        PacketSendUtility.sendPacket(requestor, SM_SYSTEM_MESSAGE.STR_EXTRACT_GATHER_SUCCESS_1_BASIC(new DescriptionId(material.getNameid())));
         if (template.getEraseValue() > 0) {
             requestor.getInventory().decreaseByItemId(template.getRequiredItemId(), template.getEraseValue());
         }

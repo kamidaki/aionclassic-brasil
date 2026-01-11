@@ -1,13 +1,13 @@
 package com.aionemu.gameserver.network.aion.serverpackets.need;
 
+import java.util.List;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.arcadeupgrade.ArcadeTab;
 import com.aionemu.gameserver.model.templates.arcadeupgrade.ArcadeTabItem;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
 import com.aionemu.gameserver.services.player.ArcadeUpgradeService;
-
-import java.util.List;
 
 public class S_GOTCHA_NOTIFY extends AionServerPacket {
 

@@ -17,16 +17,15 @@
 package com.aionemu.gameserver.network.aion.serverpackets;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.teleport.TeleporterTemplate;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class S_ROUTEMAP_INFO extends AionServerPacket
 {

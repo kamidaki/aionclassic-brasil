@@ -20,7 +20,7 @@ import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection;
-import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_STANCE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_STANCE;
 import com.aionemu.gameserver.skillengine.model.SkillTargetSlot;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -47,7 +47,7 @@ public class C_TURN_OFF_TOGGLE_SKILL extends AionClientPacket
 			player.getEffectController().removeEffect(this.skillId);
 		}
 		if (player.getController().getStanceSkillId() == this.skillId) {
-			PacketSendUtility.broadcastPacket(player, new S_CHANGE_STANCE(player, 0), true);
+			PacketSendUtility.broadcastPacket(player, new SM_PLAYER_STANCE(player, 0), true);
 			player.getController().startStance(0);
 		}
 	}

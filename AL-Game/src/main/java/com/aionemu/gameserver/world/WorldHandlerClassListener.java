@@ -1,14 +1,13 @@
 package com.aionemu.gameserver.world;
 
-import com.aionemu.commons.scripting.classlistener.ClassListener;
-import com.aionemu.commons.utils.ClassUtils;
-import com.aionemu.gameserver.world.WorldEngine;
-import com.aionemu.gameserver.world.WorldHandlerClassListener;
-import com.aionemu.gameserver.world.handlers.WorldHandler;
+import java.lang.reflect.Modifier;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Modifier;
+import com.aionemu.commons.scripting.classlistener.ClassListener;
+import com.aionemu.commons.utils.ClassUtils;
+import com.aionemu.gameserver.world.handlers.WorldHandler;
 
 public class WorldHandlerClassListener implements ClassListener
 {

@@ -10,16 +10,16 @@
  */
 package com.aionemu.gameserver.services.player;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.PlayerCommonData;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
-import com.aionemu.gameserver.network.aion.serverpackets.S_STATUS;
-import com.aionemu.gameserver.network.aion.serverpackets.S_EXP;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATUPDATE_EXP;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ReposeEnergyTask implements Runnable
 {
@@ -35,8 +35,8 @@ public class ReposeEnergyTask implements Runnable
 		PlayerCommonData pcd = player.getCommonData();
         if (player != null && player.isInState(CreatureState.RESTING) && !player.isInInstance() && pcd.getCurrentReposteEnergy() < pcd.getMaxReposteEnergy()) {
 			pcd.addReposteEnergy(3388542); //5%
-			PacketSendUtility.sendPacket(player, new S_STATUS(player));
-			PacketSendUtility.sendPacket(player, new S_EXP(pcd.getExpShown(), pcd.getExpRecoverable(), pcd.getExpNeed(), pcd.getCurrentReposteEnergy(), pcd.getMaxReposteEnergy()));
+			PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
+			PacketSendUtility.sendPacket(player, new SM_STATUPDATE_EXP(pcd.getExpShown(), pcd.getExpRecoverable(), pcd.getExpNeed(), pcd.getCurrentReposteEnergy(), pcd.getMaxReposteEnergy()));
         }
     }
 }

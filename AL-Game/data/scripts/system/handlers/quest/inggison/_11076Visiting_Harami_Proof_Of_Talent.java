@@ -11,14 +11,13 @@
 package quest.inggison;
 
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
+import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
-import com.aionemu.gameserver.services.QuestService;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.zone.ZoneName;
 
@@ -63,6 +62,8 @@ public class _11076Visiting_Harami_Proof_Of_Talent extends QuestHandler
 					} case REFUSE_QUEST: {
 				        return closeDialogWindow(env);
 					}
+				default:
+					break;
                 }
 			}
 		} else if (qs != null && qs.getStatus() == QuestStatus.START) {
@@ -77,6 +78,8 @@ public class _11076Visiting_Harami_Proof_Of_Talent extends QuestHandler
 						playQuestMovie(env, 513);
 						return closeDialogWindow(env);
 					}
+				default:
+					break;
                 }
             }
 		} else if (qs != null && qs.getStatus() == QuestStatus.REWARD) {
@@ -118,7 +121,7 @@ public class _11076Visiting_Harami_Proof_Of_Talent extends QuestHandler
 					qs.setQuestVar(1);
 					updateQuestStatus(env);
 					///You took the Illusion Fortress Windstream!
-					PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_QUEST_SAY_LF4_18, 0);
+					PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_QUEST_SAY_LF4_18, 0);
 					return true;
 				}
 			} else if (zoneName == ZoneName.get("LF4_Q11076_B_210050000")) {
@@ -126,7 +129,7 @@ public class _11076Visiting_Harami_Proof_Of_Talent extends QuestHandler
 					qs.setQuestVar(2);
 					updateQuestStatus(env);
 					///You took the Illusion Fortress Windstream No.2!
-					PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_QUEST_SAY_LF4_19, 0);
+					PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_QUEST_SAY_LF4_19, 0);
 					return true;
 				}
 			} else if (zoneName == ZoneName.get("LF4_Q11076_C_210050000")) {
@@ -134,7 +137,7 @@ public class _11076Visiting_Harami_Proof_Of_Talent extends QuestHandler
 					qs.setQuestVar(3);
 					updateQuestStatus(env);
 					///You took the Phanoe & Taloc Windstream!
-					PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_QUEST_SAY_LF4_20, 0);
+					PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_QUEST_SAY_LF4_20, 0);
 					return true;
 				}
 			}

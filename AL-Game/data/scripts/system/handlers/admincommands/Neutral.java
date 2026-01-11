@@ -1,7 +1,9 @@
 package admincommands;
 
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CUSTOM_ANIM;
+import com.aionemu.gameserver.network.aion.serverpackets.S_POLYMORPH;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_INFO;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 
@@ -48,7 +50,7 @@ public class Neutral extends AdminCommand
 		}
 		PacketSendUtility.sendMessage(admin, output);
 		admin.clearKnownlist();
-		PacketSendUtility.sendPacket(admin, new S_PUT_USER(admin, false));
+		PacketSendUtility.sendPacket(admin, new SM_PLAYER_INFO(admin, false));
 		PacketSendUtility.sendPacket(admin, new S_CUSTOM_ANIM(admin.getObjectId(), admin.getMotions().getActiveMotions()));
 		PacketSendUtility.broadcastPacketAndReceive(admin, new S_POLYMORPH(admin, true));
 		PacketSendUtility.broadcastPacketAndReceive(admin, new S_POLYMORPH(admin, admin.getTransformedModelId(), true, admin.getTransformedItemId()));

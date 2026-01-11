@@ -23,7 +23,7 @@ import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
 import com.aionemu.gameserver.model.team2.league.LeagueService;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.Util;
 import com.aionemu.gameserver.world.World;
@@ -59,13 +59,13 @@ public class C_PARTY_BY_NAME extends AionClientPacket
 		final Player inviter = getConnection().getActivePlayer();
 		if (inviter.getLifeStats().isAlreadyDead()) {
 			// You cannot issue an invitation while you are dead.
-			PacketSendUtility.sendPacket(inviter, new S_MESSAGE_CODE(1300163));
+			PacketSendUtility.sendPacket(inviter, new SM_SYSTEM_MESSAGE(1300163));
 			return;
 		}
 		final Player invited = World.getInstance().findPlayer(playerName);
 		if (invited != null) {
 			if (invited.getPlayerSettings().isInDeniedStatus(DeniedStatus.GROUP)) {
-				sendPacket(S_MESSAGE_CODE.STR_MSG_REJECTED_INVITE_PARTY(invited.getName()));
+				sendPacket(SM_SYSTEM_MESSAGE.STR_MSG_REJECTED_INVITE_PARTY(invited.getName()));
 				return;
 			}
 			switch (inviteType) {
@@ -83,7 +83,7 @@ public class C_PARTY_BY_NAME extends AionClientPacket
 					break;
 			}
 		} else {
-			inviter.getClientConnection().sendPacket(S_MESSAGE_CODE.STR_NO_SUCH_USER(name));
+			inviter.getClientConnection().sendPacket(SM_SYSTEM_MESSAGE.STR_NO_SUCH_USER(name));
 		}
 	}
 }

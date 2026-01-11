@@ -11,20 +11,17 @@
 package ai;
 
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.event.AIEventType;
-import com.aionemu.gameserver.ai2.handler.*;
+import com.aionemu.gameserver.ai2.handler.AggroEventHandler;
+import com.aionemu.gameserver.ai2.handler.CreatureEventHandler;
 import com.aionemu.gameserver.ai2.poll.AIAnswer;
 import com.aionemu.gameserver.ai2.poll.AIAnswers;
 import com.aionemu.gameserver.ai2.poll.AIQuestion;
-import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.skill.NpcSkillEntry;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.utils.*;
 import com.aionemu.gameserver.skillengine.SkillEngine;
 
 @AIName("aggressive")

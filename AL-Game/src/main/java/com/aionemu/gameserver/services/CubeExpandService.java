@@ -1,22 +1,22 @@
 package com.aionemu.gameserver.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.player.*;
+import com.aionemu.gameserver.model.gameobjects.player.CubeExpansionKinahEnum;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.QuestStateList;
 import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
 import com.aionemu.gameserver.model.items.storage.StorageType;
 import com.aionemu.gameserver.model.templates.CubeExpandTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_EVENT;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_EVENT;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CubeExpandService
 {
@@ -31,7 +31,7 @@ public class CubeExpandService
 			return;
 		} if (npcCanExpandLevel(expandTemplate, player.getNpcExpands() + 1) && canExpand(player)) {
 			if (player.getNpcExpands() >= 12) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_EXTEND_INVENTORY_CANT_EXTEND_MORE);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_EXTEND_INVENTORY_CANT_EXTEND_MORE);
 				return;
 			}
 			final int price = getPriceByLevel(expandTemplate, player.getNpcExpands() + 1);
@@ -39,7 +39,7 @@ public class CubeExpandService
 				@Override
 				public void acceptRequest(Creature requester, Player responder) {
 					if (price > player.getInventory().getKinah()) {
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_WAREHOUSE_EXPAND_NOT_ENOUGH_MONEY);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_WAREHOUSE_EXPAND_NOT_ENOUGH_MONEY);
 						return;
 					}
 					expand(responder, true);
@@ -54,7 +54,7 @@ public class CubeExpandService
 				PacketSendUtility.sendPacket(player, new S_ASK(S_ASK.STR_WAREHOUSE_EXPAND_WARNING, 0,0, String.valueOf(price)));
 			}
 		} else {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300430));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300430));
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class CubeExpandService
 		if (!canExpand(player)) {
 			return;
 		}
-		PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300431, "9"));
+		PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300431, "9"));
 		if (isNpcExpand) {
 			player.setNpcExpands(player.getNpcExpands() + 1);
 		} else {

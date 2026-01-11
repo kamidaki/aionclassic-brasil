@@ -1,5 +1,10 @@
 package com.aionemu.gameserver.services;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.cache.HTMLCache;
 import com.aionemu.gameserver.configs.main.SecurityConfig;
 import com.aionemu.gameserver.dao.SurveyControllerDAO;
@@ -9,17 +14,14 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.items.ItemId;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
 import com.aionemu.gameserver.model.templates.survey.SurveyItem;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.World;
+
 import javolution.util.FastList;
 import javolution.util.FastMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * @author KID
@@ -49,13 +51,13 @@ public class SurveyService {
 		SurveyItem item = activeItems.get(survId);
 		if (item == null) {
 			// There is no survey underway.
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300684));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300684));
 			return;
 		}
 
 		if (item.ownerId != player.getObjectId()) {
 			// There is no remaining survey to take part in.
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300037));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300037));
 			return;
 		}
 		ItemTemplate template = DataManager.ITEM_DATA.getItemTemplate(item.itemId);
@@ -63,7 +65,7 @@ public class SurveyService {
 			return;
 		}
 		if (player.getInventory().isFull()) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_FULL_INVENTORY);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_FULL_INVENTORY);
 			log.warn("[SurveyController] player " + player.getName() + " tried to receive item with full inventory.");
 			return;
 		}
@@ -71,13 +73,13 @@ public class SurveyService {
 
 			ItemService.addItem(player, item.itemId, item.count);
 			if (item.itemId == ItemId.KINAH.value()) // You received %num0 Kinah as reward for the survey.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300945, item.count));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300945, item.count));
 			else if (item.count == 1) // You received %0 item as reward for the survey.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300945, new DescriptionId(template.getNameId())));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300945, new DescriptionId(template.getNameId())));
 			else
 				// You received %num1 %0 items as reward for the survey.
 				PacketSendUtility.sendPacket(player,
-					new S_MESSAGE_CODE(1300946, item.count, new DescriptionId(template.getNameId())));
+					new SM_SYSTEM_MESSAGE(1300946, item.count, new DescriptionId(template.getNameId())));
 
 			template = null;
 			activeItems.remove(survId);

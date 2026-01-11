@@ -14,23 +14,25 @@ import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AttackIntention;
 import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.event.AIEventType;
-import com.aionemu.gameserver.ai2.handler.*;
+import com.aionemu.gameserver.ai2.handler.AggroEventHandler;
+import com.aionemu.gameserver.ai2.handler.AttackEventHandler;
+import com.aionemu.gameserver.ai2.handler.CreatureEventHandler;
+import com.aionemu.gameserver.ai2.handler.DiedEventHandler;
+import com.aionemu.gameserver.ai2.handler.MoveEventHandler;
+import com.aionemu.gameserver.ai2.handler.ReturningEventHandler;
+import com.aionemu.gameserver.ai2.handler.TalkEventHandler;
+import com.aionemu.gameserver.ai2.handler.TargetEventHandler;
+import com.aionemu.gameserver.ai2.handler.ThinkEventHandler;
 import com.aionemu.gameserver.ai2.manager.SkillAttackManager;
 import com.aionemu.gameserver.dataholders.DataManager;
-import com.aionemu.gameserver.questEngine.QuestEngine;
-import com.aionemu.gameserver.questEngine.model.QuestState;
-import com.aionemu.gameserver.questEngine.model.QuestStatus;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.skill.NpcSkillEntry;
 import com.aionemu.gameserver.model.templates.npcshout.ShoutEventType;
-import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.utils.stats.AbyssRankEnum;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.*;
 
 /****/
 /** Author Rinzler (Encom)
@@ -78,7 +80,7 @@ public class GeneralNpcAI2 extends NpcAI2
 					PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getOwner().getObjectId(), 10));
 				} else {
 					///You do not have enough Medals.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390257));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390257));
 					PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getOwner().getObjectId(), 1011));
 				}
 			break;

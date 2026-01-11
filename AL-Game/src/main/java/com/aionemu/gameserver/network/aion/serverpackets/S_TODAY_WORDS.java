@@ -35,7 +35,7 @@ public class S_TODAY_WORDS extends AionServerPacket {
 	protected void writeImpl(AionConnection con) {
 		writeD(targetObjId);
 		writeS(note);
-		PacketSendUtility.sendPacket(con.getActivePlayer(), new S_MESSAGE_CODE(1390124, note));
+		PacketSendUtility.sendPacket(con.getActivePlayer(), new SM_SYSTEM_MESSAGE(1390124, note));
 		System.out.print("work");
 	}
 }

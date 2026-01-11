@@ -10,17 +10,38 @@
  */
 package com.aionemu.gameserver.controllers;
 
-import com.aionemu.gameserver.configs.main.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.concurrent.Future;
+
+import javax.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.gameserver.configs.main.HTMLConfig;
+import com.aionemu.gameserver.configs.main.MembershipConfig;
+import com.aionemu.gameserver.configs.main.PvPConfig;
+import com.aionemu.gameserver.configs.main.SecurityConfig;
 import com.aionemu.gameserver.controllers.attack.AttackUtil;
 import com.aionemu.gameserver.controllers.observer.ActionObserver;
 import com.aionemu.gameserver.controllers.observer.ObserverType;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.EmotionType;
-import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.PlayerClass;
+import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.actions.PlayerMode;
-import com.aionemu.gameserver.model.gameobjects.*;
+import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Gatherable;
+import com.aionemu.gameserver.model.gameobjects.Item;
+import com.aionemu.gameserver.model.gameobjects.Kisk;
+import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.model.gameobjects.Pet;
+import com.aionemu.gameserver.model.gameobjects.StaticObject;
+import com.aionemu.gameserver.model.gameobjects.Summon;
+import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.AbyssRank;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
@@ -35,25 +56,58 @@ import com.aionemu.gameserver.model.templates.panels.SkillPanel;
 import com.aionemu.gameserver.model.templates.quest.QuestItems;
 import com.aionemu.gameserver.model.templates.stats.PlayerStatsTemplate;
 import com.aionemu.gameserver.model.templates.zone.ZoneClassName;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.LOG;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.TYPE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.LOG;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.TYPE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_DELETE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_GATHERABLE_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_NPC_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_LIST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_PET_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_STANCE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CUSTOM_ANIM;
+import com.aionemu.gameserver.network.aion.serverpackets.S_EFFECT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_FUNCTIONAL_PET;
+import com.aionemu.gameserver.network.aion.serverpackets.S_GAUGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_INVISIBLE_LEVEL;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PLACEABLE_BINDSTONE_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_POLYMORPH;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_RECIPE_LIST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_RESURRECT_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_SHOP_SELL_LIST;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_CANCEL;
+import com.aionemu.gameserver.network.aion.serverpackets.S_UPDATE_ZONE_QUEST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
-import com.aionemu.gameserver.services.*;
+import com.aionemu.gameserver.services.ClassChangeService;
+import com.aionemu.gameserver.services.DuelService;
+import com.aionemu.gameserver.services.HTMLService;
+import com.aionemu.gameserver.services.PvPSpreeService;
+import com.aionemu.gameserver.services.PvpService;
+import com.aionemu.gameserver.services.QuestService;
+import com.aionemu.gameserver.services.SerialKillerService;
+import com.aionemu.gameserver.services.SkillLearnService;
 import com.aionemu.gameserver.services.abyss.AbyssService;
 import com.aionemu.gameserver.services.craft.CraftSkillUpdateService;
-import com.aionemu.gameserver.services.SerialKillerService;
-import com.aionemu.gameserver.services.instance.*;
+import com.aionemu.gameserver.services.instance.InstanceService;
 import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.services.legion.LegionService;
 import com.aionemu.gameserver.services.summons.SummonsService;
 import com.aionemu.gameserver.services.toypet.PetSpawnService;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.skillengine.effect.*;
-import com.aionemu.gameserver.skillengine.model.*;
+import com.aionemu.gameserver.skillengine.effect.AbnormalState;
+import com.aionemu.gameserver.skillengine.model.Effect;
+import com.aionemu.gameserver.skillengine.model.HealType;
+import com.aionemu.gameserver.skillengine.model.Skill;
 import com.aionemu.gameserver.skillengine.model.Skill.SkillMethod;
+import com.aionemu.gameserver.skillengine.model.SkillTargetSlot;
+import com.aionemu.gameserver.skillengine.model.SkillTemplate;
 import com.aionemu.gameserver.taskmanager.tasks.PlayerMoveTaskManager;
 import com.aionemu.gameserver.taskmanager.tasks.TeamEffectUpdater;
 import com.aionemu.gameserver.utils.MathUtil;
@@ -65,15 +119,6 @@ import com.aionemu.gameserver.world.WorldType;
 import com.aionemu.gameserver.world.geo.GeoService;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
 import com.aionemu.gameserver.world.zone.ZoneName;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-
-import java.util.*;
-
-import java.util.concurrent.Future;
 
 public class PlayerController extends CreatureController<Player> {
 
@@ -88,7 +133,7 @@ public class PlayerController extends CreatureController<Player> {
 		super.see(object);
 		if (object instanceof Player) {
 			Player player = (Player) object;
-			PacketSendUtility.sendPacket(getOwner(), new S_PUT_USER(player, getOwner().isAggroIconTo(player)));
+			PacketSendUtility.sendPacket(getOwner(), new SM_PLAYER_INFO(player, getOwner().isAggroIconTo(player)));
 			PacketSendUtility.sendPacket(getOwner(), new S_CUSTOM_ANIM(player.getObjectId(), player.getMotions().getActiveMotions()));
 			if (player.isTransformed()) {
 				player.getEffectController().updatePlayerEffectIcons();
@@ -100,29 +145,29 @@ public class PlayerController extends CreatureController<Player> {
 			}
 			player.getEffectController().sendEffectIconsTo(getOwner());
 			if (player.getController().isUnderStance()) {
-                PacketSendUtility.broadcastPacket(player, new S_CHANGE_STANCE(player, 1), true);
+                PacketSendUtility.broadcastPacket(player, new SM_PLAYER_STANCE(player, 1), true);
             }
 		} else if (object instanceof Kisk) {
 			Kisk kisk = ((Kisk) object);
-			PacketSendUtility.sendPacket(getOwner(), new S_PUT_NPC(kisk, getOwner()));
+			PacketSendUtility.sendPacket(getOwner(), new SM_NPC_INFO(kisk, getOwner()));
 			if (getOwner().getRace() == kisk.getOwnerRace()) {
 				PacketSendUtility.sendPacket(getOwner(), new S_PLACEABLE_BINDSTONE_INFO(kisk));
 			}
 		} else if (object instanceof Npc) {
 			Npc npc = ((Npc) object);
-			PacketSendUtility.sendPacket(getOwner(), new S_PUT_NPC(npc, getOwner()));
+			PacketSendUtility.sendPacket(getOwner(), new SM_NPC_INFO(npc, getOwner()));
 			if (!npc.getEffectController().isEmpty()) {
 				npc.getEffectController().sendEffectIconsTo(getOwner());
 			}
 			QuestEngine.getInstance().onAtDistance(new QuestEnv(object, getOwner(), 0, 0));
 		} else if (object instanceof Summon) {
 			Summon npc = ((Summon) object);
-			PacketSendUtility.sendPacket(getOwner(), new S_PUT_NPC(npc));
+			PacketSendUtility.sendPacket(getOwner(), new SM_NPC_INFO(npc));
 			if (!npc.getEffectController().isEmpty()) {
 				npc.getEffectController().sendEffectIconsTo(getOwner());
 			}
 		} else if (object instanceof Gatherable || object instanceof StaticObject) {
-			PacketSendUtility.sendPacket(getOwner(), new S_PUT_OBJECT(object));
+			PacketSendUtility.sendPacket(getOwner(), new SM_GATHERABLE_INFO(object));
 		} else if (object instanceof Pet) {
 			PacketSendUtility.sendPacket(getOwner(), new S_FUNCTIONAL_PET(3, (Pet) object));
 		}
@@ -134,7 +179,7 @@ public class PlayerController extends CreatureController<Player> {
 		if (object instanceof Pet) {
 			PacketSendUtility.sendPacket(getOwner(), new S_FUNCTIONAL_PET(4, (Pet) object));
 		} else {
-			PacketSendUtility.sendPacket(getOwner(), new S_REMOVE_OBJECT(object, isOutOfRange ? 0 : 15));
+			PacketSendUtility.sendPacket(getOwner(), new SM_DELETE(object, isOutOfRange ? 0 : 15));
 		}
 	}
 
@@ -272,7 +317,7 @@ public class PlayerController extends CreatureController<Player> {
 		sendDieFromCreature(lastAttacker, showPacket);
 		QuestEngine.getInstance().onDie(new QuestEnv(null, player, 0, 0));
 		if (player.isInGroup2()) {
-			player.getPlayerGroup2().sendPacket(S_MESSAGE_CODE.STR_MSG_COMBAT_FRIENDLY_DEATH(player.getName()), new ExcludePlayerFilter(player));
+			player.getPlayerGroup2().sendPacket(SM_SYSTEM_MESSAGE.STR_MSG_COMBAT_FRIENDLY_DEATH(player.getName()), new ExcludePlayerFilter(player));
 		}
 	}
 	
@@ -287,7 +332,7 @@ public class PlayerController extends CreatureController<Player> {
 
 	private void sendDieFromCreature(@Nonnull Creature lastAttacker, boolean showPacket) {
 		Player player = this.getOwner();
-		PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.DIE, 0, player.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()), true);
+		PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.DIE, 0, player.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()), true);
 		if (showPacket) {
 			if (player.isInInstance()) {
 				PacketSendUtility.sendPacket(player, new S_RESURRECT_INFO(player.haveSelfRezEffect(), player.haveSelfRezItem(), 0, 8));
@@ -296,7 +341,7 @@ public class PlayerController extends CreatureController<Player> {
 				PacketSendUtility.sendPacket(player, new S_RESURRECT_INFO(player.canUseRebirthRevive(), player.haveSelfRezItem(), kiskTimeRemaining, 0));
 			}
 		}
-		PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_COMBAT_MY_DEATH);
+		PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_COMBAT_MY_DEATH);
 	}
 
 	@Override
@@ -330,7 +375,7 @@ public class PlayerController extends CreatureController<Player> {
 			return;
 		} if (!GeoService.getInstance().canSee(getOwner(), target)) {
 			//You cannot use that because there is an obstacle in the way.
-			PacketSendUtility.sendPacket(getOwner(), S_MESSAGE_CODE.STR_SKILL_OBSTACLE);
+			PacketSendUtility.sendPacket(getOwner(), SM_SYSTEM_MESSAGE.STR_SKILL_OBSTACLE);
 			return;
 		} if (target instanceof Npc) {
 			QuestEngine.getInstance().onAttack(new QuestEnv(target, getOwner(), 0, 0));
@@ -355,7 +400,7 @@ public class PlayerController extends CreatureController<Player> {
 		cancelGathering();
 		cancelActionItemNpc();
 		super.onAttack(creature, skillId, type, damage, notifyAttack, log);
-		PacketSendUtility.broadcastPacket(getOwner(), new S_HIT_POINT_OTHER(getOwner(), creature, type, skillId, damage, log), true);
+		PacketSendUtility.broadcastPacket(getOwner(), new SM_ATTACK_STATUS(getOwner(), creature, type, skillId, damage, log), true);
 		if (creature instanceof Npc) {
             QuestEngine.getInstance().onAttack(new QuestEnv(creature, getOwner(), 0, 0));
         }
@@ -455,10 +500,10 @@ public class PlayerController extends CreatureController<Player> {
 		player.setCasting(null);
 		player.setNextSkillUse(0);
 		if (castingSkill.getSkillMethod() == SkillMethod.CAST) {
-			PacketSendUtility.broadcastPacket(player, new S_SKILL_CANCELED(player, castingSkill.getSkillTemplate().getSkillId()), true);
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SKILL_CANCELED);
+			PacketSendUtility.broadcastPacket(player, new SM_SKILL_CANCEL(player, castingSkill.getSkillTemplate().getSkillId()), true);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SKILL_CANCELED);
 		} else if (castingSkill.getSkillMethod() == SkillMethod.ITEM) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ITEM_CANCELED(new DescriptionId(castingSkill.getItemTemplate().getNameId())));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ITEM_CANCELED(new DescriptionId(castingSkill.getItemTemplate().getNameId())));
 			player.removeItemCoolDown(castingSkill.getItemTemplate().getUseLimits().getDelayId());
 			PacketSendUtility.broadcastPacket(player, new S_USE_ITEM(player.getObjectId(), castingSkill.getFirstTarget().getObjectId(), castingSkill.getItemObjectId(), castingSkill.getItemTemplate().getTemplateId(), 0, 3, 0), true);
 		}
@@ -487,7 +532,7 @@ public class PlayerController extends CreatureController<Player> {
         Player player = getOwner();
         if (hasTask(TaskId.ACTION_ITEM_NPC)) {
             cancelTask(TaskId.ACTION_ITEM_NPC);
-            PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.END_QUESTLOOT, 0, getOwner().getObjectId()), true);
+            PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.END_QUESTLOOT, 0, getOwner().getObjectId()), true);
             PacketSendUtility.sendPacket(player, new S_GAUGE(player.getObjectId(), 0, 0, 2));
         }
     }
@@ -513,6 +558,8 @@ public class PlayerController extends CreatureController<Player> {
 		switch (healType) {
 			case DP:
 				getOwner().getCommonData().addDp(value);
+			break;
+		default:
 			break;
 		}
 	}
@@ -562,7 +609,7 @@ public class PlayerController extends CreatureController<Player> {
 		player.getController().updateZone();
 		player.getController().updateNearbyQuests();
 		player.getController().updatePassiveStats();
-		PacketSendUtility.sendPacket(player, new S_STATUS(player));
+		PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
 		if (level == 10 && playerClass != PlayerClass.MONK) {
 			CraftSkillUpdateService.getInstance().setMorphRecipe(player);
 		} else if (level == 16 && playerClass == PlayerClass.THUNDERER) {
@@ -575,7 +622,7 @@ public class PlayerController extends CreatureController<Player> {
 			PacketSendUtility.sendPacket(player, new S_CHANGE_PET_STATUS(summon));
 		}
 		SkillLearnService.addMissingSkills(player);
-		PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player));
+		PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player));
 		PacketSendUtility.sendPacket(player, new S_RECIPE_LIST(player.getRecipeList().getRecipeList()));
 		if (player.isInTeam()) {
 			TeamEffectUpdater.getInstance().startTask(player);
@@ -656,7 +703,7 @@ public class PlayerController extends CreatureController<Player> {
 	public void startStance(int skillId) {
         this.stance = skillId;
         if (skillId != 0) {
-            PacketSendUtility.broadcastPacket(this.getOwner(), new S_CHANGE_STANCE(this.getOwner(), 1), true);
+            PacketSendUtility.broadcastPacket(this.getOwner(), new SM_PLAYER_STANCE(this.getOwner(), 1), true);
             this.getOwner().getObserveController().addObserver(new ActionObserver(ObserverType.ABNORMALSETTED) {
                 @Override
                 public void abnormalsetted(AbnormalState state) {
@@ -666,14 +713,14 @@ public class PlayerController extends CreatureController<Player> {
                 }
             });
         } else {
-            PacketSendUtility.broadcastPacket(this.getOwner(), new S_CHANGE_STANCE(this.getOwner(), 0), true);
+            PacketSendUtility.broadcastPacket(this.getOwner(), new SM_PLAYER_STANCE(this.getOwner(), 0), true);
         }
     }
 
 	public void stopStance() {
         this.getOwner().getEffectController().removeNoshowEffect(this.stance);
         this.getOwner().getEffectController().removeEffect(this.stance);
-        PacketSendUtility.broadcastPacket(this.getOwner(), new S_CHANGE_STANCE(this.getOwner(), 0), true);
+        PacketSendUtility.broadcastPacket(this.getOwner(), new SM_PLAYER_STANCE(this.getOwner(), 0), true);
         this.stance = 0;
     }
 

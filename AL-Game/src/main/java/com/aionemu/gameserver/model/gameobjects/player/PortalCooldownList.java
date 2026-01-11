@@ -11,9 +11,10 @@
 package com.aionemu.gameserver.model.gameobjects.player;
 
 import com.aionemu.gameserver.dataholders.DataManager;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_INSTANCE_DUNGEON_COOLTIMES;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
+
 import javolution.util.FastMap;
 
 public class PortalCooldownList {
@@ -110,7 +111,7 @@ public class PortalCooldownList {
         } else {
             PacketSendUtility.sendPacket(owner, new S_INSTANCE_DUNGEON_COOLTIMES(owner, worldId));
             //You can enter %0 area now.
-            PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_MSG_CAN_ENTER_INSTANCE(worldId));
+            PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_MSG_CAN_ENTER_INSTANCE(worldId));
         }
     }
 

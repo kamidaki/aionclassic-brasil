@@ -10,6 +10,8 @@
  */
 package com.aionemu.gameserver.ai2.manager;
 
+import java.util.List;
+
 import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.AIState;
 import com.aionemu.gameserver.ai2.AISubState;
@@ -25,8 +27,6 @@ import com.aionemu.gameserver.model.templates.walker.WalkerTemplate;
 import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.geo.GeoService;
-
-import java.util.List;
 
 /**
  * @author ATracer
@@ -213,11 +213,15 @@ public class WalkManager {
 		else {
 			npcAI.getOwner().getMoveController().abortMove();
 			npcAI.getOwner().getMoveController().chooseNextStep();
-			ThreadPoolManager.getInstance().schedule(() -> {
-                if (npcAI.isInState(AIState.WALKING)) {
-                    npcAI.getOwner().getMoveController().moveToNextPoint();
-                }
-            }, walkPause);
+			ThreadPoolManager.getInstance().schedule(new Runnable() {
+
+				@Override
+				public void run() {
+					if (npcAI.isInState(AIState.WALKING)) {
+						npcAI.getOwner().getMoveController().moveToNextPoint();
+					}
+				}
+			}, walkPause);
 		}
 	}
 

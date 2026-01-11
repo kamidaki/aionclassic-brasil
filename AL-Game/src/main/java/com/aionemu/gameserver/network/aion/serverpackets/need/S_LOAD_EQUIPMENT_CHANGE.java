@@ -1,10 +1,10 @@
 package com.aionemu.gameserver.network.aion.serverpackets.need;
 
+import java.util.Collection;
+
 import com.aionemu.gameserver.model.gameobjects.player.equipmentset.EquipmentSetting;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-
-import java.util.Collection;
 
 public class S_LOAD_EQUIPMENT_CHANGE extends AionServerPacket {
 

@@ -1,20 +1,19 @@
 package admincommands;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.aionemu.gameserver.dataholders.DataManager;
-import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.spawns.SpawnGroup2;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
 import com.aionemu.gameserver.model.templates.walker.WalkerTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_REMOVE_OBJECT;
-import com.aionemu.gameserver.network.aion.serverpackets.S_PUT_NPC;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_DELETE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_NPC_INFO;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author KID
@@ -47,8 +46,8 @@ public class SpawnUpdate extends AdminCommand {
 				else
 					x = Float.parseFloat(params[2]);
 				npc.getPosition().setXYZH(x, null, null, null);
-				PacketSendUtility.sendPacket(admin, new S_REMOVE_OBJECT(npc, 0));
-				PacketSendUtility.sendPacket(admin, new S_PUT_NPC(npc, admin));
+				PacketSendUtility.sendPacket(admin, new SM_DELETE(npc, 0));
+				PacketSendUtility.sendPacket(admin, new SM_NPC_INFO(npc, admin));
 				PacketSendUtility.sendMessage(admin, "updated npcs x to " + x + ".");
 				try {
 					DataManager.SPAWNS_DATA2.saveSpawn(admin, npc, false);
@@ -66,8 +65,8 @@ public class SpawnUpdate extends AdminCommand {
 				else
 					y = Float.parseFloat(params[2]);
 				npc.getPosition().setXYZH(null, y, null, null);
-				PacketSendUtility.sendPacket(admin, new S_REMOVE_OBJECT(npc, 0));
-				PacketSendUtility.sendPacket(admin, new S_PUT_NPC(npc, admin));
+				PacketSendUtility.sendPacket(admin, new SM_DELETE(npc, 0));
+				PacketSendUtility.sendPacket(admin, new SM_NPC_INFO(npc, admin));
 				PacketSendUtility.sendMessage(admin, "updated npcs y to " + y + ".");
 				try {
 					DataManager.SPAWNS_DATA2.saveSpawn(admin, npc, false);
@@ -85,8 +84,8 @@ public class SpawnUpdate extends AdminCommand {
 				else
 					z = Float.parseFloat(params[2]);
 				npc.getPosition().setZ(z);
-				PacketSendUtility.sendPacket(admin, new S_REMOVE_OBJECT(npc, 0));
-				PacketSendUtility.sendPacket(admin, new S_PUT_NPC(npc, admin));
+				PacketSendUtility.sendPacket(admin, new SM_DELETE(npc, 0));
+				PacketSendUtility.sendPacket(admin, new SM_NPC_INFO(npc, admin));
 				PacketSendUtility.sendMessage(admin, "updated npcs z to " + z + ".");
 				try {
 					DataManager.SPAWNS_DATA2.saveSpawn(admin, npc, false);
@@ -110,8 +109,8 @@ public class SpawnUpdate extends AdminCommand {
 				else
 					h = Byte.parseByte(params[2]);
 				npc.getPosition().setH(h);
-				PacketSendUtility.sendPacket(admin, new S_REMOVE_OBJECT(npc, 0));
-				PacketSendUtility.sendPacket(admin, new S_PUT_NPC(npc, admin));
+				PacketSendUtility.sendPacket(admin, new SM_DELETE(npc, 0));
+				PacketSendUtility.sendPacket(admin, new SM_NPC_INFO(npc, admin));
 				PacketSendUtility.sendMessage(admin, "updated npcs heading to " + h + ".");
 				try {
 					DataManager.SPAWNS_DATA2.saveSpawn(admin, npc, false);
@@ -123,17 +122,17 @@ public class SpawnUpdate extends AdminCommand {
 			}
 
 			if (params[1].equalsIgnoreCase("xyz")) {
-				PacketSendUtility.sendPacket(admin, new S_REMOVE_OBJECT(npc, 0));
+				PacketSendUtility.sendPacket(admin, new SM_DELETE(npc, 0));
 				npc.getPosition().setXYZH(admin.getX(), null, null, null);
 				try {
 					DataManager.SPAWNS_DATA2.saveSpawn(admin, npc, false);
-					PacketSendUtility.sendPacket(admin, new S_PUT_NPC(npc, admin));
+					PacketSendUtility.sendPacket(admin, new SM_NPC_INFO(npc, admin));
 					npc.getPosition().setXYZH(null, admin.getY(), null, null);
 					DataManager.SPAWNS_DATA2.saveSpawn(admin, npc, false);
-					PacketSendUtility.sendPacket(admin, new S_PUT_NPC(npc, admin));
+					PacketSendUtility.sendPacket(admin, new SM_NPC_INFO(npc, admin));
 					npc.getPosition().setXYZH(null, null, admin.getZ(), null);
 					DataManager.SPAWNS_DATA2.saveSpawn(admin, npc, false);
-					PacketSendUtility.sendPacket(admin, new S_PUT_NPC(npc, admin));
+					PacketSendUtility.sendPacket(admin, new SM_NPC_INFO(npc, admin));
 					PacketSendUtility.sendMessage(admin, "updated npcs coordinates to " + admin.getX() + ", " + admin.getY() + ", " + admin.getZ() + ".");
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -163,8 +162,8 @@ public class SpawnUpdate extends AdminCommand {
 					}
 				}
 				spawn.setWalkerId(walkerId);
-				PacketSendUtility.sendPacket(admin, new S_REMOVE_OBJECT(npc, 0));
-				PacketSendUtility.sendPacket(admin, new S_PUT_NPC(npc, admin));
+				PacketSendUtility.sendPacket(admin, new SM_DELETE(npc, 0));
+				PacketSendUtility.sendPacket(admin, new SM_NPC_INFO(npc, admin));
 				if (walkerId == null) {
 					PacketSendUtility.sendMessage(admin, "removed npcs walker_id for " + npc.getNpcId() + ".");
 				} else {

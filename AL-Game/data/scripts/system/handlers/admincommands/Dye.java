@@ -4,7 +4,7 @@ import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.PersistentState;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_WIELD;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_UPDATE_PLAYER_APPEARANCE;
 import com.aionemu.gameserver.services.item.ItemPacketService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
@@ -129,7 +129,7 @@ public class Dye extends AdminCommand
 			}
 			ItemPacketService.updateItemAfterInfoChange(target, targetItem);
 		}
-		PacketSendUtility.broadcastPacket(target, new S_WIELD(target.getObjectId(), target.getEquipment().getEquippedItemsWithoutStigma()), true);
+		PacketSendUtility.broadcastPacket(target, new SM_UPDATE_PLAYER_APPEARANCE(target.getObjectId(), target.getEquipment().getEquippedItemsWithoutStigma()), true);
 		target.getEquipment().setPersistentState(PersistentState.UPDATE_REQUIRED);
 		if (target.getObjectId() != admin.getObjectId()) {
 			PacketSendUtility.sendMessage(target, "You have been dyed by " + admin.getName() + "!");

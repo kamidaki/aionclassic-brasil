@@ -1,8 +1,6 @@
 package com.aionemu.gameserver.services.siegeservice;
 
-import com.aionemu.gameserver.ai2.AbstractAI;
 import com.aionemu.gameserver.ai2.GeneralAIEvent;
-import com.aionemu.gameserver.ai2.eventcallback.OnDieEventCallback;
 import com.aionemu.gameserver.ai2.eventcallback.OnDieEventListener;
 import com.aionemu.gameserver.services.SiegeService;
 

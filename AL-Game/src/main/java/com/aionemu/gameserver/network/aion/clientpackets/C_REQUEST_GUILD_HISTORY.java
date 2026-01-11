@@ -16,16 +16,17 @@
  */
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import java.util.Collection;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.team.legion.LegionHistory;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_GUILD_HISTORY;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_LEGION_HISTORY;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
 
 /**
  * @author Simple, xTz
@@ -78,7 +79,7 @@ public class C_REQUEST_GUILD_HISTORY extends AionClientPacket
 						return;
 					}
 					if (!history.isEmpty()) {
-						PacketSendUtility.sendPacket(activePlayer, new S_GUILD_HISTORY(history, page, tab));
+						PacketSendUtility.sendPacket(activePlayer, new SM_LEGION_HISTORY(history, page, tab));
 					}
 					break;
 				/**

@@ -10,38 +10,34 @@
  */
 package world;
 
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
+import java.util.List;
 
+import com.aionemu.commons.network.util.ThreadPoolManager;
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.controllers.effect.PlayerEffectController;
-import com.aionemu.gameserver.model.siege.SiegeRace;
-import com.aionemu.gameserver.world.handlers.GeneralWorldHandler;
-import com.aionemu.gameserver.world.handlers.WorldID;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.*;
-import com.aionemu.gameserver.services.item.ItemService;
-import com.aionemu.gameserver.services.abyss.AbyssPointsService;
-import com.aionemu.gameserver.services.instance.InstanceService;
-import com.aionemu.gameserver.services.teleport.TeleportService2;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PLAY_CUTSCENE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
+import com.aionemu.gameserver.services.ClassChangeService;
+import com.aionemu.gameserver.services.instance.InstanceService;
+import com.aionemu.gameserver.services.item.ItemService;
+import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.skillengine.model.Effect;
-import com.aionemu.gameserver.skillengine.model.SkillTemplate;
-import com.aionemu.gameserver.utils.*;
+import com.aionemu.gameserver.utils.MathUtil;
+import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.world.World;
+import com.aionemu.gameserver.world.WorldMapInstance;
+import com.aionemu.gameserver.world.handlers.GeneralWorldHandler;
+import com.aionemu.gameserver.world.handlers.WorldID;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-import com.aionemu.gameserver.world.*;
-import com.aionemu.gameserver.world.zone.ZoneName;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
 
-import javolution.util.*;
-
-import java.util.*;
-import java.util.concurrent.Future;
+import javolution.util.FastList;
 
 /****/
 /** Author Rinzler (Encom)
@@ -432,7 +428,7 @@ public class Reshanta extends GeneralWorldHandler
 						PacketSendUtility.sendPacket(player, new S_PLAY_CUTSCENE(0, 271));
 					} else {
 						///I need a Temporal Stone!
-					    PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111203, player.getObjectId(), 2));
+					    PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111203, player.getObjectId(), 2));
 					}
 				} else if (player.getRace() == Race.ASMODIANS) {
 					final QuestState qs2074 = player.getQuestStateList().getQuestState(2074); //Looking For Leibo.
@@ -441,7 +437,7 @@ public class Reshanta extends GeneralWorldHandler
 						PacketSendUtility.sendPacket(player, new S_PLAY_CUTSCENE(0, 291));
 					} else {
 						///I need a Temporal Stone!
-					    PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111203, player.getObjectId(), 2));
+					    PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111203, player.getObjectId(), 2));
 					}
 				}
 			break;
@@ -455,7 +451,7 @@ public class Reshanta extends GeneralWorldHandler
 						TeleportService2.teleportTo(player, 310120000, ataxiarA.getInstanceId(), 52.0000f, 174.0000f, 229.0000f, (byte) 0);
 					} else {
 						///You cannot move to that destination.
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
 					}
 				} else if (player.getRace() == Race.ASMODIANS) {
 					final QuestState qs2099 = player.getQuestStateList().getQuestState(2099);
@@ -465,7 +461,7 @@ public class Reshanta extends GeneralWorldHandler
 					    TeleportService2.teleportTo(player, 320140000, ataxiarD.getInstanceId(), 452.0000f, 420.0000f, 230.0000f, (byte) 75);
 					} else {
 						///You cannot move to that destination.
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
 					}
 				}
 			break;
@@ -479,7 +475,7 @@ public class Reshanta extends GeneralWorldHandler
 						ItemService.addItem(player, 182215154, 1);
 					} else {
 						///You have not acquired this quest.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 					}
 				} else if (player.getRace() == Race.ASMODIANS) {
 					final QuestState qs29509A = player.getQuestStateList().getQuestState(29509);
@@ -489,7 +485,7 @@ public class Reshanta extends GeneralWorldHandler
 						ItemService.addItem(player, 182215155, 1);
 					} else {
 						///You have not acquired this quest.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 					}
 				}
 			break;
@@ -502,7 +498,7 @@ public class Reshanta extends GeneralWorldHandler
 						ItemService.addItem(player, 182215156, 1);
 					} else {
 						///You have not acquired this quest.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 					}
 				} else if (player.getRace() == Race.ASMODIANS) {
 					final QuestState qs29509B = player.getQuestStateList().getQuestState(29509);
@@ -512,7 +508,7 @@ public class Reshanta extends GeneralWorldHandler
 						ItemService.addItem(player, 182215157, 1);
 					} else {
 						///You have not acquired this quest.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 					}
 				}
 			break;
@@ -525,7 +521,7 @@ public class Reshanta extends GeneralWorldHandler
 						ItemService.addItem(player, 182215158, 1);
 					} else {
 						///You have not acquired this quest.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 					}
 				} else if (player.getRace() == Race.ASMODIANS) {
 					final QuestState qs29509C = player.getQuestStateList().getQuestState(29509);
@@ -535,7 +531,7 @@ public class Reshanta extends GeneralWorldHandler
 						ItemService.addItem(player, 182215159, 1);
 					} else {
 						///You have not acquired this quest.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 					}
 				}
 			break;
@@ -590,7 +586,7 @@ public class Reshanta extends GeneralWorldHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getWorldId() == map.getMapId() && player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});
@@ -605,7 +601,7 @@ public class Reshanta extends GeneralWorldHandler
 				World.getInstance().doOnAllPlayers(new Visitor<Player>() {
 					@Override
 					public void visit(Player player) {
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 					}
 				});
 			}

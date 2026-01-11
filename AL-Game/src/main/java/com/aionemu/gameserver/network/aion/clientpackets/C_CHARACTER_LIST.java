@@ -1,12 +1,13 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.administration.AdminConfig;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.aionemu.gameserver.network.aion.serverpackets.S_BUILDER_LEVEL;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CHARACTER_LIST;
 
 public class C_CHARACTER_LIST extends AionClientPacket
 {

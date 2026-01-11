@@ -16,15 +16,15 @@ import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.controllers.observer.ItemUseObserver;
 import com.aionemu.gameserver.model.EmotionType;
-import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.Race;
+import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.S_GAUGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
-import com.aionemu.gameserver.network.aion.serverpackets.S_GAUGE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 /****/
@@ -46,7 +46,7 @@ public class Entrance_Of_Oracular_ChamberAI2 extends NpcAI2
             } else {
                 PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getObjectId(), 27));
 				///You cannot use it as the required quest has not been completed.
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
             }
         } else if (player.getRace() == Race.ASMODIANS) {
 			QuestState qsA = player.getQuestStateList().getQuestState(30308); //[Group] Summon Respondent Utra.
@@ -55,7 +55,7 @@ public class Entrance_Of_Oracular_ChamberAI2 extends NpcAI2
             } else {
                 PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getObjectId(), 27));
 				///You cannot use it as the required quest has not been completed.
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
             }
         }
     }
@@ -67,18 +67,18 @@ public class Entrance_Of_Oracular_ChamberAI2 extends NpcAI2
 				@Override
 				public void abort() {
 					player.getController().cancelTask(TaskId.ACTION_ITEM_NPC);
-					PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.END_QUESTLOOT, 0, getObjectId()), true);
+					PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.END_QUESTLOOT, 0, getObjectId()), true);
 					PacketSendUtility.sendPacket(player, new S_GAUGE(player.getObjectId(), getObjectId(), 0, cancelBarAnimation));
 					player.getObserveController().removeObserver(this);
 				}
 			};
 			player.getObserveController().attach(observer);
 			PacketSendUtility.sendPacket(player, new S_GAUGE(player.getObjectId(), getObjectId(), getTalkDelay(), startBarAnimation));
-			PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.START_QUESTLOOT, 0, getObjectId()), true);
+			PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.START_QUESTLOOT, 0, getObjectId()), true);
 			player.getController().addTask(TaskId.ACTION_ITEM_NPC, ThreadPoolManager.getInstance().schedule(new Runnable() {
 				@Override
 				public void run() {
-					PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.END_QUESTLOOT, 0, getObjectId()), true);
+					PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.END_QUESTLOOT, 0, getObjectId()), true);
 					PacketSendUtility.sendPacket(player, new S_GAUGE(player.getObjectId(), getObjectId(), getTalkDelay(), cancelBarAnimation));
 					player.getObserveController().removeObserver(observer);
 					handleUseItemFinish(player);

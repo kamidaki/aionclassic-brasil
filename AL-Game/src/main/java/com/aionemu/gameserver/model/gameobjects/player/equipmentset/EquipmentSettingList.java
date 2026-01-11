@@ -1,12 +1,12 @@
 package com.aionemu.gameserver.model.gameobjects.player.equipmentset;
 
-import com.aionemu.gameserver.dao.PlayerEquipmentSettingDAO;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.aionemu.gameserver.dao.PlayerEquipmentSettingDAO;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
 
 public class EquipmentSettingList {
     private Map<Integer, EquipmentSetting> equipmentSetting;

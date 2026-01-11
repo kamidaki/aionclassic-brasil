@@ -1,13 +1,12 @@
 package com.aionemu.gameserver.network.aion.serverpackets;
 
-import com.aionemu.gameserver.configs.main.GSConfig;
+import java.util.List;
+
 import com.aionemu.gameserver.controllers.attack.AttackResult;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-
-import java.util.List;
 
 public class S_ATTACK extends AionServerPacket
 {

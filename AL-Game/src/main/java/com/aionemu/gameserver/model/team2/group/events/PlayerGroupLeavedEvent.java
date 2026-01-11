@@ -16,9 +16,9 @@ import com.aionemu.gameserver.model.team2.common.legacy.GroupEvent;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupMember;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
-import com.aionemu.gameserver.network.aion.serverpackets.S_PARTY_MEMBER_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_GROUP_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PARTY_MEMBER_INFO;
 import com.aionemu.gameserver.services.instance.InstanceService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
@@ -64,12 +64,14 @@ public class PlayerGroupLeavedEvent extends PlayerLeavedEvent<PlayerGroupMember,
                     }
                 }
                 if (reason == LeaveReson.BAN) {
-                    PacketSendUtility.sendPacket(leavedPlayer, S_MESSAGE_CODE.STR_PARTY_YOU_ARE_BANISHED);
+                    PacketSendUtility.sendPacket(leavedPlayer, SM_SYSTEM_MESSAGE.STR_PARTY_YOU_ARE_BANISHED);
                 }
                 break;
             case DISBAND:
-                PacketSendUtility.sendPacket(leavedPlayer, S_MESSAGE_CODE.STR_PARTY_IS_DISPERSED);
+                PacketSendUtility.sendPacket(leavedPlayer, SM_SYSTEM_MESSAGE.STR_PARTY_IS_DISPERSED);
                 break;
+		default:
+			break;
         }
 
         if (leavedPlayer.isInInstance()) {
@@ -94,12 +96,14 @@ public class PlayerGroupLeavedEvent extends PlayerLeavedEvent<PlayerGroupMember,
         switch (reason) {
             case LEAVE:
             case DISBAND:
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_PARTY_HE_LEAVE_PARTY(leavedPlayer.getName()));
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_PARTY_HE_LEAVE_PARTY(leavedPlayer.getName()));
                 break;
             case BAN:
                 // TODO find out empty strings (Retail has +2 empty strings
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_PARTY_HE_IS_BANISHED(leavedPlayer.getName()));
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_PARTY_HE_IS_BANISHED(leavedPlayer.getName()));
                 break;
+		default:
+			break;
         }
 
         return true;

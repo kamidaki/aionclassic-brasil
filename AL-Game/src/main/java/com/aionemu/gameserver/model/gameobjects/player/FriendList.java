@@ -10,17 +10,18 @@
  */
 package com.aionemu.gameserver.model.gameobjects.player;
 
-import com.aionemu.gameserver.configs.main.CustomConfig;
-import com.aionemu.gameserver.configs.main.MembershipConfig;
-import com.aionemu.gameserver.network.aion.serverpackets.S_NOTIFY_BUDDY;
-import com.aionemu.gameserver.network.aion.serverpackets.S_BUDDY_DATA;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.gameserver.configs.main.CustomConfig;
+import com.aionemu.gameserver.configs.main.MembershipConfig;
+import com.aionemu.gameserver.network.aion.serverpackets.S_BUDDY_DATA;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NOTIFY_BUDDY;
 
 /**
  * Represents a player's Friend list

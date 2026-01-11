@@ -1,12 +1,13 @@
 package com.aionemu.gameserver.model.templates.decomposable;
 
-import com.aionemu.gameserver.model.PlayerClass;
-import com.aionemu.gameserver.model.Race;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.List;
+
+import com.aionemu.gameserver.model.PlayerClass;
+import com.aionemu.gameserver.model.Race;
 
 @XmlType(name = "DecomposableList")
 public class DecomposableList {

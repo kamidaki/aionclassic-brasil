@@ -10,27 +10,40 @@
  */
 package instance;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
 
+import org.apache.commons.lang.mutable.MutableInt;
+
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.configs.main.GroupConfig;
 import com.aionemu.gameserver.instance.handlers.GeneralInstanceHandler;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.DescriptionId;
+import com.aionemu.gameserver.model.EmotionType;
+import com.aionemu.gameserver.model.Race;
+import com.aionemu.gameserver.model.TeleportAnimation;
 import com.aionemu.gameserver.model.actions.PlayerActions;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.StaticDoor;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.instance.InstanceScoreType;
-import com.aionemu.gameserver.model.instance.instancereward.TiakReward;
 import com.aionemu.gameserver.model.instance.instancereward.InstanceReward;
-import com.aionemu.gameserver.model.instance.playerreward.TiakPlayerReward;
+import com.aionemu.gameserver.model.instance.instancereward.TiakReward;
 import com.aionemu.gameserver.model.instance.playerreward.InstancePlayerReward;
+import com.aionemu.gameserver.model.instance.playerreward.TiakPlayerReward;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
+import com.aionemu.gameserver.network.aion.serverpackets.S_INSTANT_DUNGEON_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_RESURRECT_INFO;
+import com.aionemu.gameserver.services.AutoGroupService;
 import com.aionemu.gameserver.services.abyss.AbyssPointsService;
 import com.aionemu.gameserver.services.player.PlayerReviveService;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
@@ -42,12 +55,6 @@ import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 
 import javolution.util.FastList;
-
-import org.apache.commons.lang.mutable.MutableInt;
-
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /****/
 /** Author Rinzler (Encom)
@@ -1701,7 +1708,7 @@ public class Tiak_Research_Base extends GeneralInstanceHandler
 	public boolean onReviveEvent(Player player) {
 		player.getGameStats().updateStatsAndSpeedVisually();
 		PlayerReviveService.revive(player, 100, 100, false, 0);
-		PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_REBIRTH_MASSAGE_ME);
+		PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_REBIRTH_MASSAGE_ME);
 		PacketSendUtility.sendPacket(player, new S_ASK(S_ASK.STR_INSTANT_DUNGEON_RESURRECT, 0, 0));
 		tiakReward.portToPosition(player);
 		return true;
@@ -1710,7 +1717,7 @@ public class Tiak_Research_Base extends GeneralInstanceHandler
 	@Override
 	public boolean onDie(Player player, Creature lastAttacker) {
 		int points = 60;
-		PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.DIE, 0, player.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()), true);
+		PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.DIE, 0, player.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()), true);
         PacketSendUtility.sendPacket(player, new S_RESURRECT_INFO(player.haveSelfRezEffect(), false, 0, 8));
 		if (lastAttacker instanceof Player) {
 			if (lastAttacker.getRace() != player.getRace()) {
@@ -1766,9 +1773,9 @@ public class Tiak_Research_Base extends GeneralInstanceHandler
 		} for (Player playerToGainScore : playersToGainScore) {
 			addPointToPlayer(playerToGainScore, points / playersToGainScore.size());
 			if (target instanceof Npc) {
-				PacketSendUtility.sendPacket(playerToGainScore, new S_MESSAGE_CODE(1400237, new DescriptionId(((Npc) target).getObjectTemplate().getNameId() * 2 + 1), points));
+				PacketSendUtility.sendPacket(playerToGainScore, new SM_SYSTEM_MESSAGE(1400237, new DescriptionId(((Npc) target).getObjectTemplate().getNameId() * 2 + 1), points));
 			} else if (target instanceof Player) {
-				PacketSendUtility.sendPacket(playerToGainScore, new S_MESSAGE_CODE(1400237, target.getName(), points));
+				PacketSendUtility.sendPacket(playerToGainScore, new SM_SYSTEM_MESSAGE(1400237, target.getName(), points));
 			}
 		}
 		int pointDifference = getPointsByRace(Race.ASMODIANS).intValue() - (getPointsByRace(Race.ELYOS)).intValue();
@@ -1855,7 +1862,7 @@ public class Tiak_Research_Base extends GeneralInstanceHandler
                     @Override
                     public void visit(Player player) {
                         if (player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-                            PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+                            PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
                         }
                     }
                 });
@@ -1899,7 +1906,7 @@ public class Tiak_Research_Base extends GeneralInstanceHandler
     public void onLeaveInstance(Player player) {
         stopInstanceTask();
 		//"Player Name" has left the battle.
-		PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400255, player.getName()));
+		PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400255, player.getName()));
         if (player.isInGroup2()) {
             PlayerGroupService.removePlayer(player);
         }

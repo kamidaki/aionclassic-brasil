@@ -23,7 +23,8 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.QuestTemplate;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_QUEST;
 import com.aionemu.gameserver.services.QuestService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -68,6 +69,6 @@ public class C_GIVE_UP_QUEST extends AionClientPacket
 			return;
 		}
 		///Abandon Selected Quest.
-		PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300822));
+		PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300822));
 	}
 }

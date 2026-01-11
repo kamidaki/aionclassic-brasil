@@ -1,5 +1,8 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.administration.AdminConfig;
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.configs.main.LoggingConfig;
@@ -8,16 +11,14 @@ import com.aionemu.gameserver.model.gameobjects.player.FriendList;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
 import com.aionemu.gameserver.services.NameRestrictionService;
 import com.aionemu.gameserver.utils.ChatUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.Util;
 import com.aionemu.gameserver.world.World;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class C_WHISPER extends AionClientPacket
 {
@@ -50,27 +51,27 @@ public class C_WHISPER extends AionClientPacket
 		}
 		if (receiver == null) {
 			//%0 is not playing the game.
-			sendPacket(S_MESSAGE_CODE.STR_NO_SUCH_USER(formatname));
+			sendPacket(SM_SYSTEM_MESSAGE.STR_NO_SUCH_USER(formatname));
 		} else if (receiver.getFriendList().getStatus() == FriendList.Status.OFFLINE && sender.getAccessLevel() < AdminConfig.GM_LEVEL) {
 			//%0 is not playing the game.
-			sendPacket(S_MESSAGE_CODE.STR_NO_SUCH_USER(formatname));
+			sendPacket(SM_SYSTEM_MESSAGE.STR_NO_SUCH_USER(formatname));
 		} else if (!receiver.isWispable()) {
 			//%0 is currently not accepting any Whispers.
-			sendPacket(S_MESSAGE_CODE.STR_WHISPER_REFUSE(formatname));
+			sendPacket(SM_SYSTEM_MESSAGE.STR_WHISPER_REFUSE(formatname));
 		} else if (sender.getLevel() < CustomConfig.LEVEL_TO_WHISPER) {
 			//Characters under level 10 cannot send whispers.
-			sendPacket(S_MESSAGE_CODE.STR_CANT_WHISPER_LEVEL(String.valueOf(CustomConfig.LEVEL_TO_WHISPER)));
+			sendPacket(SM_SYSTEM_MESSAGE.STR_CANT_WHISPER_LEVEL(String.valueOf(CustomConfig.LEVEL_TO_WHISPER)));
 		} else if (receiver.getBlockList().contains(sender.getObjectId())) {
 			//%0 has blocked you.
-			sendPacket(S_MESSAGE_CODE.STR_YOU_EXCLUDED(receiver.getName()));
+			sendPacket(SM_SYSTEM_MESSAGE.STR_YOU_EXCLUDED(receiver.getName()));
 		} else if ((!CustomConfig.SPEAKING_BETWEEN_FACTIONS)
 				&& (sender.getRace().getRaceId() != receiver.getRace().getRaceId())
 				&& (sender.getAccessLevel() < AdminConfig.GM_LEVEL) && (receiver.getAccessLevel() < AdminConfig.GM_LEVEL)) {
 			//%0 is not playing the game.
-			sendPacket(S_MESSAGE_CODE.STR_NO_SUCH_USER(formatname));
+			sendPacket(SM_SYSTEM_MESSAGE.STR_NO_SUCH_USER(formatname));
 		} else {
 			if (RestrictionsManager.canChat(sender)) {
-				PacketSendUtility.sendPacket(receiver, new S_MESSAGE(sender, NameRestrictionService.filterMessage(message), ChatType.WHISPER));
+				PacketSendUtility.sendPacket(receiver, new SM_MESSAGE(sender, NameRestrictionService.filterMessage(message), ChatType.WHISPER));
 			}
 		}
 	}

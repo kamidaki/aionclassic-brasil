@@ -1,5 +1,15 @@
 package com.aionemu.gameserver.services.drop;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.event.AIEventType;
 import com.aionemu.gameserver.configs.main.EventsConfig;
@@ -15,21 +25,18 @@ import com.aionemu.gameserver.model.stats.container.StatEnum;
 import com.aionemu.gameserver.model.team2.common.legacy.LootGroupRules;
 import com.aionemu.gameserver.model.templates.event.EventDrop;
 import com.aionemu.gameserver.model.templates.event.EventTemplate;
-import com.aionemu.gameserver.model.templates.npc.*;
+import com.aionemu.gameserver.model.templates.npc.NpcCommonDrop;
+import com.aionemu.gameserver.model.templates.npc.NpcRank;
+import com.aionemu.gameserver.model.templates.npc.NpcTemplate;
 import com.aionemu.gameserver.model.templates.pet.PetFunctionType;
-import com.aionemu.gameserver.network.aion.serverpackets.S_LOOT;
 import com.aionemu.gameserver.network.aion.serverpackets.S_FUNCTIONAL_PET;
+import com.aionemu.gameserver.network.aion.serverpackets.S_LOOT;
 import com.aionemu.gameserver.services.EventService;
 import com.aionemu.gameserver.services.QuestService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 
 public class DropRegistrationService

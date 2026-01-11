@@ -11,12 +11,11 @@
 package quest.inggison;
 
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.questEngine.model.QuestDialog;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.zone.ZoneName;
 
@@ -98,21 +97,21 @@ public class _11149The_Lady_Layout extends QuestHandler
 					if (var1 == 0) {
 						changeQuestStep(env, 0, 1, false, 1);
 						///You investigated the Sulfur Geyser!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_QUEST_SAY_LF4_15, 0);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_QUEST_SAY_LF4_15, 0);
 						return true;
 					}
 				} else if (zoneName == ZoneName.get("LF4_SENSORY_AREA_Q11149_B_210050000")) {
 					if (var2 == 0) {
 						changeQuestStep(env, 0, 1, false, 2);
 						///You investigated the Pool Geyser!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_QUEST_SAY_LF4_16, 0);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_QUEST_SAY_LF4_16, 0);
 						return true;
 					}
 				} else if (zoneName == ZoneName.get("LF4_SENSORY_AREA_Q11149_C_210050000")) {
 					if (var3 == 0) {
 						changeQuestStep(env, 0, 1, false, 3);
 						///You investigated the Rock Geyser!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_QUEST_SAY_LF4_17, 0);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_QUEST_SAY_LF4_17, 0);
 						return true;
 					}
 				}

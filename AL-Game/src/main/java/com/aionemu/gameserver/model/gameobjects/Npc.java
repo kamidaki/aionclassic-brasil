@@ -1,5 +1,9 @@
 package com.aionemu.gameserver.model.gameobjects;
 
+import java.util.Iterator;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.aionemu.gameserver.ai2.AI2Engine;
 import com.aionemu.gameserver.ai2.AITemplate;
 import com.aionemu.gameserver.ai2.poll.AIQuestion;
@@ -15,13 +19,17 @@ import com.aionemu.gameserver.model.skill.NpcSkillList;
 import com.aionemu.gameserver.model.stats.container.NpcGameStats;
 import com.aionemu.gameserver.model.stats.container.NpcLifeStats;
 import com.aionemu.gameserver.model.templates.item.ItemAttackType;
-import com.aionemu.gameserver.model.templates.npc.*;
+import com.aionemu.gameserver.model.templates.npc.AbyssNpcType;
+import com.aionemu.gameserver.model.templates.npc.NpcRank;
+import com.aionemu.gameserver.model.templates.npc.NpcRating;
+import com.aionemu.gameserver.model.templates.npc.NpcTemplate;
+import com.aionemu.gameserver.model.templates.npc.NpcTemplateType;
 import com.aionemu.gameserver.model.templates.npcshout.NpcShout;
 import com.aionemu.gameserver.model.templates.npcshout.ShoutEventType;
 import com.aionemu.gameserver.model.templates.npcshout.ShoutType;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_CHANGED_TARGET;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_LOOKATOBJECT;
 import com.aionemu.gameserver.spawnengine.WalkerGroup;
 import com.aionemu.gameserver.spawnengine.WalkerGroupShift;
 import com.aionemu.gameserver.utils.MathUtil;
@@ -29,10 +37,6 @@ import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.WorldPosition;
 import com.google.common.base.Preconditions;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.util.Iterator;
 
 public class Npc extends Creature
 {
@@ -334,7 +338,7 @@ public class Npc extends Creature
 			super.clearAttackedCount();
 			getGameStats().renewLastChangeTargetTime();
 			if (!getLifeStats().isAlreadyDead()) {
-				PacketSendUtility.broadcastPacket(this, new S_NPC_CHANGED_TARGET(this));
+				PacketSendUtility.broadcastPacket(this, new SM_LOOKATOBJECT(this));
 			}
 		}
 	}
@@ -394,7 +398,7 @@ public class Npc extends Creature
 			return;
 		}
 		final Npc thisNpc = this;
-		final S_MESSAGE_CODE message = new S_MESSAGE_CODE(true, shout.getStringId(), getObjectId(), 1, param);
+		final SM_SYSTEM_MESSAGE message = new SM_SYSTEM_MESSAGE(true, shout.getStringId(), getObjectId(), 1, param);
 		lastShoutedSeconds = System.currentTimeMillis() / 1000;
 		ThreadPoolManager.getInstance().schedule(new Runnable() {
 			@Override

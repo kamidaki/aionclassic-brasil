@@ -105,7 +105,7 @@ public class AionPacketHandlerFactory {
 		addPacket(new C_CLIENTSIDE_NPC_ACTION(0x1A9, State.IN_GAME));
 		addPacket(new C_CLIENTSIDE_NPC_ATTACK(0x1A6, State.IN_GAME));
 		addPacket(new C_CLIENTSIDE_NPC_USE_SKILL(0x1A4, State.IN_GAME));
-		//todo missing addPacket(new C_ACCEPT_TELEPORT(0xE5, State.IN_GAME)); //TODO after change Map
+		addPacket(new CM_TELEPORT_ANIMATION_DONE(0xE5, State.IN_GAME)); // [C_ACCEPT_TELEPORT]
 		addPacket(new C_PATH_FLY(0xC3, State.IN_GAME));
 		addPacket(new C_COMBINE(0x167, State.IN_GAME));
 		addPacket(new C_BUY_SELL(0xC1, State.IN_GAME));
@@ -151,13 +151,10 @@ public class AionPacketHandlerFactory {
 		addPacket(new C_SELECT_ITEM(0x15B, State.IN_GAME));
 		addPacket(new C_MINIGAME(0x01b9, State.IN_GAME));
 		addPacket(new C_LOGOUT(0xF0, State.AUTHED, State.IN_GAME));
-		//todo addPacket(new C_BUILDER_COMMAND(0xCB, State.IN_GAME));
-		//todo addPacket(new C_BUILDER_CONTROL(0xC8, State.IN_GAME));
+		addPacket(new CM_GM_COMMAND_SEND(0xC8, State.IN_GAME));
+		addPacket(new CM_GM_BOOKMARK(0xCB, State.IN_GAME));
 		//todo addPacket(new C_UNK_GF_HAS_DISABLED(0x0186, State.IN_GAME));
 		addPacket(new C_SHOP_REQUEST(0x01B0, State.IN_GAME));
-		//todo addPacket(new C_REQUEST_RANK_LIST(0x181, State.IN_GAME));
-		//todo addPacket(new C_REQUEST_RANK_INFO(0x1BE, State.IN_GAME));
-		//TODO continue
 
         addPacket(new CM_E0_UNK(0xE2, State.CONNECTED, State.AUTHED, State.IN_GAME));
 		addPacket(new CM_EQUIPMENT_CHANGE(0x182, State.IN_GAME));
@@ -173,19 +170,23 @@ public class AionPacketHandlerFactory {
 		addPacket(new CM_LEGION_UPLOAD_EMBLEM(0x114, State.IN_GAME));
 		addPacket(new CM_BLACKCLOUD_MAIL(0x15F, State.IN_GAME));
 		addPacket(new CM_BLACKCLOUD_MAIL_CLAIM(0x15C, State.IN_GAME));
+		addPacket(new CM_BLACKCLOUD_MAIL_OPEN(0x15B, State.IN_GAME));
 		addPacket(new CM_REPORT_CHAT(0x18E, State.IN_GAME));
-		//addPacket(new CM_BROKER_ADD_ITEM(0x190, State.IN_GAME));
+		addPacket(new CM_BROKER_ADD_ITEM(0x190, State.IN_GAME));
 		addPacket(new CM_NP_MESSAGE(0xF4, State.IN_GAME));
 		addPacket(new CM_APPEARANCE(0x1AC, State.IN_GAME));
 		addPacket(new CM_CUBE_EXPAND(0x1BB, State.IN_GAME));
-
+		
+		addPacket(new CM_UNK_0x187(0x187, State.CONNECTED, State.AUTHED, State.IN_GAME)); //TODO after Teleport
+		addPacket(new CM_UNK_0x181(0x181, State.CONNECTED, State.AUTHED, State.IN_GAME)); //TODO My Ranklist
+		addPacket(new CM_UNK_0x1BE(0x1BE, State.CONNECTED, State.AUTHED, State.IN_GAME)); //TODO My Documentation
+		
         /*
         addPacket(new CM_LEGION_MODIFY_EMBLEM(0xAE, State.IN_GAME));
 		addPacket(new CM_LEGION_UPLOAD_INFO(0x113, State.IN_GAME));
 		addPacket(new CM_LEGION_UPLOAD_EMBLEM(0x114, State.IN_GAME));
 		addPacket(new CM_LEGION_SEND_EMBLEM(0x81, State.IN_GAME));
 		addPacket(new CM_LEGION_SEND_EMBLEM_INFO(0xA2, State.IN_GAME));
-		addPacket(new CM_BLACKCLOUD_MAIL_OPEN(0x15B, State.IN_GAME));
 		*/
         //0x15F
     }

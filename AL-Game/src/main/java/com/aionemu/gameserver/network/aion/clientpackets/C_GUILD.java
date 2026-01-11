@@ -16,17 +16,17 @@
  */
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.team.legion.Legion;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_GUILD_INFO;
-import com.aionemu.gameserver.services.legion.LegionService;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_LEGION_INFO;
 import com.aionemu.gameserver.services.NameRestrictionService;
+import com.aionemu.gameserver.services.legion.LegionService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class C_GUILD extends AionClientPacket
 {
@@ -144,7 +144,7 @@ public class C_GUILD extends AionClientPacket
 				switch (exOpcode) {
 					/** Refresh legion info **/
 					case 0x08:
-						sendPacket(new S_GUILD_INFO(legion));
+						sendPacket(new SM_LEGION_INFO(legion));
 						break;
 					/** Edit announcements **/
 					case 0x09:

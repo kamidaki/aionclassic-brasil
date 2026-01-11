@@ -1,9 +1,10 @@
 package com.aionemu.gameserver.services.siegeservice;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.aionemu.commons.utils.Rnd;
-
 import com.aionemu.gameserver.dataholders.DataManager;
-
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -13,16 +14,13 @@ import com.aionemu.gameserver.model.templates.npc.AbyssNpcType;
 import com.aionemu.gameserver.model.templates.spawns.SpawnGroup2;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
 import com.aionemu.gameserver.model.templates.spawns.siegespawns.SiegeSpawnTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.spawnengine.SpawnEngine;
 import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FortressAssault extends Assault<FortressSiege>
 {
@@ -61,7 +59,7 @@ public class FortressAssault extends Assault<FortressSiege>
 				@Override
 				public void visit(Player player) {
 					///The Balaur have killed the Guardian General.
-					PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_FIELDABYSS_DRAGON_BOSS_KILLED, 0);
+					PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_FIELDABYSS_DRAGON_BOSS_KILLED, 0);
 				}
 			});
 		}
@@ -118,9 +116,9 @@ public class FortressAssault extends Assault<FortressSiege>
             @Override
             public void visit(Player player) {
 				///The Dredgion has disgorged a horde of Balaur troopers.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_ABYSS_CARRIER_DROP_DRAGON, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_ABYSS_CARRIER_DROP_DRAGON, 0);
                 ///The Balaur Teleport Raiders appeared.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_ABYSS_WARP_DRAGON, 120000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_ABYSS_WARP_DRAGON, 120000);
             }
         });
 		idList.clear();

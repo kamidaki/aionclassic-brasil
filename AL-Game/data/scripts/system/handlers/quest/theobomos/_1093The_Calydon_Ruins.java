@@ -12,13 +12,14 @@ package quest.theobomos;
 
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
 import com.aionemu.gameserver.questEngine.handlers.HandlerResult;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
+import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.services.QuestService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
@@ -131,7 +132,7 @@ public class _1093The_Calydon_Ruins extends QuestHandler
 					case USE_OBJECT: {
 						if (var == 4) {
 							///The first rubbing is done!
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111002, player.getObjectId(), 2));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111002, player.getObjectId(), 2));
 							QuestService.addNewSpawn(210060000, player.getInstanceId(), 214553, player.getX() + 2, player.getY(), player.getZ(), (byte) 0);
 				            QuestService.addNewSpawn(210060000, player.getInstanceId(), 214553, player.getX(), player.getY() + 2, player.getZ(), (byte) 0);
 							player.getEffectController().removeEffect(18469); //Calydon Candi.
@@ -144,7 +145,7 @@ public class _1093The_Calydon_Ruins extends QuestHandler
 					case USE_OBJECT: {
 						if (var == 5) {
 							///You've finished the second rubbing!
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111003, player.getObjectId(), 2));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111003, player.getObjectId(), 2));
 							QuestService.addNewSpawn(210060000, player.getInstanceId(), 214553, player.getX() + 2, player.getY(), player.getZ(), (byte) 0);
 				            QuestService.addNewSpawn(210060000, player.getInstanceId(), 214553, player.getX(), player.getY() + 2, player.getZ(), (byte) 0);
 							return useQuestObject(env, 5, 6, false, 0, 182208015, 1, 0, 0);
@@ -156,7 +157,7 @@ public class _1093The_Calydon_Ruins extends QuestHandler
 					case USE_OBJECT: {
 						if (var == 6) {
 							///The last rubbing is done. Take them to Serimnir!
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111004, player.getObjectId(), 2));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111004, player.getObjectId(), 2));
 							QuestService.addNewSpawn(210060000, player.getInstanceId(), 214553, player.getX() + 2, player.getY(), player.getZ(), (byte) 0);
 				            QuestService.addNewSpawn(210060000, player.getInstanceId(), 214553, player.getX(), player.getY() + 2, player.getZ(), (byte) 0);
 							return useQuestObject(env, 6, 7, false, 0, 182208016, 1, 0, 0);

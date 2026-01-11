@@ -10,6 +10,13 @@
  */
 package com.aionemu.gameserver.model.autogroup;
 
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.select;
+import static org.hamcrest.Matchers.equalTo;
+
+import java.util.List;
+
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.instance.instancereward.DredgionReward;
@@ -18,11 +25,6 @@ import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
 import com.aionemu.gameserver.services.instance.DredgionService;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
-
-import java.util.List;
-
-import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.equalTo;
 
 public class AutoDredgionInstance extends AutoInstance
 {

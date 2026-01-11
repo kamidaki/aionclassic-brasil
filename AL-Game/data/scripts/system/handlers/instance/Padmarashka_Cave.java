@@ -10,26 +10,23 @@
  */
 package instance;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.List;
+import java.util.concurrent.Future;
 
 import com.aionemu.gameserver.instance.handlers.GeneralInstanceHandler;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.skillengine.effect.*;
+import com.aionemu.gameserver.skillengine.effect.AbnormalState;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
 import com.aionemu.gameserver.world.zone.ZoneName;
-
-import java.util.*;
-import java.util.concurrent.Future;
 
 /****/
 /** Author Rinzler (Encom)
@@ -194,7 +191,7 @@ public class Padmarashka_Cave extends GeneralInstanceHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});

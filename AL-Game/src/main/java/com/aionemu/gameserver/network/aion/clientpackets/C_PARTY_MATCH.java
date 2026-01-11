@@ -1,14 +1,14 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
 import com.aionemu.gameserver.network.aion.serverpackets.S_PARTY_MATCH;
 import com.aionemu.gameserver.services.FindGroupService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class C_PARTY_MATCH extends AionClientPacket
 {

@@ -5,11 +5,20 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.instance.InstanceScoreType;
-import com.aionemu.gameserver.model.instance.instancereward.*;
-import com.aionemu.gameserver.model.instance.playerreward.*;
+import com.aionemu.gameserver.model.instance.instancereward.DarkPoetaReward;
+import com.aionemu.gameserver.model.instance.instancereward.DredgionReward;
+import com.aionemu.gameserver.model.instance.instancereward.InstanceReward;
+import com.aionemu.gameserver.model.instance.instancereward.PvPArenaReward;
+import com.aionemu.gameserver.model.instance.instancereward.TempusReward;
+import com.aionemu.gameserver.model.instance.instancereward.TiakReward;
+import com.aionemu.gameserver.model.instance.playerreward.CruciblePlayerReward;
+import com.aionemu.gameserver.model.instance.playerreward.DredgionPlayerReward;
+import com.aionemu.gameserver.model.instance.playerreward.InstancePlayerReward;
+import com.aionemu.gameserver.model.instance.playerreward.PvPArenaPlayerReward;
+import com.aionemu.gameserver.model.instance.playerreward.TiakPlayerReward;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
 

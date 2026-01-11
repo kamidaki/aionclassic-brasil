@@ -1,17 +1,18 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Equipment;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_WIELD;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_UPDATE_PLAYER_APPEARANCE;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class C_USE_EQUIPMENT_ITEM extends AionClientPacket
 {
@@ -65,14 +66,14 @@ public class C_USE_EQUIPMENT_ITEM extends AionClientPacket
 				break;
 			case 2:
 				if (player.getController().hasTask(TaskId.ITEM_USE) && !player.getController().getTask(TaskId.ITEM_USE).isDone()) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANT_EQUIP_ITEM_IN_ACTION);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANT_EQUIP_ITEM_IN_ACTION);
 					return;
 				}
 				equipment.switchHands();
 				break;
 		}
 		if (resultItem != null || action == 2) {
-			PacketSendUtility.broadcastPacket(player, new S_WIELD(player.getObjectId(), equipment.getEquippedItemsWithoutStigma()), true);
+			PacketSendUtility.broadcastPacket(player, new SM_UPDATE_PLAYER_APPEARANCE(player.getObjectId(), equipment.getEquippedItemsWithoutStigma()), true);
 		}
 	}
 }

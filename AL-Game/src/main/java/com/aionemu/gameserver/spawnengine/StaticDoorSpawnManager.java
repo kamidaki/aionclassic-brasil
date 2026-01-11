@@ -1,5 +1,8 @@
 package com.aionemu.gameserver.spawnengine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.controllers.StaticObjectController;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.StaticDoor;
@@ -13,8 +16,6 @@ import com.aionemu.gameserver.utils.idfactory.IDFactory;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.geo.GeoService;
 import com.aionemu.gameserver.world.knownlist.PlayerAwareKnownList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class StaticDoorSpawnManager
 {

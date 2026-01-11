@@ -10,30 +10,22 @@
  */
 package world;
 
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
+import java.util.List;
 
-import com.aionemu.gameserver.world.handlers.GeneralWorldHandler;
-import com.aionemu.gameserver.world.handlers.WorldID;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PLAY_CUTSCENE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import com.aionemu.gameserver.world.knownlist.Visitor;
-import com.aionemu.gameserver.world.*;
-import com.aionemu.gameserver.world.zone.ZoneName;
+import com.aionemu.gameserver.world.handlers.GeneralWorldHandler;
+import com.aionemu.gameserver.world.handlers.WorldID;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
+import com.aionemu.gameserver.world.zone.ZoneName;
 
-import javolution.util.*;
-
-import java.util.*;
-import java.util.concurrent.Future;
+import javolution.util.FastList;
 
 /****/
 /** Author Rinzler (Encom)
@@ -59,7 +51,7 @@ public class Ishalgen extends GeneralWorldHandler
 					}
 				} else {
 					///You have not acquired this quest.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 				}
 			break;
 		}

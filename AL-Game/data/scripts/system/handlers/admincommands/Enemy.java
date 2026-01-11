@@ -2,7 +2,7 @@ package admincommands;
 
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.serverpackets.S_CUSTOM_ANIM;
-import com.aionemu.gameserver.network.aion.serverpackets.S_PUT_USER;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_INFO;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 
@@ -66,7 +66,7 @@ public class Enemy extends AdminCommand {
 		PacketSendUtility.sendMessage(player, output);
 
 		player.clearKnownlist();
-		PacketSendUtility.sendPacket(player, new S_PUT_USER(player, false));
+		PacketSendUtility.sendPacket(player, new SM_PLAYER_INFO(player, false));
 		PacketSendUtility.sendPacket(player, new S_CUSTOM_ANIM(player.getObjectId(), player.getMotions().getActiveMotions()));
 		player.updateKnownlist();
 	}

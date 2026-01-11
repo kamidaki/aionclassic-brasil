@@ -1,27 +1,28 @@
 package com.aionemu.gameserver.model.templates.item.actions;
 
-import com.aionemu.gameserver.model.TaskId;
-import com.aionemu.gameserver.model.DescriptionId;
-import com.aionemu.gameserver.model.gameobjects.Item;
-import com.aionemu.gameserver.model.gameobjects.Kisk;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
-import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
-import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.controllers.observer.ItemUseObserver;
-import com.aionemu.gameserver.services.player.BattlePassService;
-import com.aionemu.gameserver.services.KiskService;
-import com.aionemu.gameserver.spawnengine.SpawnEngine;
-import com.aionemu.gameserver.spawnengine.VisibleObjectSpawner;
-import com.aionemu.gameserver.utils.PacketSendUtility;
-import com.aionemu.gameserver.utils.ThreadPoolManager;
+import java.util.concurrent.Future;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-import java.util.concurrent.Future;
+
+import com.aionemu.gameserver.controllers.observer.ItemUseObserver;
+import com.aionemu.gameserver.model.DescriptionId;
+import com.aionemu.gameserver.model.TaskId;
+import com.aionemu.gameserver.model.gameobjects.Item;
+import com.aionemu.gameserver.model.gameobjects.Kisk;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
+import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
+import com.aionemu.gameserver.services.KiskService;
+import com.aionemu.gameserver.services.player.BattlePassService;
+import com.aionemu.gameserver.spawnengine.SpawnEngine;
+import com.aionemu.gameserver.spawnengine.VisibleObjectSpawner;
+import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.utils.ThreadPoolManager;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ToyPetSpawnAction")
@@ -44,17 +45,17 @@ public class ToyPetSpawnAction extends AbstractItemAction
 	@Override
 	public boolean canAct(Player player, Item parentItem, Item targetItem) {
 		if (player.getFlyState() != 0) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_USE_BINDSTONE_ITEM_WHILE_FLYING);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_BINDSTONE_ITEM_WHILE_FLYING);
 			return false;
 		} if (player.isInInstance()) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_REGISTER_BINDSTONE_FAR_FROM_NPC);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_REGISTER_BINDSTONE_FAR_FROM_NPC);
 			return false;
 		} if (KiskService.getInstance().haveKisk(player.getObjectId())) {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390160, new Object[0]));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390160, new Object[0]));
 			return false;
 		} if (player.getController().isInCombat() || player.isAttackMode()) {
 			///You cannot use %1 while in combat.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_SKILL_ITEM_RESTRICTED_AREA(new DescriptionId(2800159), parentItem.getNameId()));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_SKILL_ITEM_RESTRICTED_AREA(new DescriptionId(2800159), parentItem.getNameId()));
 			return false;
 		} switch (player.getWorldId()) {
 		    //Restriction Elyos Spawn Kisk.
@@ -69,7 +70,7 @@ public class ToyPetSpawnAction extends AbstractItemAction
 			case 120080000: //Marchutan Priory.
 			case 220010000: //Ishalgen.
 			case 220080000: //Telos.
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_USE_ITEM_INVALID_LOCATION);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ITEM_INVALID_LOCATION);
 				return false;
 			default:
 			break;
@@ -86,7 +87,7 @@ public class ToyPetSpawnAction extends AbstractItemAction
 			public void abort() {
 				player.getController().cancelTask(TaskId.ITEM_USE);
 				player.removeItemCoolDown(parentItem.getItemTemplate().getUseLimits().getDelayId());
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ITEM_CANCELED(new DescriptionId(parentItem.getItemTemplate().getNameId())));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ITEM_CANCELED(new DescriptionId(parentItem.getItemTemplate().getNameId())));
 				PacketSendUtility.broadcastPacket(player, new S_USE_ITEM(player.getObjectId(), parentItem.getObjectId(), parentItem.getItemTemplate().getTemplateId(), 0, 2, 0), true);
 			}
 		};
@@ -98,7 +99,7 @@ public class ToyPetSpawnAction extends AbstractItemAction
 				player.getObserveController().removeObserver(observer);
 				if (!player.getInventory().decreaseByObjectId(parentItem.getObjectId(), 1))
 					return;
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_USE_ITEM(new DescriptionId(parentItem.getItemTemplate().getNameId())));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_USE_ITEM(new DescriptionId(parentItem.getItemTemplate().getNameId())));
 				float x = player.getX();
 				float y = player.getY();
 				float z = player.getZ();

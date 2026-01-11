@@ -16,18 +16,18 @@
  */
 package com.aionemu.gameserver.skillengine.condition;
 
-import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.skillengine.model.Skill;
-import com.aionemu.gameserver.skillengine.properties.FirstTargetAttribute;
-import com.aionemu.gameserver.skillengine.properties.TargetRangeAttribute;
-import com.aionemu.gameserver.utils.PacketSendUtility;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+
+import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.skillengine.model.Skill;
+import com.aionemu.gameserver.skillengine.properties.FirstTargetAttribute;
+import com.aionemu.gameserver.skillengine.properties.TargetRangeAttribute;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 
 /**
  * @author ATracer
@@ -70,7 +70,7 @@ public class TargetCondition extends Condition {
 		}
 
 		if ((!result) && ((skill.getEffector() instanceof Player))) {
-			PacketSendUtility.sendPacket((Player) skill.getEffector(), S_MESSAGE_CODE.STR_SKILL_TARGET_IS_NOT_VALID);
+			PacketSendUtility.sendPacket((Player) skill.getEffector(), SM_SYSTEM_MESSAGE.STR_SKILL_TARGET_IS_NOT_VALID);
 		}
 		return result;
 	}

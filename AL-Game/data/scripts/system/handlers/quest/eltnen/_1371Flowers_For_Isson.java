@@ -11,13 +11,13 @@
 package quest.eltnen;
 
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
 import com.aionemu.gameserver.services.QuestService;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 /****/
@@ -56,6 +56,8 @@ public class _1371Flowers_For_Isson extends QuestHandler
 					} case REFUSE_QUEST: {
 				        return closeDialogWindow(env);
 					}
+				default:
+					break;
                 }
 			}
 		} else if (qs != null && qs.getStatus() == QuestStatus.START) {
@@ -78,6 +80,8 @@ public class _1371Flowers_For_Isson extends QuestHandler
 						changeQuestStep(env, 1, 2, false);
 						return closeDialogWindow(env);
 					}
+				default:
+					break;
                 }
             } if (targetId == 730039) {
                 switch (env.getDialog()) {
@@ -92,10 +96,12 @@ public class _1371Flowers_For_Isson extends QuestHandler
 							removeQuestItem(env, 182201371, 1);
 							QuestService.addNewSpawn(210020000, 1, 700215, 2026.0281f, 1942.6508f, 363.5578f, (byte) 67);
 							///Sleep well, Isson.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1100647, player.getObjectId(), 2));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1100647, player.getObjectId(), 2));
 							return sendQuestDialog(env, 1694);
 						}
 					}
+				default:
+					break;
                 }
             }
 		} else if (qs != null && qs.getStatus() == QuestStatus.REWARD) {

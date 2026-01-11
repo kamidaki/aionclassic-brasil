@@ -10,7 +10,14 @@
  */
 package com.aionemu.gameserver.model.gameobjects.player;
 
-import com.aionemu.gameserver.configs.main.*;
+import java.sql.Timestamp;
+import java.util.Calendar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.gameserver.configs.main.AdvCustomConfig;
+import com.aionemu.gameserver.configs.main.GSConfig;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.Gender;
@@ -19,17 +26,14 @@ import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.team.legion.LegionJoinRequestState;
 import com.aionemu.gameserver.model.templates.BoundRadius;
 import com.aionemu.gameserver.model.templates.VisibleObjectTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_DP_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATUPDATE_DP;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATUPDATE_EXP;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.stats.XPLossEnum;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.WorldPosition;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.Timestamp;
-import java.util.Calendar;
 
 public class PlayerCommonData extends VisibleObjectTemplate
 {
@@ -138,7 +142,7 @@ public class PlayerCommonData extends VisibleObjectTemplate
 			this.expRecoverable = this.expRecoverable + this.getExpShown();
 			this.exp = this.exp - this.getExpShown();
 		} if (this.getPlayer() != null) {
-			PacketSendUtility.sendPacket(getPlayer(), new S_EXP(getExpShown(), getExpRecoverable(), getExpNeed(), this.getCurrentReposteEnergy(), this.getMaxReposteEnergy()));
+			PacketSendUtility.sendPacket(getPlayer(), new SM_STATUPDATE_EXP(getExpShown(), getExpRecoverable(), getExpNeed(), this.getCurrentReposteEnergy(), this.getMaxReposteEnergy()));
 		}
 	}
 
@@ -201,16 +205,16 @@ public class PlayerCommonData extends VisibleObjectTemplate
 				case GROUP_HUNTING:
 					if ((repose > 0) && (salvation > 0)) {
 						///You have gained %num1 XP from %0 (Energy of Repose %num2, Energy of Salvation %num3).
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP_VITAL_MAKEUP_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, repose, salvation));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP_VITAL_MAKEUP_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, repose, salvation));
 					} else if ((repose > 0) && (salvation == 0)) {
 						///You have gained %num1 XP from %0 (Energy of Repose %num2).
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP_VITAL_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, repose));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP_VITAL_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, repose));
 					} else if ((repose == 0) && (salvation > 0)) {
 						///You have gained %num1 XP from %0 (Energy of Salvation %num2).
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP_MAKEUP_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, salvation));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP_MAKEUP_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, salvation));
 					} else {
 						///You have gained %num1 XP from %0.
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP_DESC(new DescriptionId(npcNameId * 2 + 1), reward));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP_DESC(new DescriptionId(npcNameId * 2 + 1), reward));
 					}
 				break;
 				case QUEST:
@@ -218,34 +222,34 @@ public class PlayerCommonData extends VisibleObjectTemplate
 				case GATHERING:
 				    if (npcNameId == 0) {
 						///You have gained %num1 XP.
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP2(reward));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP2(reward));
 					} else if ((repose > 0) && (salvation > 0)) {
 						///You have gained %num1 XP from %0 (Energy of Repose %num2, Energy of Salvation %num3).
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP_VITAL_MAKEUP_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, repose, salvation));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP_VITAL_MAKEUP_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, repose, salvation));
 					} else if ((repose > 0) && (salvation == 0)) {
 						///You have gained %num1 XP from %0 (Energy of Repose %num2).
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP_VITAL_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, repose));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP_VITAL_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, repose));
 					} else if ((repose == 0) && (salvation > 0)) {
 						///You have gained %num1 XP from %0 (Energy of Salvation %num2).
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP_MAKEUP_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, salvation));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP_MAKEUP_BONUS_DESC(new DescriptionId(npcNameId * 2 + 1), reward, salvation));
 					} else {
 						///You have gained %num1 XP from %0.
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP_DESC(new DescriptionId(npcNameId * 2 + 1), reward));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP_DESC(new DescriptionId(npcNameId * 2 + 1), reward));
 					}
 				break;
 				case PVP_KILL:
 					if ((repose > 0) && (salvation > 0)) {
 						///You have gained %num1 XP from %0 (Energy of Repose %num2, Energy of Salvation %num3).
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP_VITAL_MAKEUP_BONUS(name, reward, repose, salvation));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP_VITAL_MAKEUP_BONUS(name, reward, repose, salvation));
 					} else if ((repose > 0) && (salvation == 0)) {
 						///You have gained %num1 XP from %0 (Energy of Repose %num2).
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP_VITAL_BONUS(name, reward, repose));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP_VITAL_BONUS(name, reward, repose));
 					} else if ((repose == 0) && (salvation > 0)) {
 						///You have gained %num1 XP from %0 (Energy of Salvation %num2).
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP_MAKEUP_BONUS(name, reward, salvation));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP_MAKEUP_BONUS(name, reward, salvation));
 					} else {
 						///You have gained %num1 XP from %0.
-						PacketSendUtility.sendPacket(getPlayer(), S_MESSAGE_CODE.STR_GET_EXP(name, reward));
+						PacketSendUtility.sendPacket(getPlayer(), SM_SYSTEM_MESSAGE.STR_GET_EXP(name, reward));
 					}
 				break;
 			}
@@ -300,13 +304,13 @@ public class PlayerCommonData extends VisibleObjectTemplate
 			maxLevel = GSConfig.STARTING_LEVEL > GSConfig.STARTCLASS_MAXLEVEL ? GSConfig.STARTING_LEVEL : GSConfig.STARTCLASS_MAXLEVEL;
 			if (this.getLevel() == 9 && this.getExp() >= 213454) {
 				///You can advance to level 10 only after you have completed the class change quest.
-				PacketSendUtility.sendPacket(this.getPlayer(), S_MESSAGE_CODE.STR_LEVEL_LIMIT_QUEST_NOT_FINISHED1);
+				PacketSendUtility.sendPacket(this.getPlayer(), SM_SYSTEM_MESSAGE.STR_LEVEL_LIMIT_QUEST_NOT_FINISHED1);
 			}
 		} else if (getPlayerClass() != null && getPlayerClass().isStartingClass() && this.playerClass == PlayerClass.MONK) {
 			maxLevel = GSConfig.STARTING_LEVEL > GSConfig.STARTCLASS_MONK_MAXLEVEL ? GSConfig.STARTING_LEVEL : GSConfig.STARTCLASS_MONK_MAXLEVEL;
 			if (this.getLevel() == 15 && this.getExp() >= 1418170) {
 				///You can advance to level 16 only after you have completed the class change quest.
-				PacketSendUtility.sendPacket(this.getPlayer(), S_MESSAGE_CODE.STR_LEVEL_LIMIT_QUEST_NOT_FINISHED2);
+				PacketSendUtility.sendPacket(this.getPlayer(), SM_SYSTEM_MESSAGE.STR_LEVEL_LIMIT_QUEST_NOT_FINISHED2);
 			}
 		} if (exp > maxExp) {
 			exp = maxExp;
@@ -327,7 +331,7 @@ public class PlayerCommonData extends VisibleObjectTemplate
 			if (oldLvl != level) {
 				updateMaxReposte();
 			}
-			PacketSendUtility.sendPacket(this.getPlayer(), new S_EXP(getExpShown(), getExpRecoverable(), getExpNeed(), this.getCurrentReposteEnergy(), this.getMaxReposteEnergy()));
+			PacketSendUtility.sendPacket(this.getPlayer(), new SM_STATUPDATE_EXP(getExpShown(), getExpRecoverable(), getExpNeed(), this.getCurrentReposteEnergy(), this.getMaxReposteEnergy()));
 		}
 	}
 
@@ -491,9 +495,9 @@ public class PlayerCommonData extends VisibleObjectTemplate
 			int maxDp = getPlayer().getGameStats().getMaxDp().getCurrent();
 			this.dp = dp > maxDp ? maxDp : dp;
 
-			PacketSendUtility.broadcastPacket(getPlayer(), new S_DP_USER(playerObjId, this.dp), true);
+			PacketSendUtility.broadcastPacket(getPlayer(), new SM_DP_INFO(playerObjId, this.dp), true);
 			getPlayer().getGameStats().updateStatsAndSpeedVisually();
-			PacketSendUtility.sendPacket(getPlayer(), new S_DP(this.dp));
+			PacketSendUtility.sendPacket(getPlayer(), new SM_STATUPDATE_DP(this.dp));
 		}
 		else {
 			log.debug("CHECKPOINT : getPlayer in PCD return null for setDP " + isOnline() + " " + getPosition());

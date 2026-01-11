@@ -1,21 +1,20 @@
 
 package ai;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.TYPE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_LOAD_ITEM_COOLTIME;
 import com.aionemu.gameserver.network.aion.serverpackets.S_LOAD_SKILL_COOLTIME;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.TYPE;
 import com.aionemu.gameserver.skillengine.model.SkillTargetSlot;
-import com.aionemu.gameserver.skillengine.model.SkillTemplate;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 @AIName("recharger")
 public class RechargerAI2 extends NpcAI2

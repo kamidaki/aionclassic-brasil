@@ -10,18 +10,18 @@
  */
 package com.aionemu.gameserver.model.team2.alliance.events;
 
+import java.util.Collection;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAlliance;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAllianceMember;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAllianceService;
 import com.aionemu.gameserver.model.team2.alliance.events.AssignViceCaptainEvent.AssignType;
 import com.aionemu.gameserver.model.team2.common.events.ChangeLeaderEvent;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ALLIANCE_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.google.common.base.Predicate;
-
-import java.util.Collection;
 
 public class ChangeAllianceLeaderEvent extends ChangeLeaderEvent<PlayerAlliance>
 {
@@ -65,9 +65,9 @@ public class ChangeAllianceLeaderEvent extends ChangeLeaderEvent<PlayerAlliance>
             public boolean apply(Player member) {
                 PacketSendUtility.sendPacket(member, new S_ALLIANCE_INFO(team));
                 if (!player.equals(member)) {
-                    PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_FORCE_HE_IS_NEW_LEADER(player.getName()));
+                    PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_FORCE_HE_IS_NEW_LEADER(player.getName()));
                 } else {
-                    PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_FORCE_YOU_BECOME_NEW_LEADER);
+                    PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_FORCE_YOU_BECOME_NEW_LEADER);
                 }
                 return true;
             }

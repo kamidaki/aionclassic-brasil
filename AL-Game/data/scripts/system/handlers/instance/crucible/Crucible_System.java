@@ -10,6 +10,8 @@
  */
 package instance.crucible;
 
+import java.util.List;
+
 import com.aionemu.gameserver.instance.handlers.GeneralInstanceHandler;
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.Race;
@@ -19,18 +21,16 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.instance.StageType;
 import com.aionemu.gameserver.model.instance.instancereward.InstanceReward;
 import com.aionemu.gameserver.model.instance.playerreward.CruciblePlayerReward;
-import com.aionemu.gameserver.network.aion.serverpackets.S_RESURRECT_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_RESURRECT_INFO;
 import com.aionemu.gameserver.services.player.PlayerReviveService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 import com.aionemu.gameserver.world.zone.ZoneName;
-
-import java.util.*;
 
 /****/
 /** Author Rinzler (Encom)
@@ -102,7 +102,7 @@ public class Crucible_System extends GeneralInstanceHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});
@@ -131,14 +131,14 @@ public class Crucible_System extends GeneralInstanceHandler
 	public boolean onReviveEvent(Player player) {
 		player.getGameStats().updateStatsAndSpeedVisually();
 		PlayerReviveService.revive(player, 100, 100, false, 0);
-		PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_REBIRTH_MASSAGE_ME);
+		PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_REBIRTH_MASSAGE_ME);
 		PacketSendUtility.sendPacket(player, new S_ASK(S_ASK.STR_IDARENA_RESURRECT, 0, 0));
 		return true;
 	}
 	
 	@Override
 	public boolean onDie(Player player, Creature lastAttacker) {
-		PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.DIE, 0, player.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()), true);
+		PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.DIE, 0, player.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()), true);
 		PacketSendUtility.sendPacket(player, new S_RESURRECT_INFO(false, false, 0, 8));
 		return true;
 	}

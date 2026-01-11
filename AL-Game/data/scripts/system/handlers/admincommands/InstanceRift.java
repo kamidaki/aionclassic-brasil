@@ -1,12 +1,13 @@
 package admincommands;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.services.InstanceRiftService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-import org.apache.commons.lang.math.NumberUtils;
 
 public class InstanceRift extends AdminCommand
 {

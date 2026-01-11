@@ -10,18 +10,18 @@
  */
 package ai.instance.empyreanCrucible;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.model.actions.NpcActions;
-import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.instance.StageType;
-import com.aionemu.gameserver.utils.ThreadPoolManager;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)

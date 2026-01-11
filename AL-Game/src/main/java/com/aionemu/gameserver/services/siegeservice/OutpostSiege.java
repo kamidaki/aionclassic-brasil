@@ -1,5 +1,7 @@
 package com.aionemu.gameserver.services.siegeservice;
 
+import java.util.List;
+
 import com.aionemu.commons.callbacks.util.GlobalCallbackHelper;
 import com.aionemu.gameserver.dao.PlayerDAO;
 import com.aionemu.gameserver.dao.SiegeDAO;
@@ -12,7 +14,7 @@ import com.aionemu.gameserver.model.siege.SiegeModType;
 import com.aionemu.gameserver.model.siege.SiegeRace;
 import com.aionemu.gameserver.model.templates.siegelocation.SiegeReward;
 import com.aionemu.gameserver.model.templates.zone.ZoneType;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.services.SiegeService;
@@ -23,8 +25,6 @@ import com.aionemu.gameserver.services.mail.SiegeResult;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-
-import java.util.List;
 
 public class OutpostSiege extends Siege<OutpostLocation>
 {
@@ -47,7 +47,7 @@ public class OutpostSiege extends Siege<OutpostLocation>
 			public void visit(Player player) {
 				//The Elyos have captured every fortress in Gelkmaros.
 				//The Asmodians have captured every fortress in Inggison.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(getSiegeLocationId() == 2111 ? 1400317 : 1400318));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(getSiegeLocationId() == 2111 ? 1400317 : 1400318));
 			}
 		});
 	}

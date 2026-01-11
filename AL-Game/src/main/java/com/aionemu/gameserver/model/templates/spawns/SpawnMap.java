@@ -1,12 +1,17 @@
 package com.aionemu.gameserver.model.templates.spawns;
 
-import com.aionemu.gameserver.model.templates.spawns.riftspawns.RiftSpawn;
-import com.aionemu.gameserver.model.templates.spawns.siegespawns.SiegeSpawn;
-import com.aionemu.gameserver.model.templates.spawns.instanceriftspawns.InstanceRiftSpawn;
-
-import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
+import com.aionemu.gameserver.model.templates.spawns.instanceriftspawns.InstanceRiftSpawn;
+import com.aionemu.gameserver.model.templates.spawns.riftspawns.RiftSpawn;
+import com.aionemu.gameserver.model.templates.spawns.siegespawns.SiegeSpawn;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(name = "SpawnMap")

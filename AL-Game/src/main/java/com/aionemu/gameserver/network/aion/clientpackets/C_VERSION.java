@@ -16,11 +16,13 @@
  */
 package com.aionemu.gameserver.network.aion.clientpackets;
 
-import com.aionemu.gameserver.network.aion.AionClientPacket;
-import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.aionemu.gameserver.network.aion.AionClientPacket;
+import com.aionemu.gameserver.network.aion.AionConnection.State;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_VERSION_CHECK;
+import com.aionemu.gameserver.network.aion.serverpackets.S_SERVER_ENV;
 
 /**
  * @author -Nemesiss-
@@ -59,7 +61,7 @@ public class C_VERSION extends AionClientPacket
 	@Override
 	protected void runImpl()
 	{
-		sendPacket(new S_VERSION_CHECK(version));
+		sendPacket(new SM_VERSION_CHECK(version));
 		sendPacket(new S_SERVER_ENV());
 		log.info("version : " + this.version);
 	}

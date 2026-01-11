@@ -10,14 +10,15 @@
  */
 package instance.crucible;
 
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
+import java.util.Set;
+import java.util.concurrent.Future;
 
+import com.aionemu.commons.network.util.ThreadPoolManager;
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
 import com.aionemu.gameserver.model.DescriptionId;
-import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.drop.DropItem;
 import com.aionemu.gameserver.model.gameobjects.Creature;
@@ -27,11 +28,10 @@ import com.aionemu.gameserver.model.instance.InstanceScoreType;
 import com.aionemu.gameserver.model.instance.StageType;
 import com.aionemu.gameserver.model.instance.playerreward.CruciblePlayerReward;
 import com.aionemu.gameserver.model.items.storage.Storage;
-import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_INSTANT_DUNGEON_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_WORLD_SCENE_STATUS;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
 import com.aionemu.gameserver.services.NpcShoutsService;
@@ -40,15 +40,10 @@ import com.aionemu.gameserver.services.instance.InstanceService;
 import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.skillengine.model.DispelCategoryType;
-import com.aionemu.gameserver.skillengine.model.Effect;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 import com.aionemu.gameserver.world.zone.ZoneName;
-
-import java.util.*;
-import java.util.concurrent.Future;
 
 /****/
 /** Author Rinzler (Encom)
@@ -149,12 +144,12 @@ public class Crucible_Challenge extends Crucible_System
 						setEvent(StageType.PASS_STAGE_4, 0);
 						sp(205667, 1258.8464f, 237.85518f, 405.39673f, (byte) 0, 0);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(4), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(4), 4000);
 					} else if (player.isInsideZone(ZoneName.get("TRAINING_ROOM_04A_300320000"))) {
 						setEvent(StageType.PASS_STAGE_4, 0);
 						sp(205677, 1271.5472f, 791.36145f, 436.64017f, (byte) 0, 0);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(4), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(4), 4000);
 					}
 				}
 				dropItems.clear();
@@ -185,7 +180,7 @@ public class Crucible_Challenge extends Crucible_System
 				if (player.isOnline()) {
 					PacketSendUtility.sendPacket(player, new S_INSTANT_DUNGEON_INFO(instanceReward));
 					if (nameId != 0) {
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400237, new DescriptionId(nameId * 2 + 1), points));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400237, new DescriptionId(nameId * 2 + 1), points));
 					}
 				}
 			}
@@ -286,7 +281,7 @@ public class Crucible_Challenge extends Crucible_System
 				for (Player player: instance.getPlayersInside()) {
 					if (player.isOnline()) {
 						///A Crucible Rift has appeared at the spot where Vanktrist vanished. I'd better go investigate!
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111482, player.getObjectId(), 2));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111482, player.getObjectId(), 2));
 					}
 				}
 				ThreadPoolManager.getInstance().schedule(new Runnable() {
@@ -295,7 +290,7 @@ public class Crucible_Challenge extends Crucible_System
 						for (Player player: instance.getPlayersInside()) {
 							if (player.isOnline()) {
 								///Hmm, just as I suspected... Tiamat's Balaur have infiltrated the Crucible.
-								PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111483, player.getObjectId(), 2));
+								PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111483, player.getObjectId(), 2));
 							}
 						}
 					}
@@ -306,7 +301,7 @@ public class Crucible_Challenge extends Crucible_System
 						for (Player player: instance.getPlayersInside()) {
 							if (player.isOnline()) {
 								///Weird. It looks like a Crucible... just not OUR Crucible. I wonder who it belongs to?
-								PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111484, player.getObjectId(), 2));
+								PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111484, player.getObjectId(), 2));
 							}
 						}
 					}
@@ -648,9 +643,9 @@ public class Crucible_Challenge extends Crucible_System
 				despawnNpcs(instance.getNpcs(217796)); //Grissil's Branch.
 				setEvent(StageType.PASS_STAGE_1, 0);
 				///You have eliminated all enemies in Round %0.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(1), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(1), 2000);
 				///You have passed Stage %0!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(1), 4000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(1), 4000);
 				sp(217758, 347.24026f, 1660.2524f, 95.35922f, (byte) 0, 0); //Worthiness Ticket.
 				sp(205674, 345.52954f, 1662.6697f, 95.25f, (byte) 0, 0);
 			break;
@@ -679,9 +674,9 @@ public class Crucible_Challenge extends Crucible_System
 				despawnNpcs(instance.getNpcs(217846)); //Gomju's Minion.
 				setEvent(StageType.PASS_STAGE_3, 0);
 				///You have eliminated all enemies in Round %0.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(3), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(3), 2000);
 				///You have passed Stage %0!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(3), 4000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(3), 4000);
 				sp(205676, 1307.6722f, 1732.9865f, 316.07373f, (byte) 6, 0);
 			break;
 			case 217788:
@@ -761,9 +756,9 @@ public class Crucible_Challenge extends Crucible_System
 				setEvent(StageType.PASS_STAGE_5, 0);
 				sp(205678, 346.64798f, 349.25586f, 96.090965f, (byte) 0, 0);
 				///You have eliminated all enemies in Round %0.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(5), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(5), 2000);
 				///You have passed Stage %0!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(5), 4000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(5), 4000);
 			break;
 			case 217819:
 				ThreadPoolManager.getInstance().schedule(new Runnable() {
@@ -786,9 +781,9 @@ public class Crucible_Challenge extends Crucible_System
 						}
 						setEvent(StageType.PASS_STAGE_6, 0);
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(6), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(6), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(6), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(6), 4000);
 						sp(205679, 1765.522f, 1282.1051f, 389.11743f, (byte) 0, 2000);
 					}
 				}, 4000);
@@ -874,18 +869,18 @@ public class Crucible_Challenge extends Crucible_System
 				sp(217833, npc.getX(), npc.getY(), npc.getZ(), (byte) 0, 2000); //Box Bonus.
 				sp(730460, 1804.0000f, 309.0000f, 469.0000f, (byte) 63, 2000); //Crucible Rift Exit.
 				///You have eliminated all enemies in Round %0.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(6), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(6), 2000);
 				///You have passed Stage %0!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(6), 4000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(6), 4000);
             break;
 			case 218200: //Rank 5, Asmodian Soldier Mediatec.
 				despawnNpc(npc);
 				sp(217833, npc.getX(), npc.getY(), npc.getZ(), (byte) 0, 2000); //Box Bonus.
 				sp(730460, 1804.0000f, 309.0000f, 469.0000f, (byte) 63, 2000); //Crucible Rift Exit.
 				///You have eliminated all enemies in Round %0.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(6), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(6), 2000);
 				///You have passed Stage %0!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(6), 4000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(6), 4000);
             break;
 		}
 	}
@@ -1026,9 +1021,9 @@ public class Crucible_Challenge extends Crucible_System
 			@Override
 			public void visit(Player player) {
 				///You have eliminated all enemies in Round %0.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(2), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(2), 2000);
 				///You have passed Stage %0!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(2), 4000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(2), 4000);
 			}
 		});
 	}
@@ -1147,7 +1142,7 @@ public class Crucible_Challenge extends Crucible_System
 		} switch (stageType) {
 			case START_STAGE_1_ROUND_1:
 				///Round %0 begins!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(1), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(1), 2000);
 				switch (Rnd.get(1, 2)) {
 					case 1:
 						npcId = 217784;
@@ -1162,7 +1157,7 @@ public class Crucible_Challenge extends Crucible_System
 			break;
 			case START_STAGE_2_ROUND_1:
 				///Round %0 begins!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(2), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(2), 2000);
 				switch (Rnd.get(1, 2)) {
 					case 1:
 						sp(217800, 1779.9993f, 305.76697f, 469.25f, (byte) 30, 2000);
@@ -1177,7 +1172,7 @@ public class Crucible_Challenge extends Crucible_System
 			break;
 			case START_STAGE_3_ROUND_1:
 				///Round %0 begins!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(3), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(3), 2000);
 				switch (Rnd.get(1, 2)) {
 					case 1:
 						///Smash the Meat Barrel to lure and destroy the Starved Karnifs.
@@ -1201,7 +1196,7 @@ public class Crucible_Challenge extends Crucible_System
 			break;
 			case START_HARAMEL_STAGE_4_ROUND_1:
 				///Round %0 begins!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(4), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(4), 2000);
 				switch (Rnd.get(1, 3)) {
 					case 1:
 						npcId = 217788;
@@ -1220,7 +1215,7 @@ public class Crucible_Challenge extends Crucible_System
 			break;
 			case START_KROMEDE_STAGE_4_ROUND_1:
 				///Round %0 begins!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(4), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(4), 2000);
 				switch (Rnd.get(1, 3)) {
 					case 1:
 						npcId = 217791;
@@ -1239,7 +1234,7 @@ public class Crucible_Challenge extends Crucible_System
 			break;
 			case START_STAGE_5_ROUND_1:
 				///Round %0 begins!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(5), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(5), 2000);
 				switch (Rnd.get(1, 8)) {
 					case 1:
 						npcId = 217807;
@@ -1270,7 +1265,7 @@ public class Crucible_Challenge extends Crucible_System
 			break;
 			case START_STAGE_6_ROUND_1:
 				///Round %0 begins!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(6), 2000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(6), 2000);
 				sp(217819, 1769.4579f, 1290.9342f, 389.11728f, (byte) 80, 2000);
 			break;
 		}

@@ -1,11 +1,11 @@
 package com.aionemu.gameserver.network.aion.serverpackets;
 
+import java.util.Collection;
+import java.util.Map;
+
 import com.aionemu.gameserver.model.gameobjects.player.motion.Motion;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-
-import java.util.Collection;
-import java.util.Map;
 
 public class S_CUSTOM_ANIM extends AionServerPacket
 {

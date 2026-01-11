@@ -10,8 +10,13 @@
  */
 package com.aionemu.gameserver.services;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.configs.administration.AdminConfig;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.DescriptionId;
@@ -25,9 +30,13 @@ import com.aionemu.gameserver.model.stats.calc.functions.IStatFunction;
 import com.aionemu.gameserver.model.stats.calc.functions.StatEnchantFunction;
 import com.aionemu.gameserver.model.stats.container.StatEnum;
 import com.aionemu.gameserver.model.stats.listeners.ItemEquipmentListener;
-import com.aionemu.gameserver.model.templates.item.*;
+import com.aionemu.gameserver.model.templates.item.ArmorType;
+import com.aionemu.gameserver.model.templates.item.ItemEnchantChance;
+import com.aionemu.gameserver.model.templates.item.ItemEnchantChanceList;
+import com.aionemu.gameserver.model.templates.item.ItemQuality;
+import com.aionemu.gameserver.model.templates.item.ItemTemplate;
 import com.aionemu.gameserver.model.templates.item.actions.EnchantItemAction;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.item.ItemPacketService;
 import com.aionemu.gameserver.services.item.ItemPacketService.ItemUpdateType;
 import com.aionemu.gameserver.services.item.ItemService;
@@ -35,11 +44,6 @@ import com.aionemu.gameserver.services.item.ItemSocketService;
 import com.aionemu.gameserver.services.player.BattlePassService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.RndArray;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public class EnchantService
 {
@@ -155,10 +159,10 @@ public class EnchantService
 		ItemPacketService.updateItemAfterInfoChange(player, targetItem, ItemUpdateType.STATS_CHANGE);
 		if (result) {
 			///You successfully enchanted %0.
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ENCHANT_ITEM_SUCCEED(new DescriptionId(targetItem.getNameId())));
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ENCHANT_ITEM_SUCCEED(new DescriptionId(targetItem.getNameId())));
 		} else {
 			///You have failed to enchant %0.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ENCHANT_ITEM_FAILED(new DescriptionId(targetItem.getNameId())));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ENCHANT_ITEM_FAILED(new DescriptionId(targetItem.getNameId())));
 		}
 	}
 	
@@ -280,7 +284,7 @@ public class EnchantService
 		player.updateSupplements(result);
 		if (player.getInventory().decreaseByObjectId(parentItem.getObjectId(), 1) && result) {
 			///You have successfully socketed a manastone in %0.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_GIVE_ITEM_OPTION_SUCCEED(new DescriptionId(targetItem.getNameId())));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_GIVE_ITEM_OPTION_SUCCEED(new DescriptionId(targetItem.getNameId())));
 			if (targetWeapon == 1) {
 				ManaStone manaStone = ItemSocketService.addManaStone(targetItem, parentItem.getItemTemplate().getTemplateId());
 				if (targetItem.isEquipped()) {
@@ -302,7 +306,7 @@ public class EnchantService
 			}
 		} else {
 			///You have failed in the manastone socketing of %0.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_GIVE_ITEM_OPTION_FAILED(new DescriptionId(targetItem.getNameId())));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_GIVE_ITEM_OPTION_FAILED(new DescriptionId(targetItem.getNameId())));
 		}
 		ItemPacketService.updateItemAfterInfoChange(player, targetItem);
 	}

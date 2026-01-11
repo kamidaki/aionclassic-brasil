@@ -10,15 +10,15 @@
  */
 package quest.eltnen;
 
-import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.Item;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.HandlerResult;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 /****/
@@ -72,6 +72,8 @@ public class _1042Keeper_Of_The_Kaidan_Key extends QuestHandler
 						changeQuestStep(env, 0, 1, false);
 						return closeDialogWindow(env);
 					}
+				default:
+					break;
 				}
 			} if (targetId == 730342) {
 				switch (env.getDialog()) {
@@ -85,6 +87,8 @@ public class _1042Keeper_Of_The_Kaidan_Key extends QuestHandler
 							return closeDialogWindow(env);
 						}
 					}
+				default:
+					break;
 				}
 			} if (targetId == 203901) {
 				switch (env.getDialog()) {
@@ -95,6 +99,8 @@ public class _1042Keeper_Of_The_Kaidan_Key extends QuestHandler
 					} case CHECK_COLLECTED_ITEMS: {
 						return checkQuestItems(env, 2, 2, true, 5, 1438);
 					}
+				default:
+					break;
 				}
 			}
 		} else if (qs != null && qs.getStatus() == QuestStatus.REWARD) {
@@ -114,7 +120,7 @@ public class _1042Keeper_Of_The_Kaidan_Key extends QuestHandler
             if (var == 1) {
 				removeQuestItem(env, 182201026, 1);
 				///Kalabar controls the Abyss Gate!
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111001, player.getObjectId(), 2));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111001, player.getObjectId(), 2));
                 return HandlerResult.fromBoolean(useQuestItem(env, item, 1, 2, false));
             }
         }

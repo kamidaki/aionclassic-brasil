@@ -1,5 +1,8 @@
 package admincommands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.stats.calc.Stat2;
@@ -7,12 +10,10 @@ import com.aionemu.gameserver.model.stats.calc.StatOwner;
 import com.aionemu.gameserver.model.stats.calc.functions.IStatFunction;
 import com.aionemu.gameserver.model.stats.calc.functions.StatFunction;
 import com.aionemu.gameserver.model.stats.container.StatEnum;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
-import com.aionemu.gameserver.network.aion.serverpackets.S_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
-
-import java.util.*;
 
 public class Speed extends AdminCommand implements StatOwner
 {
@@ -41,8 +42,8 @@ public class Speed extends AdminCommand implements StatOwner
 		functions.add(new SpeedFunction(StatEnum.SPEED, parameter));
 		functions.add(new SpeedFunction(StatEnum.FLY_SPEED, parameter));
 		admin.getGameStats().addEffect(this, functions);
-		PacketSendUtility.sendPacket(admin, new S_STATUS(admin));
-		PacketSendUtility.broadcastPacket(admin, new S_ACTION(admin, EmotionType.START_EMOTE2, 0, 0), true);
+		PacketSendUtility.sendPacket(admin, new SM_STATS_INFO(admin));
+		PacketSendUtility.broadcastPacket(admin, new SM_EMOTION(admin, EmotionType.START_EMOTE2, 0, 0), true);
 	}
 	
 	@Override

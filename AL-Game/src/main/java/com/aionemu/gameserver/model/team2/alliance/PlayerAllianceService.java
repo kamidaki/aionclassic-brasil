@@ -10,6 +10,13 @@
  */
 package com.aionemu.gameserver.model.team2.alliance;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.callbacks.metadata.GlobalCallback;
 import com.aionemu.gameserver.configs.main.GroupConfig;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -17,28 +24,33 @@ import com.aionemu.gameserver.model.team2.TeamType;
 import com.aionemu.gameserver.model.team2.alliance.callback.AddPlayerToAllianceCallback;
 import com.aionemu.gameserver.model.team2.alliance.callback.PlayerAllianceCreateCallback;
 import com.aionemu.gameserver.model.team2.alliance.callback.PlayerAllianceDisbandCallback;
-import com.aionemu.gameserver.model.team2.alliance.events.*;
+import com.aionemu.gameserver.model.team2.alliance.events.AllianceDisbandEvent;
+import com.aionemu.gameserver.model.team2.alliance.events.AssignViceCaptainEvent;
 import com.aionemu.gameserver.model.team2.alliance.events.AssignViceCaptainEvent.AssignType;
+import com.aionemu.gameserver.model.team2.alliance.events.ChangeAllianceLeaderEvent;
+import com.aionemu.gameserver.model.team2.alliance.events.ChangeAllianceLootRulesEvent;
+import com.aionemu.gameserver.model.team2.alliance.events.ChangeMemberGroupEvent;
+import com.aionemu.gameserver.model.team2.alliance.events.CheckAllianceReadyEvent;
+import com.aionemu.gameserver.model.team2.alliance.events.PlayerAllianceInvite;
+import com.aionemu.gameserver.model.team2.alliance.events.PlayerAllianceLeavedEvent;
+import com.aionemu.gameserver.model.team2.alliance.events.PlayerAllianceUpdateEvent;
+import com.aionemu.gameserver.model.team2.alliance.events.PlayerConnectedEvent;
+import com.aionemu.gameserver.model.team2.alliance.events.PlayerDisconnectedEvent;
+import com.aionemu.gameserver.model.team2.alliance.events.PlayerEnteredEvent;
 import com.aionemu.gameserver.model.team2.common.events.PlayerLeavedEvent.LeaveReson;
 import com.aionemu.gameserver.model.team2.common.events.ShowBrandEvent;
 import com.aionemu.gameserver.model.team2.common.events.TeamCommand;
 import com.aionemu.gameserver.model.team2.common.events.TeamKinahDistributionEvent;
 import com.aionemu.gameserver.model.team2.common.legacy.LootGroupRules;
 import com.aionemu.gameserver.model.team2.common.legacy.PlayerAllianceEvent;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.utils.TimeUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerAllianceService
 {
@@ -51,9 +63,9 @@ public class PlayerAllianceService
             PlayerAllianceInvite invite = new PlayerAllianceInvite(inviter, invited);
             if (invited.getResponseRequester().putRequest(S_ASK.STR_MSGBOX_FORCE_INVITE_PARTY, invite)) {
                 if (invited.isInGroup2()) {
-                    PacketSendUtility.sendPacket(inviter, S_MESSAGE_CODE.STR_PARTY_ALLIANCE_INVITED_HIS_PARTY(invited.getName()));
+                    PacketSendUtility.sendPacket(inviter, SM_SYSTEM_MESSAGE.STR_PARTY_ALLIANCE_INVITED_HIS_PARTY(invited.getName()));
                 } else {
-                    PacketSendUtility.sendPacket(inviter, S_MESSAGE_CODE.STR_FORCE_INVITED_HIM(invited.getName()));
+                    PacketSendUtility.sendPacket(inviter, SM_SYSTEM_MESSAGE.STR_FORCE_INVITED_HIM(invited.getName()));
                 }
                 PacketSendUtility.sendPacket(invited, new S_ASK(S_ASK.STR_MSGBOX_FORCE_INVITE_PARTY, 0, 0, inviter.getName()));
             }

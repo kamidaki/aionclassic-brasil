@@ -10,10 +10,12 @@
  */
 package ai.instance.darkPoeta;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AIState;
 import com.aionemu.gameserver.ai2.manager.EmoteManager;
@@ -21,14 +23,14 @@ import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureVisualState;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.S_INVISIBLE_LEVEL;
 import com.aionemu.gameserver.services.NpcShoutsService;
-import com.aionemu.gameserver.skillengine.effect.AbnormalState;
 import com.aionemu.gameserver.skillengine.SkillEngine;
+import com.aionemu.gameserver.skillengine.effect.AbnormalState;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -94,7 +96,7 @@ public class Elim_ElderAI2 extends AggressiveNpcAI2
 				getOwner().getMoveController().moveToPoint(601.63153f, 827.33746f, 114.41641f);
 				WalkManager.startWalking(this);
 				getOwner().setState(1);
-				PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
+				PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
 				ThreadPoolManager.getInstance().schedule(new Runnable() {
 					@Override
 					public void run() {
@@ -114,7 +116,7 @@ public class Elim_ElderAI2 extends AggressiveNpcAI2
 							setStateIfNot(AIState.WALKING);
 							getOwner().setState(1);
 							getOwner().getMoveController().moveToTargetObject();
-							PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
+							PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
 							ThreadPoolManager.getInstance().schedule(new Runnable() {
 								@Override
 								public void run() {
@@ -134,7 +136,7 @@ public class Elim_ElderAI2 extends AggressiveNpcAI2
 				getOwner().getMoveController().moveToPoint(606.36816f, 909.3100f, 116.52301f);
 				WalkManager.startWalking(this);
 				getOwner().setState(1);
-				PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
+				PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
 				ThreadPoolManager.getInstance().schedule(new Runnable() {
 					@Override
 					public void run() {
@@ -154,7 +156,7 @@ public class Elim_ElderAI2 extends AggressiveNpcAI2
 							setStateIfNot(AIState.WALKING);
 							getOwner().setState(1);
 							getOwner().getMoveController().moveToTargetObject();
-							PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
+							PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
 							ThreadPoolManager.getInstance().schedule(new Runnable() {
 								@Override
 								public void run() {

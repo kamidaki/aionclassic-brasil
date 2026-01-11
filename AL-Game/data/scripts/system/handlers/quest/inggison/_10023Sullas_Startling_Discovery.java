@@ -10,15 +10,16 @@
  */
 package quest.inggison;
 
-import com.aionemu.gameserver.model.gameobjects.*;
+import com.aionemu.gameserver.model.gameobjects.Item;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.HandlerResult;
+import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
+import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.services.QuestService;
 import com.aionemu.gameserver.services.instance.InstanceService;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
@@ -79,6 +80,8 @@ public class _10023Sullas_Startling_Discovery extends QuestHandler
 						changeQuestStep(env, 0, 1, false);
 						return closeDialogWindow(env);
 					}
+				default:
+					break;
 				}
 			} if (targetId == 798975) {
 				switch (env.getDialog()) {
@@ -103,6 +106,8 @@ public class _10023Sullas_Startling_Discovery extends QuestHandler
 					    changeQuestStep(env, 9, 10, false);
 						return closeDialogWindow(env);
 					}
+				default:
+					break;
 				}
 			} if (targetId == 798981) {
 				switch (env.getDialog()) {
@@ -112,7 +117,7 @@ public class _10023Sullas_Startling_Discovery extends QuestHandler
 						}
 					} case STEP_TO_3: {
 						if (player.getInventory().isFull()) {
-							PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_WAREHOUSE_FULL_INVENTORY);
+							PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_WAREHOUSE_FULL_INVENTORY);
 							return false;
 						} else {
 							giveQuestItem(env, 182206609, 3);
@@ -132,7 +137,7 @@ public class _10023Sullas_Startling_Discovery extends QuestHandler
 						changeQuestStep(env, 3, 4, false);
 						removeQuestItem(env, 182206609, 1);
 						///I got the western sample!
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1122003, player.getObjectId(), 2));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1122003, player.getObjectId(), 2));
 						return closeDialogWindow(env);
 					}
                 }
@@ -147,7 +152,7 @@ public class _10023Sullas_Startling_Discovery extends QuestHandler
 						changeQuestStep(env, 4, 5, false);
 						removeQuestItem(env, 182206609, 1);
 						///I got the eastern sample!
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1122004, player.getObjectId(), 2));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1122004, player.getObjectId(), 2));
 						return closeDialogWindow(env);
 					}
                 }
@@ -162,7 +167,7 @@ public class _10023Sullas_Startling_Discovery extends QuestHandler
 						changeQuestStep(env, 5, 6, false);
 						removeQuestItem(env, 182206609, 1);
                         ///I got the southern sample!
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1122005, player.getObjectId(), 2));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1122005, player.getObjectId(), 2));
 						return closeDialogWindow(env);
 					}
                 }

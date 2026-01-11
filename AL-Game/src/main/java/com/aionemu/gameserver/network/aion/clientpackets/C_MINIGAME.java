@@ -1,11 +1,12 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.services.player.ArcadeUpgradeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class C_MINIGAME extends AionClientPacket
 {

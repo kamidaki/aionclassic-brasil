@@ -10,9 +10,23 @@
  */
 package com.aionemu.gameserver.services.player;
 
+import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ScheduledFuture;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.cache.HTMLCache;
 import com.aionemu.gameserver.configs.administration.AdminConfig;
-import com.aionemu.gameserver.configs.main.*;
+import com.aionemu.gameserver.configs.main.AutoGroupConfig;
+import com.aionemu.gameserver.configs.main.EventsConfig;
+import com.aionemu.gameserver.configs.main.GSConfig;
+import com.aionemu.gameserver.configs.main.HTMLConfig;
+import com.aionemu.gameserver.configs.main.PeriodicSaveConfig;
 import com.aionemu.gameserver.dao.PlayerDAO;
 import com.aionemu.gameserver.dao.PlayerPasskeyDAO;
 import com.aionemu.gameserver.model.TaskId;
@@ -31,11 +45,47 @@ import com.aionemu.gameserver.model.items.storage.StorageType;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAllianceService;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
 import com.aionemu.gameserver.network.aion.AionConnection;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ENTER_WORLD_CHECK;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_SPAWN;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_2ND_PASSWORD;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ABYSS_POINT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ADDREMOVE_SOCIAL;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_LIST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ASK_QUIT_RESULT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_CHANNEL;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CHANNEL_CHATTING_BLACKLIST_SETTING;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CHAT_ACCUSE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CUR_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CUSTOM_ANIM;
+import com.aionemu.gameserver.network.aion.serverpackets.S_EVENT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_INSTANCE_DUNGEON_COOLTIMES;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_UI_SETTINGS;
+import com.aionemu.gameserver.network.aion.serverpackets.S_LOAD_FINISHEDQUEST;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_INVENTORY_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_LOAD_ITEM_COOLTIME;
+import com.aionemu.gameserver.network.aion.serverpackets.S_LOAD_MACRO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_LOAD_SKILL_COOLTIME;
+import com.aionemu.gameserver.network.aion.serverpackets.S_LOAD_WORKINGQUEST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_RECIPE_LIST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_SPAM_FILTER_FLAG;
+import com.aionemu.gameserver.network.aion.serverpackets.S_TAX_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_GAME_TIME;
+import com.aionemu.gameserver.network.aion.serverpackets.S_TITLE;
 import com.aionemu.gameserver.network.aion.serverpackets.need.S_LOAD_EQUIPMENT_CHANGE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.services.*;
+import com.aionemu.gameserver.services.AutoGroupService;
+import com.aionemu.gameserver.services.BrokerService;
+import com.aionemu.gameserver.services.ClassChangeService;
+import com.aionemu.gameserver.services.EventService;
+import com.aionemu.gameserver.services.HTMLService;
+import com.aionemu.gameserver.services.KiskService;
+import com.aionemu.gameserver.services.PunishmentService;
+import com.aionemu.gameserver.services.SerialKillerService;
+import com.aionemu.gameserver.services.SiegeService;
+import com.aionemu.gameserver.services.StigmaService;
+import com.aionemu.gameserver.services.SurveyService;
 import com.aionemu.gameserver.services.abyss.AbyssSkillService;
 import com.aionemu.gameserver.services.craft.RelinquishCraftStatus;
 import com.aionemu.gameserver.services.instance.InstanceService;
@@ -49,24 +99,17 @@ import com.aionemu.gameserver.utils.audit.AuditLogger;
 import com.aionemu.gameserver.utils.audit.GMService;
 import com.aionemu.gameserver.utils.rates.Rates;
 import com.aionemu.gameserver.world.World;
-import javolution.util.FastList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
+import javolution.util.FastList;
+
+
+import com.aionemu.gameserver.world.geo.nav.NavData;
 
 public final class PlayerEnterWorldService
 {
 	private static final Logger log = LoggerFactory.getLogger("GAMECONNECTION_LOG");
-	private static final String serverName = "Welcome to Aion Classic";
-	private static final String serverIntro = "Aion Classic is now live!";
 	private static final Set<Integer> pendingEnterWorld = new HashSet<Integer>();
-	static ScheduledFuture<?> adv = null;
+	private static final NavData navData = NavData.getInstance();
 
 
 
@@ -75,7 +118,7 @@ public final class PlayerEnterWorldService
 		Timestamp lastOnline = playerAccData.getPlayerCommonData().getLastOnline();
 		if (lastOnline != null && client.getAccount().getAccessLevel() < AdminConfig.GM_LEVEL) {
 			if (System.currentTimeMillis() - lastOnline.getTime() < (GSConfig.CHARACTER_REENTRY_TIME * 1000)) {
-				client.sendPacket(new S_ENTER_WORLD_CHECK((byte) 6)); // 20 sec time
+				client.sendPacket(new SM_ENTER_WORLD_CHECK((byte) 6)); // 20 sec time
 				return;
 			}
 		}
@@ -171,7 +214,7 @@ public final class PlayerEnterWorldService
 			InstanceService.onPlayerLogin(player);
 			AbyssSkillService.onEnterWorld(player);
 			SerialKillerService.getInstance().onLogin(player);
-			client.sendPacket(new S_ADD_SKILL(player));
+			client.sendPacket(new SM_SKILL_LIST(player));
 			if (player.getSkillCoolDowns() != null) {
                 client.sendPacket(new S_LOAD_SKILL_COOLTIME((Map<Integer, Long>)player.getSkillCoolDowns()));
             } if (player.getItemCoolDowns() != null) {
@@ -194,13 +237,13 @@ public final class PlayerEnterWorldService
 			client.sendPacket(new S_CUSTOM_ANIM(player.getMotions().getMotions().values()));
 			client.sendPacket(new S_CUSTOM_ANIM(player.getObjectId(), player.getMotions().getActiveMotions()));
 			BattlePassService.getInstance().onEnterWorld(player);
-			client.sendPacket(new S_ENTER_WORLD_CHECK());
+			client.sendPacket(new SM_ENTER_WORLD_CHECK());
 			byte[] uiSettings = player.getPlayerSettings().getUiSettings();
 			byte[] shortcuts = player.getPlayerSettings().getShortcuts();
 			if (uiSettings != null) {
-				client.sendPacket(new S_LOAD_CLIENT_SETTINGS(uiSettings, 0));
+				client.sendPacket(new SM_UI_SETTINGS(uiSettings, 0));
 			} if (shortcuts != null) {
-				client.sendPacket(new S_LOAD_CLIENT_SETTINGS(shortcuts, 1));
+				client.sendPacket(new SM_UI_SETTINGS(shortcuts, 1));
 			}
 			sendItemInfos(client, player);
 			playerLoggedIn(player);
@@ -209,16 +252,13 @@ public final class PlayerEnterWorldService
 			KiskService.getInstance().onLogin(player);
 			player.getPosition().getWorld().getWorldMap(player.getWorldId()).getWorldHandler().onPlayerLogOut(player);
 			World.getInstance().preSpawn(player);
-			client.sendPacket(new S_WORLD(player));
-			client.sendPacket(new S_TIME());
+			client.sendPacket(new SM_PLAYER_SPAWN(player));
+			client.sendPacket(new SM_GAME_TIME());
 			client.sendPacket(new S_TITLE(player));
 			client.sendPacket(new S_ADDREMOVE_SOCIAL((byte) 0, player.getEmotions().getEmotions()));
 			SiegeService.getInstance().onPlayerLogin(player);
 			client.sendPacket(new S_TAX_INFO());
 			client.sendPacket(new S_ABYSS_POINT(player.getAbyssRank()));
-			//Intro Msg.
-			PacketSendUtility.sendWhiteMessage(player, serverName);
-			PacketSendUtility.sendWhiteMessage(player, serverIntro);
 			player.setRates(Rates.getRatesFor(client.getAccount().getMembership()));
 			//Buff.
 			/*if (player.getMembership() >= 0) {
@@ -298,9 +338,9 @@ public final class PlayerEnterWorldService
 			BlackCloudTradeService.getInstance().onLogin(player);
 			//"Energy Of Repose"
 			if (player.getCommonData().getCurrentReposteEnergy() != 0) {
-				client.sendPacket(new S_STATUS(player));
+				client.sendPacket(new SM_STATS_INFO(player));
 			}
-			//Fucking 2.4 holy shit chat
+
 			client.sendPacket(new S_CHAT_ACCUSE(player));
 			client.sendPacket(new S_SPAM_FILTER_FLAG(player));
 			client.sendPacket(new S_CHANNEL_CHATTING_BLACKLIST_SETTING());
@@ -313,6 +353,11 @@ public final class PlayerEnterWorldService
 
 			PlayerWardrobeService.getInstance().onEnterWorld(player);
 			ArcadeUpgradeService.getInstance().onEnterWorld(player);
+
+			// Notifica o NavData que há um jogador no mapa
+			// Se o mapa não estiver em cache, será carregado assincronamente
+			navData.onPlayerEnterMap(player.getWorldId());
+
 		} else {
 			log.info("[DEBUG] Enter World" + objectId + ", Player: " + player);
 		}
@@ -326,20 +371,20 @@ public final class PlayerEnterWorldService
 		Storage inventory = player.getInventory();
 		List<Item> equipedItems = player.getEquipment().getEquippedItems();
 		if (equipedItems.size() != 0) {
-			client.sendPacket(new S_LOAD_INVENTORY(true, player.getEquipment().getEquippedItems(), npcExpands, questExpands, player));
+			client.sendPacket(new SM_INVENTORY_INFO(true, player.getEquipment().getEquippedItems(), npcExpands, questExpands, player));
 		}
 		List<Item> unequipedItems = inventory.getItemsWithKinah();
 		int itemsSize = unequipedItems.size();
 		if (itemsSize != 0) {
 			int index = 0;
 			while (index + 10 < itemsSize) {
-				client.sendPacket(new S_LOAD_INVENTORY(false,unequipedItems.subList(index, index + 10), npcExpands, questExpands, player));
+				client.sendPacket(new SM_INVENTORY_INFO(false,unequipedItems.subList(index, index + 10), npcExpands, questExpands, player));
 				index += 10;
 			}
-			client.sendPacket(new S_LOAD_INVENTORY(false, unequipedItems.subList(index, itemsSize), npcExpands, questExpands, player));
+			client.sendPacket(new SM_INVENTORY_INFO(false, unequipedItems.subList(index, itemsSize), npcExpands, questExpands, player));
 		}
-		client.sendPacket(new S_LOAD_INVENTORY());
-		client.sendPacket(new S_STATUS(player));
+		client.sendPacket(new SM_INVENTORY_INFO());
+		client.sendPacket(new SM_STATS_INFO(player));
 		client.sendPacket(S_EVENT.stigmaSlots(player.getCommonData().getAdvencedStigmaSlotSize()));
 	}
 

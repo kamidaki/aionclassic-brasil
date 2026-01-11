@@ -10,11 +10,12 @@
  */
 package admincommands;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.services.RiftService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
-import org.apache.commons.lang.math.NumberUtils;
 
 /**
  * @author Ranastic

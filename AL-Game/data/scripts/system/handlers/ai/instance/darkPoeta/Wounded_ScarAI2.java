@@ -10,22 +10,21 @@
  */
 package ai.instance.darkPoeta;
 
-import ai.GeneralNpcAI2;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
-import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AI2Actions;
+import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import ai.GeneralNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -55,7 +54,7 @@ public class Wounded_ScarAI2 extends GeneralNpcAI2
 				getSpawnTemplate().setWalkerId("idlf1_e_path_ska_50");
 				WalkManager.startWalking(this);
 				getOwner().setState(1);
-				PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
+				PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
 				ThreadPoolManager.getInstance().schedule(new Runnable() {
 					@Override
 					public void run() {

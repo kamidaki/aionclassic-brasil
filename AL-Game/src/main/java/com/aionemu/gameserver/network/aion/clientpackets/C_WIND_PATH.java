@@ -7,7 +7,7 @@ import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
 import com.aionemu.gameserver.model.templates.windstreams.WindstreamPath;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.network.aion.serverpackets.S_POLYMORPH;
 import com.aionemu.gameserver.network.aion.serverpackets.S_WIND_PATH_RESULT;
 import com.aionemu.gameserver.utils.PacketSendUtility;
@@ -40,9 +40,9 @@ public class C_WIND_PATH extends AionClientPacket
 			case 7:
 			case 8:
 				if (state == 7) {
-					PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.WINDSTREAM_START_BOOST, 0, 0), true);
+					PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.WINDSTREAM_START_BOOST, 0, 0), true);
 				} else if (state == 8) {
-					PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.WINDSTREAM_END_BOOST, 0, 0), true);
+					PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.WINDSTREAM_END_BOOST, 0, 0), true);
 				}
 				PacketSendUtility.sendPacket(player, new S_WIND_PATH_RESULT(state, 1));
 				break;
@@ -54,7 +54,7 @@ public class C_WIND_PATH extends AionClientPacket
 				player.unsetState(CreatureState.ACTIVE);
 				player.unsetState(CreatureState.GLIDING);
 				player.setState(CreatureState.FLYING);
-				PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.WINDSTREAM, teleportId, distance), true);
+				PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.WINDSTREAM, teleportId, distance), true);
 				player.getLifeStats().triggerFpRestore();
 				break;
 			case 2:
@@ -76,7 +76,7 @@ public class C_WIND_PATH extends AionClientPacket
 					PacketSendUtility.broadcastPacketAndReceive(player, new S_POLYMORPH(player, true));
 					player.getEffectController().updatePlayerEffectIcons();
 				}
-				PacketSendUtility.broadcastPacket(player, new S_ACTION(player, state == 2 ? EmotionType.WINDSTREAM_END : EmotionType.WINDSTREAM_EXIT, 0, 0), true);
+				PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, state == 2 ? EmotionType.WINDSTREAM_END : EmotionType.WINDSTREAM_EXIT, 0, 0), true);
 				player.getGameStats().updateStatsAndSpeedVisually();
 				PacketSendUtility.sendPacket(player, new S_WIND_PATH_RESULT(state, 1));
 				player.unsetPlayerMode(PlayerMode.WINDSTREAM);

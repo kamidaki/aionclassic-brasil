@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.skillengine.model.Skill;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -33,7 +33,7 @@ public class HpUseAction extends Action
 			valueWithDelta = (int) (valueWithDelta / 100f * skill.getEffector().getLifeStats().getMaxHp());
 		} if (effector instanceof Player) {
 			if (currentHp <= 0 || currentHp < valueWithDelta) {
-				PacketSendUtility.sendPacket((Player) effector, S_MESSAGE_CODE.STR_SKILL_NOT_ENOUGH_HP);
+				PacketSendUtility.sendPacket((Player) effector, SM_SYSTEM_MESSAGE.STR_SKILL_NOT_ENOUGH_HP);
 				return;
 			}
 		}

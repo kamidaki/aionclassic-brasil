@@ -10,6 +10,8 @@
  */
 package com.aionemu.gameserver.questEngine.handlers;
 
+import java.util.Collections;
+
 import com.aionemu.gameserver.ai2.event.AIEventType;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.DescriptionId;
@@ -24,7 +26,13 @@ import com.aionemu.gameserver.model.templates.QuestTemplate;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
 import com.aionemu.gameserver.model.templates.quest.QuestItems;
 import com.aionemu.gameserver.model.templates.quest.XMLStartCondition;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_NPC_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PLAY_CUTSCENE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_QUEST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
@@ -36,8 +44,6 @@ import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.zone.ZoneName;
-
-import java.util.Collections;
 
 /**
  * @author MrPoke
@@ -137,6 +143,8 @@ public abstract class QuestHandler extends AbstractQuestHandler
 			case FINISH_DIALOG: {
 				return sendQuestSelectionDialog(env);
 			}
+		default:
+			break;
 		}
 		return false;
 	}
@@ -326,7 +334,7 @@ public abstract class QuestHandler extends AbstractQuestHandler
 	public void sendEmotion(QuestEnv env, Creature emoteCreature, EmotionId emotion, boolean broadcast) {
 		Player player = env.getPlayer();
 		int targetId = player.equals(emoteCreature) ? env.getVisibleObject().getObjectId() : player.getObjectId();
-		PacketSendUtility.broadcastPacket(player, new S_ACTION(emoteCreature, EmotionType.EMOTE, emotion.id(), targetId), broadcast);
+		PacketSendUtility.broadcastPacket(player, new SM_EMOTION(emoteCreature, EmotionType.EMOTE, emotion.id(), targetId), broadcast);
 	}
 
 	/** Give the quest item to player's inventory */
@@ -339,7 +347,7 @@ public abstract class QuestHandler extends AbstractQuestHandler
 				int itemsToGive = (int) (itemCount - existentItemCount);
 				return (ItemService.addQuestItems(player, Collections.singletonList(new QuestItems(itemId, itemsToGive))));
 			} else {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CAN_NOT_GET_LORE_ITEM((new DescriptionId(item.getNameId()))));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CAN_NOT_GET_LORE_ITEM((new DescriptionId(item.getNameId()))));
 				return true;
 			}
 		}
@@ -481,7 +489,7 @@ public abstract class QuestHandler extends AbstractQuestHandler
 		if (!(env.getVisibleObject() instanceof Npc)) {
 			return false;
 		}
-		PacketSendUtility.sendPacket(player, new S_PUT_NPC(follower, player));
+		PacketSendUtility.sendPacket(player, new SM_NPC_INFO(follower, player));
 		follower.getAi2().onCreatureEvent(AIEventType.FOLLOW_ME, player);
 		player.getController().addTask(TaskId.QUEST_FOLLOW, QuestTasks.newFollowingToTargetCheckTask(env, follower, targetNpcId));
 		if (step == 0 && nextStep == 0) {
@@ -497,7 +505,7 @@ public abstract class QuestHandler extends AbstractQuestHandler
 		if (!(env.getVisibleObject() instanceof Npc)) {
 			return false;
 		}
-		PacketSendUtility.sendPacket(player, new S_PUT_NPC(follower, player));
+		PacketSendUtility.sendPacket(player, new SM_NPC_INFO(follower, player));
 		follower.getAi2().onCreatureEvent(AIEventType.FOLLOW_ME, player);
 		player.getController().addTask(TaskId.QUEST_FOLLOW, QuestTasks.newFollowingToTargetCheckTask(env, follower, x, y, z));
 		if (step == 0 && nextStep == 0) {
@@ -512,7 +520,7 @@ public abstract class QuestHandler extends AbstractQuestHandler
         if (!(env.getVisibleObject() instanceof Npc)) {
             return false;
         }
-        PacketSendUtility.sendPacket(player, new S_PUT_NPC(follower, player));
+        PacketSendUtility.sendPacket(player, new SM_NPC_INFO(follower, player));
         follower.getAi2().onCreatureEvent(AIEventType.FOLLOW_ME, player);
         player.getController().addTask(TaskId.QUEST_FOLLOW, QuestTasks.newFollowingToTargetCheckTask(env, follower, zonename));
         if (step == 0 && nextStep == 0) {

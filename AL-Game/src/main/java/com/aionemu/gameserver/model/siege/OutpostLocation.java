@@ -1,9 +1,9 @@
 package com.aionemu.gameserver.model.siege;
 
+import java.util.List;
+
 import com.aionemu.gameserver.model.templates.siegelocation.SiegeLocationTemplate;
 import com.aionemu.gameserver.model.templates.siegelocation.SiegeReward;
-
-import java.util.*;
 
 public class OutpostLocation extends SiegeLocation
 {

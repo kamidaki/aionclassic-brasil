@@ -11,15 +11,16 @@
 package ai.instance.esoterrace;
 
 import com.aionemu.commons.utils.Rnd;
-
-import com.aionemu.gameserver.ai2.*;
-import com.aionemu.gameserver.ai2.manager.*;
-import com.aionemu.gameserver.model.*;
-import com.aionemu.gameserver.model.actions.*;
-import com.aionemu.gameserver.model.gameobjects.*;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.*;
-import com.aionemu.gameserver.utils.*;
+import com.aionemu.gameserver.ai2.AIName;
+import com.aionemu.gameserver.ai2.NpcAI2;
+import com.aionemu.gameserver.ai2.manager.WalkManager;
+import com.aionemu.gameserver.model.EmotionType;
+import com.aionemu.gameserver.model.actions.NpcActions;
+import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.services.NpcShoutsService;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 
 /****/
 /** Author Rinzler (Encom)
@@ -60,7 +61,7 @@ public class Reian_RefugeeAI2 extends NpcAI2
         npc.getSpawn().setWalkerId("Reian_Refugee_1");
         WalkManager.startWalking((NpcAI2) npc.getAi2());
         npc.setState(1);
-        PacketSendUtility.broadcastPacket(npc, new S_ACTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
+        PacketSendUtility.broadcastPacket(npc, new SM_EMOTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
 		if (msg != 0) {
             NpcShoutsService.getInstance().sendMsg(npc, msg, npc.getObjectId(), 0, 10000);
         }

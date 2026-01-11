@@ -10,27 +10,26 @@
  */
 package ai.instance.padmarashkaCave;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import com.aionemu.commons.utils.Rnd;
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
-import com.aionemu.gameserver.ai2.AIName;
-import com.aionemu.gameserver.ai2.NpcAI2;
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.AI2Actions;
-import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.spawnengine.SpawnEngine;
-import com.aionemu.gameserver.skillengine.SkillEngine;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.NpcShoutsService;
-import com.aionemu.gameserver.utils.MathUtil;
+import com.aionemu.gameserver.skillengine.SkillEngine;
+import com.aionemu.gameserver.spawnengine.SpawnEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 
-import java.util.*;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -123,7 +122,7 @@ public class PadmarashkaAI2 extends AggressiveNpcAI2
 		sendMsg(1400542, getObjectId(), false, 5000);
 		AI2Actions.useSkill(this, 19177); //Lay Egg.
 		//The huge hidden egg is finally revealed.
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDDramata_02, 2000);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDDramata_02, 2000);
 		ThreadPoolManager.getInstance().schedule(new Runnable() {
 			@Override
 			public void run() {
@@ -140,7 +139,7 @@ public class PadmarashkaAI2 extends AggressiveNpcAI2
 		///The responsibility of breeding is my will!
 		sendMsg(1400540, getObjectId(), false, 5000);
 		//The cave starts to crumble from Padmarashka's might.
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDDramata_03, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDDramata_03, 0);
 		ThreadPoolManager.getInstance().schedule(new Runnable() {
 			@Override
 			public void run() {

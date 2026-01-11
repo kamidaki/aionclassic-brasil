@@ -10,23 +10,24 @@
  */
 package ai.instance.abyssalSplinter;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
+import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.NpcAI2;
-import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
-import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.NpcShoutsService;
 import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 
-import java.util.*;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -105,7 +106,7 @@ public class YamennesAI2 extends AggressiveNpcAI2
 		///Your pathetic power won't get you to the artifact.
 		sendMsg(1500006, getObjectId(), false, 20000);
 		//Yamennes opens the Spawn Gate and begins to summon his minions.
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDAbRe_Core_NmdD_SummonStart, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDAbRe_Core_NmdD_SummonStart, 0);
 		final Npc spawnGate1 = getPosition().getWorldMapInstance().getNpc(281906);
 		if (spawnGate1 == null) {
 			orkanimum1();
@@ -139,7 +140,7 @@ public class YamennesAI2 extends AggressiveNpcAI2
 		///Your pathetic power won't get you to the artifact.
 		sendMsg(1500006, getObjectId(), false, 20000);
 		//Yamennes opens the Spawn Gate and begins to summon his minions.
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDAbRe_Core_NmdD_SummonStart, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDAbRe_Core_NmdD_SummonStart, 0);
 		final Npc spawnGate2 = getPosition().getWorldMapInstance().getNpc(282014);
 		if (spawnGate2 == null) {
 			orkanimum2();
@@ -148,7 +149,7 @@ public class YamennesAI2 extends AggressiveNpcAI2
 				@Override
 				public void run() {
 					//A summoned Lapilima is healing Yamennes!
-					PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDAbRe_Core_NmdD_Heal, 0);
+					PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDAbRe_Core_NmdD_Heal, 0);
 					SkillEngine.getInstance().getSkill(getOwner(), 19281, 60, getOwner()).useNoAnimationSkill(); //Lapilima's Healing.
 				}
 			}, 15000);
@@ -175,7 +176,7 @@ public class YamennesAI2 extends AggressiveNpcAI2
 		///Your pathetic power won't get you to the artifact.
 		sendMsg(1500006, getObjectId(), false, 20000);
 		//Yamennes opens the Spawn Gate and begins to summon his minions.
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDAbRe_Core_NmdD_SummonStart, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDAbRe_Core_NmdD_SummonStart, 0);
 		final Npc spawnGate3 = getPosition().getWorldMapInstance().getNpc(282015);
 		if (spawnGate3 == null) {
 			orkanimum3();
@@ -237,7 +238,7 @@ public class YamennesAI2 extends AggressiveNpcAI2
 		percents.clear();
 		getOwner().getEffectController().removeAllEffects();
 		//Yamennes' threat level has been reset!
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDAbRe_Core_NmdD_ResetAggro, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDAbRe_Core_NmdD_ResetAggro, 0);
 		WorldMapInstance instance = getPosition().getWorldMapInstance();
 		killNpc(instance.getNpcs(281903));
 		killNpc(instance.getNpcs(281904));
@@ -253,7 +254,7 @@ public class YamennesAI2 extends AggressiveNpcAI2
 		canThink = true;
 		curentPercent = 100;
 		//Yamennes' threat level has been reset!
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDAbRe_Core_NmdD_ResetAggro, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDAbRe_Core_NmdD_ResetAggro, 0);
 		WorldMapInstance instance = getPosition().getWorldMapInstance();
 		killNpc(instance.getNpcs(281903));
 		killNpc(instance.getNpcs(281904));

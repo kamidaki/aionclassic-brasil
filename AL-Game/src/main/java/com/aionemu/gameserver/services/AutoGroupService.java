@@ -5,11 +5,12 @@ import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.select;
 import static org.hamcrest.Matchers.equalTo;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.aionemu.gameserver.services.instance.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +28,11 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAllianceService;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_MATCHMAKER_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.services.instance.DredgionService;
+import com.aionemu.gameserver.services.instance.InstanceService;
+import com.aionemu.gameserver.services.instance.TiakResearchBaseService;
 import com.aionemu.gameserver.spawnengine.SpawnEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
@@ -60,12 +64,12 @@ public class AutoGroupService
 		Integer obj = player.getObjectId();
 		LookingForParty lfp = searchers.get(obj);
 		if (penaltys.contains(obj)) {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400181, agt.getInstanceMapId()));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400181, agt.getInstanceMapId()));
 			return;
 		} if (lfp == null) {
 			searchers.put(obj, new LookingForParty(player, instanceMaskId, ert));
 		} else if (lfp.hasPenalty() || lfp.isRegistredInstance(instanceMaskId)) {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400181, agt.getInstanceMapId()));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400181, agt.getInstanceMapId()));
 			return;
 		} else {
 			lfp.addInstanceMaskId(instanceMaskId, ert);
@@ -76,7 +80,7 @@ public class AutoGroupService
 				} else if (agt.isTiakBase()) {
 					PacketSendUtility.sendPacket(member, new S_MATCHMAKER_INFO(instanceMaskId, (Number)6, true));
 				}
-				PacketSendUtility.sendPacket(member, new S_MESSAGE_CODE(1400194, agt.getInstanceMapId()));
+				PacketSendUtility.sendPacket(member, new SM_SYSTEM_MESSAGE(1400194, agt.getInstanceMapId()));
 				PacketSendUtility.sendPacket(member, new S_MATCHMAKER_INFO(instanceMaskId, 1, ert.getId(), player.getName()));
 			}
 		} else {
@@ -85,7 +89,7 @@ public class AutoGroupService
 			} else if (agt.isTiakBase()) {
 				PacketSendUtility.sendPacket(player, new S_MATCHMAKER_INFO(instanceMaskId, (Number)6, true));
 			}
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400194, agt.getInstanceMapId()));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400194, agt.getInstanceMapId()));
 			PacketSendUtility.sendPacket(player, new S_MATCHMAKER_INFO(instanceMaskId, 1, ert.getId(), player.getName()));
 		}
 		startSort(ert, instanceMaskId, true);
@@ -338,25 +342,25 @@ public class AutoGroupService
 		int mapId = agt.getInstanceMapId();
 		int instanceMaskId = agt.getInstanceMaskId();
 		if (!agt.hasLevelPermit(player.getLevel())) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_LEVEL);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_LEVEL);
 			return false;
 		} if (agt.isDredgion() && !DredgionService.getInstance().isDredgionAvailable()) {
 			return false;
 		} else if (agt.isTiakBase() && !TiakResearchBaseService.getInstance().isTiakBaseAvailable()) {
 			return false;
 		} else if (hasCoolDown(player, mapId)) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANNOT_MAKE_INSTANCE_COOL_TIME);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANNOT_MAKE_INSTANCE_COOL_TIME);
 			return false;
 		} switch (ert) {
 			case NEW_GROUP_ENTRY:
 				if (!agt.hasRegisterNew()) {
 					return false;
 				} if (hasCoolDown(player, mapId)) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(player.getName()));
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(player.getName()));
 					return false;
 				} if (!agt.hasLevelPermit(player.getLevel())) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_LEVEL);
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(player.getName()));
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_LEVEL);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(player.getName()));
 					return false;
 				}
 			break;
@@ -364,11 +368,11 @@ public class AutoGroupService
 				if (!agt.hasRegisterFast()) {
 					return false;
 				} if (hasCoolDown(player, mapId)) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(player.getName()));
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(player.getName()));
 					return false;
 				} if (!agt.hasLevelPermit(player.getLevel())) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_LEVEL);
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(player.getName()));
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_LEVEL);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(player.getName()));
 					return false;
 				}
 			break;
@@ -378,7 +382,7 @@ public class AutoGroupService
 				}
 				PlayerGroup group = player.getPlayerGroup2();
 				if (group == null || !group.isLeader(player)) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_NOT_LEADER);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_NOT_LEADER);
 					return false;
 				} for (Player member: group.getMembers()) {
 					if (group.getLeaderObject().equals(member)) {
@@ -386,23 +390,23 @@ public class AutoGroupService
 					}
 					LookingForParty lfp = searchers.get(member.getObjectId());
 					if (lfp != null && lfp.isRegistredInstance(instanceMaskId) ) {
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
 						return false;
 					} if (agt.isPvPSoloArena() || agt.isPvPFFAArena() || agt.isGloryArena()) {
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
 						return false;
 					} else if (agt.isDredgion() && DredgionService.getInstance().hasCoolDown(member)) {
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
 						return false;
 					} else if (agt.isTiakBase() && TiakResearchBaseService.getInstance().hasCoolDown(member)) {
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
 						return false;
 					} else if (hasCoolDown(member, mapId)) {
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
 						return false;
 					} if (!agt.hasLevelPermit(member.getLevel())) {
-						PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_LEVEL);
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
+						PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_LEVEL);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_MEMBER(member.getName()));
 						return false;
 					}
 				}
@@ -430,10 +434,10 @@ public class AutoGroupService
 			int wait = time / 60;
 			int nameId = DataManager.WORLD_MAPS_DATA.getTemplate(worldId).getNameId();
 			if (wait >= 60) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANNOT_ENTER_INSTANCE_COOL_TIME_HOUR_CLIENT(nameId, wait / 60));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANNOT_ENTER_INSTANCE_COOL_TIME_HOUR_CLIENT(nameId, wait / 60));
 				return true;
 			} else {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANNOT_ENTER_INSTANCE_COOL_TIME_MIN_CLIENT(nameId, wait));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANNOT_ENTER_INSTANCE_COOL_TIME_MIN_CLIENT(nameId, wait));
 				return true;
 			}
 		}

@@ -10,9 +10,9 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.skill.PlayerSkillEntry;
 import com.aionemu.gameserver.model.templates.CraftLearnTemplate;
 import com.aionemu.gameserver.model.templates.recipe.RecipeTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_LIST;
 import com.aionemu.gameserver.network.aion.serverpackets.S_LOAD_FINISHEDQUEST;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ADD_SKILL;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.services.trade.PricesService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
@@ -42,7 +42,7 @@ public class RelinquishCraftStatus
 			return;
 		}
 		skill.setSkillLvl(expertMinValue);
-		PacketSendUtility.sendPacket(player, new S_ADD_SKILL(skill, skillMessageId, false));
+		PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(skill, skillMessageId, false));
 		removeRecipesAbove(player, skillId, expertMinValue);
 		deleteCraftStatusQuests(skillId, player, true);
 	}
@@ -57,7 +57,7 @@ public class RelinquishCraftStatus
 			return;
 		}
 		skill.setSkillLvl(masterMinValue);
-		PacketSendUtility.sendPacket(player, new S_ADD_SKILL(skill, skillMessageId, false));
+		PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(skill, skillMessageId, false));
 		removeRecipesAbove(player, skillId, masterMinValue);
 		deleteCraftStatusQuests(skillId, player, false);
 	}
@@ -73,7 +73,7 @@ public class RelinquishCraftStatus
 	
 	private static boolean successDecreaseKinah(Player player, int basePrice) {
 		if (!player.getInventory().tryDecreaseKinah(PricesService.getPriceForService(basePrice, player.getRace()))) {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(systemMessageId));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(systemMessageId));
 			return false;
 		}
 		return true;
@@ -129,7 +129,7 @@ public class RelinquishCraftStatus
 				skillLevel = skill.getSkillLevel();
 				if (CraftSkillUpdateService.isCraftingSkill(skillId) && skillLevel > minValue && skillLevel <= maxValue) {
 					skill.setSkillLvl(minValue);
-					PacketSendUtility.sendPacket(player, new S_ADD_SKILL(skill, skillMessageId, false));
+					PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(skill, skillMessageId, false));
 					removeRecipesAbove(player, skillId, minValue);
 					deleteCraftStatusQuests(skillId, player, isExpert);
 				}

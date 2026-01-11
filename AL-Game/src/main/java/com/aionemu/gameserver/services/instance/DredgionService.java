@@ -1,22 +1,21 @@
 package com.aionemu.gameserver.services.instance;
 
-import com.aionemu.commons.services.CronService;
-import com.aionemu.commons.network.util.ThreadPoolManager;
+import java.util.Iterator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.commons.network.util.ThreadPoolManager;
+import com.aionemu.commons.services.CronService;
 import com.aionemu.gameserver.configs.main.AutoGroupConfig;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_MATCHMAKER_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.AutoGroupService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
 
 import javolution.util.FastList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Iterator;
 
 public class DredgionService
 {
@@ -64,7 +63,7 @@ public class DredgionService
                 if (instanceMaskId > 0) {
                     PacketSendUtility.sendPacket(player, new S_MATCHMAKER_INFO(instanceMaskId, S_MATCHMAKER_INFO.wnd_EntryIcon));
 					//An infiltration route into the Dredgion is open.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_OPEN_IDAB1_DREADGION);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_OPEN_IDAB1_DREADGION);
                 }
             }
         }
@@ -80,7 +79,7 @@ public class DredgionService
                 if (instanceMaskId > 0) {
                     PacketSendUtility.sendPacket(player, new S_MATCHMAKER_INFO(instanceMaskId, S_MATCHMAKER_INFO.wnd_EntryIcon));
 					//An infiltration route into the Dredgion is open.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_OPEN_IDAB1_DREADGION);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_OPEN_IDAB1_DREADGION);
                 }
             }
         }
@@ -96,7 +95,7 @@ public class DredgionService
                 if (instanceMaskId > 0) {
                     PacketSendUtility.sendPacket(player, new S_MATCHMAKER_INFO(instanceMaskId, S_MATCHMAKER_INFO.wnd_EntryIcon));
 					//An infiltration route into the Dredgion is open.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_OPEN_IDAB1_DREADGION);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_OPEN_IDAB1_DREADGION);
                 }
             }
         }

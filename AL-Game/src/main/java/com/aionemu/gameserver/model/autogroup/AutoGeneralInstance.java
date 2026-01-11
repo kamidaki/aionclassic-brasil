@@ -10,22 +10,21 @@
  */
 package com.aionemu.gameserver.model.autogroup;
 
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.select;
+
+import java.util.List;
+
+import org.hamcrest.Matchers;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.PlayerClass;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.model.team2.TeamType;
-import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
 import com.aionemu.gameserver.model.templates.portal.PortalLoc;
 import com.aionemu.gameserver.model.templates.portal.PortalPath;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
-import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.hamcrest.Matchers;
-
-import java.util.*;
-
-import static ch.lambdaj.Lambda.*;
 
 public class AutoGeneralInstance extends AutoInstance
 {
@@ -60,7 +59,7 @@ public class AutoGeneralInstance extends AutoInstance
             } else {
                 player.getPortalCooldownList().addEntry(worldId);
                 //Entry successful. Entry count consumed.
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_DUNGEON_COUNT_USE);
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_DUNGEON_COUNT_USE);
             }
         } else if (!playersByRace.isEmpty() && playersByRace.get(0).isInGroup2()) {
             PlayerGroupService.addPlayer(playersByRace.get(0).getPlayerGroup2(), player);
@@ -69,7 +68,7 @@ public class AutoGeneralInstance extends AutoInstance
             } else {
                 player.getPortalCooldownList().addEntry(worldId);
                 //Entry successful. Entry count consumed.
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_DUNGEON_COUNT_USE);
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_DUNGEON_COUNT_USE);
             }
         }
         Integer object = player.getObjectId();

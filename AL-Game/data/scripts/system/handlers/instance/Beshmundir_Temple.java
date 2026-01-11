@@ -10,36 +10,44 @@
  */
 package instance;
 
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Future;
 
-import com.aionemu.gameserver.ai2.AIState;
-import com.aionemu.gameserver.ai2.AbstractAI;
+import com.aionemu.commons.network.util.ThreadPoolManager;
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.instance.handlers.GeneralInstanceHandler;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.EmotionType;
+import com.aionemu.gameserver.model.Race;
+import com.aionemu.gameserver.model.TeleportAnimation;
 import com.aionemu.gameserver.model.drop.DropItem;
-import com.aionemu.gameserver.model.gameobjects.*;
+import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.model.gameobjects.StaticDoor;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
 import com.aionemu.gameserver.model.items.storage.Storage;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.*;
-import com.aionemu.gameserver.services.teleport.TeleportService2;
-import com.aionemu.gameserver.services.drop.DropRegistrationService;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PLAY_CUTSCENE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_QUEST;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
+import com.aionemu.gameserver.services.ClassChangeService;
+import com.aionemu.gameserver.services.NpcShoutsService;
+import com.aionemu.gameserver.services.drop.DropRegistrationService;
+import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.skillengine.effect.AbnormalState;
-import com.aionemu.gameserver.utils.*;
+import com.aionemu.gameserver.utils.MathUtil;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 
-import java.util.*;
-import javolution.util.*;
-import java.util.concurrent.Future;
+import javolution.util.FastList;
 
 /****/
 /** Author Rinzler (Encom)
@@ -211,7 +219,7 @@ public class Beshmundir_Temple extends GeneralInstanceHandler
 					player.setState(CreatureState.FLIGHT_TELEPORT);
 					player.unsetState(CreatureState.ACTIVE);
 					player.setFlightTeleportId(85001);
-					PacketSendUtility.sendPacket(player, new S_ACTION(player, EmotionType.START_FLYTELEPORT, 85001, 0));
+					PacketSendUtility.sendPacket(player, new SM_EMOTION(player, EmotionType.START_FLYTELEPORT, 85001, 0));
 					instance.doOnAllPlayers(new Visitor<Player>() {
 						@Override
 						public void visit(Player player) {
@@ -228,7 +236,7 @@ public class Beshmundir_Temple extends GeneralInstanceHandler
 					player.setState(CreatureState.FLIGHT_TELEPORT);
 					player.unsetState(CreatureState.ACTIVE);
 					player.setFlightTeleportId(86001);
-					PacketSendUtility.sendPacket(player, new S_ACTION(player, EmotionType.START_FLYTELEPORT, 86001, 0));
+					PacketSendUtility.sendPacket(player, new SM_EMOTION(player, EmotionType.START_FLYTELEPORT, 86001, 0));
 				}
 				PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npc.getObjectId(), 0));
 			break;
@@ -237,7 +245,7 @@ public class Beshmundir_Temple extends GeneralInstanceHandler
 					player.setState(CreatureState.FLIGHT_TELEPORT);
 					player.unsetState(CreatureState.ACTIVE);
 					player.setFlightTeleportId(87001);
-					PacketSendUtility.sendPacket(player, new S_ACTION(player, EmotionType.START_FLYTELEPORT, 87001, 0));
+					PacketSendUtility.sendPacket(player, new SM_EMOTION(player, EmotionType.START_FLYTELEPORT, 87001, 0));
 				}
 				PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npc.getObjectId(), 0));
 			break;
@@ -246,7 +254,7 @@ public class Beshmundir_Temple extends GeneralInstanceHandler
 					player.setState(CreatureState.FLIGHT_TELEPORT);
 					player.unsetState(CreatureState.ACTIVE);
 					player.setFlightTeleportId(88001);
-					PacketSendUtility.sendPacket(player, new S_ACTION(player, EmotionType.START_FLYTELEPORT, 88001, 0));
+					PacketSendUtility.sendPacket(player, new SM_EMOTION(player, EmotionType.START_FLYTELEPORT, 88001, 0));
 				}
 				PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npc.getObjectId(), 0));
 			break;
@@ -266,7 +274,7 @@ public class Beshmundir_Temple extends GeneralInstanceHandler
 							spawn(799506, player.getX(), player.getY(), player.getZ(), (byte) 0); //Faithful Respondent Utra.
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 					case ASMODIANS:
@@ -277,7 +285,7 @@ public class Beshmundir_Temple extends GeneralInstanceHandler
 							spawn(799506, player.getX(), player.getY(), player.getZ(), (byte) 0); //Faithful Respondent Utra.
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 				}
@@ -291,7 +299,7 @@ public class Beshmundir_Temple extends GeneralInstanceHandler
 						PacketSendUtility.sendPacket(player, new S_PLAY_CUTSCENE(0, 443));
 					} else {
 						///You have not acquired this quest.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 					}
 				} else if (player.getRace() == Race.ASMODIANS) {
 					final QuestState qs30311 = player.getQuestStateList().getQuestState(30311); //The Rod And The Orb.
@@ -301,7 +309,7 @@ public class Beshmundir_Temple extends GeneralInstanceHandler
 						PacketSendUtility.sendPacket(player, new S_PLAY_CUTSCENE(0, 443));
 					} else {
 						///You have not acquired this quest.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 					}
 				}
             break;
@@ -314,7 +322,7 @@ public class Beshmundir_Temple extends GeneralInstanceHandler
 					despawnNpcs(instance.getNpcs(206173));
 				} else {
 					///You cannot use it as the required quest has not been completed.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
 				}
             break;
         }
@@ -561,7 +569,7 @@ public class Beshmundir_Temple extends GeneralInstanceHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});

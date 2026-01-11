@@ -16,15 +16,14 @@
  */
 package com.aionemu.gameserver.taskmanager.tasks;
 
-import javolution.util.FastList;
-import javolution.util.FastMap;
-
 import com.aionemu.gameserver.ai2.event.AIEventType;
 import com.aionemu.gameserver.ai2.poll.AIQuestion;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.taskmanager.AbstractPeriodicTaskManager;
 import com.aionemu.gameserver.taskmanager.FIFOSimpleExecutableQueue;
-import com.aionemu.gameserver.world.zone.ZoneUpdateService;
+
+import javolution.util.FastList;
+import javolution.util.FastMap;
 
 public class MoveTaskManager extends AbstractPeriodicTaskManager
 {

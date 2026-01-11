@@ -10,7 +10,6 @@
  */
 package quest.telos;
 
-import com.aionemu.gameserver.model.*;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;

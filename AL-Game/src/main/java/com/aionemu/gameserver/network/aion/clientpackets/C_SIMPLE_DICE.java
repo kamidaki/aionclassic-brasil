@@ -21,7 +21,7 @@ import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 /**
@@ -50,7 +50,7 @@ public class C_SIMPLE_DICE extends AionClientPacket
 		Player player = getConnection().getActivePlayer();
 
 		roll = Rnd.get(1, maxRoll);
-		PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400126, roll, maxRoll));
-		PacketSendUtility.broadcastPacket(player, new S_MESSAGE_CODE(1400127, player.getName(), roll, maxRoll));
+		PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400126, roll, maxRoll));
+		PacketSendUtility.broadcastPacket(player, new SM_SYSTEM_MESSAGE(1400127, player.getName(), roll, maxRoll));
 	}
 }

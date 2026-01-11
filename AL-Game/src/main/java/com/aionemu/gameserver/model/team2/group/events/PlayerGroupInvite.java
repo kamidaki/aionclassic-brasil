@@ -16,7 +16,7 @@ import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
 import com.aionemu.gameserver.model.team2.TeamType;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 public class PlayerGroupInvite extends RequestResponseHandler
@@ -34,7 +34,7 @@ public class PlayerGroupInvite extends RequestResponseHandler
     public void acceptRequest(Creature requester, Player responder) {
         if (PlayerGroupService.canInvite(inviter, invited)) {
             //You have invited %0 to join your group.
-			PacketSendUtility.sendPacket(inviter, S_MESSAGE_CODE.STR_PARTY_INVITED_HIM(invited.getName()));
+			PacketSendUtility.sendPacket(inviter, SM_SYSTEM_MESSAGE.STR_PARTY_INVITED_HIM(invited.getName()));
             PlayerGroup group = inviter.getPlayerGroup2();
             if (group != null) {
                 PlayerGroupService.addPlayer(group, invited);
@@ -47,6 +47,6 @@ public class PlayerGroupInvite extends RequestResponseHandler
     @Override
     public void denyRequest(Creature requester, Player responder) {
         //%0 has declined your invitation.
-		PacketSendUtility.sendPacket(inviter, S_MESSAGE_CODE.STR_PARTY_HE_REJECT_INVITATION(responder.getName()));
+		PacketSendUtility.sendPacket(inviter, SM_SYSTEM_MESSAGE.STR_PARTY_HE_REJECT_INVITATION(responder.getName()));
     }
 }

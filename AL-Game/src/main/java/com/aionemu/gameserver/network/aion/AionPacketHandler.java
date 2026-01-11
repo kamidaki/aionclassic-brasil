@@ -10,17 +10,18 @@
  */
 package com.aionemu.gameserver.network.aion;
 
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.network.NetworkConfig;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
 import com.aionemu.gameserver.services.ColorChat;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author -Nemesiss-
@@ -64,8 +65,7 @@ public class AionPacketHandler {
 		AionClientPacket res = prototype.clonePacket();
 		res.setBuffer(buf);
 		res.setConnection(con);
-		// Removendo a restrição de STAFF, para que todos do desenvolvimento possam ver os pacotes.
-		if (con.getState().equals(AionConnection.State.IN_GAME) && NetworkConfig.DISPLAY_PACKETS) {
+		if (con.getState().equals(AionConnection.State.IN_GAME) && con.getActivePlayer().getPlayerAccount().getAccessLevel() == 5 && NetworkConfig.DISPLAY_PACKETS) {
 			log.info("0x" + Integer.toHexString(res.getOpcode()).toUpperCase() + " : " + res.getPacketName());
 			PacketSendUtility.sendMessage(con.getActivePlayer(), ColorChat.colorChat("0x" +Integer.toHexString(res.getOpcode()).toUpperCase() + " : " + res.getPacketName(), "1 0 5 0"));
 		}

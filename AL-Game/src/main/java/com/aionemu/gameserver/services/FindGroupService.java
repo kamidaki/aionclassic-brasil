@@ -10,10 +10,13 @@
  */
 package com.aionemu.gameserver.services;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import com.aionemu.commons.callbacks.Callback;
 import com.aionemu.commons.callbacks.util.GlobalCallbackHelper;
 import com.aionemu.commons.objects.filter.ObjectFilter;
-
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.autogroup.AutoGroupType;
 import com.aionemu.gameserver.model.gameobjects.AionObject;
@@ -27,12 +30,11 @@ import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.group.callback.AddPlayerToGroupCallback;
 import com.aionemu.gameserver.model.team2.group.callback.PlayerGroupCreateCallback;
 import com.aionemu.gameserver.model.team2.group.callback.PlayerGroupDisbandCallback;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_MATCHMAKER_INFO;
 import com.aionemu.gameserver.network.aion.serverpackets.S_PARTY_MATCH;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
-import java.util.*;
 import javolution.util.FastMap;
 
 public class FindGroupService
@@ -65,11 +67,11 @@ public class FindGroupService
                 switch (action) {
                     case 2: {
                         this.elyosRecruitFindGroups.put(objectId, findGroup);
-                        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400392, new Object[0]));
+                        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400392, new Object[0]));
                         break;
                     } case 6: {
                         this.elyosApplyFindGroups.put(objectId, findGroup);
-                        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400393, new Object[0]));
+                        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400393, new Object[0]));
                     }
                 }
                 break;
@@ -77,11 +79,11 @@ public class FindGroupService
                 switch (action) {
                     case 2: {
                         this.asmodianRecruitFindGroups.put(objectId, findGroup);
-                        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400392, new Object[0]));
+                        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400392, new Object[0]));
                         break;
                     } case 6: {
                         this.asmodianApplyFindGroups.put(objectId, findGroup);
-                        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400393, new Object[0]));
+                        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400393, new Object[0]));
                     }
                 }
             }

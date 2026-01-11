@@ -12,14 +12,14 @@ package quest.beluslan;
 
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.HandlerResult;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
+import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.zone.ZoneName;
 
@@ -80,6 +80,8 @@ public class _2053A_Missing_Father extends QuestHandler
 						removeQuestItem(env, 182204306, 1);
 						return closeDialogWindow(env);
                     }
+				default:
+					break;
                 }
             } if (targetId == 204749) {
                 switch (env.getDialog()) {
@@ -95,6 +97,8 @@ public class _2053A_Missing_Father extends QuestHandler
 						changeQuestStep(env, 1, 2, false);
 						return closeDialogWindow(env);
                     }
+				default:
+					break;
                 }
             } if (targetId == 730108) {
                 switch (env.getDialog()) {
@@ -129,7 +133,7 @@ public class _2053A_Missing_Father extends QuestHandler
 							return useQuestObject(env, 7, 7, true, 0, 0, 0, 182204307, 1, 236);
 						} else if (var == 7 && secretPortKey == 0) {
 							///You need a key to open the door.
-					        PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_OPEN_DOOR_NEED_KEY_ITEM);
+					        PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_OPEN_DOOR_NEED_KEY_ITEM);
 							return closeDialogWindow(env);
 						}
 					}

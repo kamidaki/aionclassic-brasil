@@ -10,16 +10,16 @@
  */
 package com.aionemu.gameserver.model.gameobjects.player;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.aionemu.gameserver.dao.PlayerRecipesDAO;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.templates.recipe.RecipeTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ADD_RECIPE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_REMOVE_RECIPE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author MrPoke
@@ -44,7 +44,7 @@ public class RecipeList {
 			if(PlayerRecipesDAO.addRecipe(player.getObjectId(), recipeId)) {
 				recipeList.add(recipeId);
 				PacketSendUtility.sendPacket(player, new S_ADD_RECIPE(recipeId));
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CRAFT_RECIPE_LEARN(recipeId, player.getName()));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CRAFT_RECIPE_LEARN(recipeId, player.getName()));
 			}
 		}
 	}

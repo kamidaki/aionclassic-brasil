@@ -1,9 +1,9 @@
 package com.aionemu.gameserver.model.items;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 public enum ItemSlot
 {

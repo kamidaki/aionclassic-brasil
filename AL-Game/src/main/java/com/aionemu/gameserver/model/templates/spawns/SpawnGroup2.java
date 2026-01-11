@@ -1,23 +1,21 @@
 package com.aionemu.gameserver.model.templates.spawns;
 
-import com.aionemu.commons.taskmanager.AbstractLockManager;
-import com.aionemu.commons.utils.Rnd;
-
-import com.aionemu.gameserver.model.Race;
-import com.aionemu.gameserver.model.siege.SiegeModType;
-import com.aionemu.gameserver.model.siege.SiegeRace;
-import com.aionemu.gameserver.model.instancerift.InstanceRiftStateType;
-import com.aionemu.gameserver.model.templates.spawns.riftspawns.RiftSpawnTemplate;
-import com.aionemu.gameserver.model.templates.spawns.siegespawns.SiegeSpawnTemplate;
-import com.aionemu.gameserver.model.templates.spawns.instanceriftspawns.InstanceRiftSpawnTemplate;
-import com.aionemu.gameserver.spawnengine.SpawnHandlerType;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.aionemu.commons.taskmanager.AbstractLockManager;
+import com.aionemu.commons.utils.Rnd;
+import com.aionemu.gameserver.model.instancerift.InstanceRiftStateType;
+import com.aionemu.gameserver.model.siege.SiegeModType;
+import com.aionemu.gameserver.model.siege.SiegeRace;
+import com.aionemu.gameserver.model.templates.spawns.instanceriftspawns.InstanceRiftSpawnTemplate;
+import com.aionemu.gameserver.model.templates.spawns.riftspawns.RiftSpawnTemplate;
+import com.aionemu.gameserver.model.templates.spawns.siegespawns.SiegeSpawnTemplate;
+import com.aionemu.gameserver.spawnengine.SpawnHandlerType;
 
 public class SpawnGroup2 extends AbstractLockManager
 {

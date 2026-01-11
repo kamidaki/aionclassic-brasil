@@ -10,30 +10,30 @@
  */
 package instance;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.NpcAI2;
-import com.aionemu.gameserver.ai2.AIState;
-import com.aionemu.gameserver.ai2.AbstractAI;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.instance.handlers.GeneralInstanceHandler;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.EmotionType;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.drop.DropItem;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.StaticDoor;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.items.storage.Storage;
-import com.aionemu.gameserver.services.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.services.NpcShoutsService;
 import com.aionemu.gameserver.services.drop.DropRegistrationService;
-import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.utils.*;
+import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-
-import java.util.*;
 
 /****/
 /** Author Rinzler (Encom)
@@ -121,7 +121,7 @@ public class Esoterrace extends GeneralInstanceHandler
 				idf4re_dra_01_nameda_sum_3_53_ae.getSpawn().setWalkerId("npcpathidf4re_drana_etc_1st_bridge_mob");
 				WalkManager.startWalking((NpcAI2) idf4re_dra_01_nameda_sum_3_53_ae.getAi2());
 				idf4re_dra_01_nameda_sum_3_53_ae.setState(1);
-				PacketSendUtility.broadcastPacket(idf4re_dra_01_nameda_sum_3_53_ae, new S_ACTION(idf4re_dra_01_nameda_sum_3_53_ae, EmotionType.START_EMOTE2, 0, idf4re_dra_01_nameda_sum_3_53_ae.getObjectId()));
+				PacketSendUtility.broadcastPacket(idf4re_dra_01_nameda_sum_3_53_ae, new SM_EMOTION(idf4re_dra_01_nameda_sum_3_53_ae, EmotionType.START_EMOTE2, 0, idf4re_dra_01_nameda_sum_3_53_ae.getObjectId()));
 				actionGreenfingers(instance.getNpc(282178));
             break;
 			case 217282: //Esoterrace Investigator.
@@ -270,13 +270,13 @@ public class Esoterrace extends GeneralInstanceHandler
 							IDF4Re_Drana_Ranger_1.getSpawn().setWalkerId("idf4re_drana_etc_1st_bridge_npc_path_01");
 							WalkManager.startWalking((NpcAI2) IDF4Re_Drana_Ranger_1.getAi2());
 							IDF4Re_Drana_Ranger_1.setState(1);
-							PacketSendUtility.broadcastPacket(IDF4Re_Drana_Ranger_1, new S_ACTION(IDF4Re_Drana_Ranger_1, EmotionType.START_EMOTE2, 0, IDF4Re_Drana_Ranger_1.getObjectId()));
+							PacketSendUtility.broadcastPacket(IDF4Re_Drana_Ranger_1, new SM_EMOTION(IDF4Re_Drana_Ranger_1, EmotionType.START_EMOTE2, 0, IDF4Re_Drana_Ranger_1.getObjectId()));
 							//IDF4Re_Drana_Ranger_2
 							final Npc IDF4Re_Drana_Ranger_2 = (Npc) spawn(799627, 1153.0000f, 684.0000f, 295.0000f, (byte) 10);
 							IDF4Re_Drana_Ranger_2.getSpawn().setWalkerId("idf4re_drana_etc_1st_bridge_npc_path_02");
 							WalkManager.startWalking((NpcAI2) IDF4Re_Drana_Ranger_2.getAi2());
 							IDF4Re_Drana_Ranger_2.setState(1);
-							PacketSendUtility.broadcastPacket(IDF4Re_Drana_Ranger_2, new S_ACTION(IDF4Re_Drana_Ranger_2, EmotionType.START_EMOTE2, 0, IDF4Re_Drana_Ranger_2.getObjectId()));
+							PacketSendUtility.broadcastPacket(IDF4Re_Drana_Ranger_2, new SM_EMOTION(IDF4Re_Drana_Ranger_2, EmotionType.START_EMOTE2, 0, IDF4Re_Drana_Ranger_2.getObjectId()));
                         }
                     }
                 }
@@ -309,7 +309,7 @@ public class Esoterrace extends GeneralInstanceHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});

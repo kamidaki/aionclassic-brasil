@@ -10,26 +10,24 @@
  */
 package ai.instance.beshmundirTemple;
 
-import ai.AggressiveNpcAI2;
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.aionemu.commons.utils.Rnd;
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
-import com.aionemu.gameserver.ai2.AIName;
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.AI2Actions;
-import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.spawnengine.SpawnEngine;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.NpcShoutsService;
-import com.aionemu.gameserver.utils.MathUtil;
+import com.aionemu.gameserver.spawnengine.SpawnEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -64,11 +62,11 @@ public class FlarestormAI2 extends AggressiveNpcAI2
 	
 	private void calamity() {
 		///Flarestorm begins to laugh wickedly!
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_CHAT_IDCatacombs_ElementalFireNmd_55_Ah_Skill1, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_CHAT_IDCatacombs_ElementalFireNmd_55_Ah_Skill1, 0);
 		///Time to incinerate!
 		sendMsg(1500076, getObjectId(), false, 8000);
 		//Flarestorm is unleashing an unknown power.
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_IDCatacombs_Boss_ElementalFire_Buff, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_IDCatacombs_Boss_ElementalFire_Buff, 0);
 		//Orb Of Annihilation.
 		AI2Actions.useSkill(this, 18911);
 		rndSpawn(281646, 3);
@@ -120,7 +118,7 @@ public class FlarestormAI2 extends AggressiveNpcAI2
 		super.handleDied();
 		cancelTask();
 		///Flarestorm lets out a shriek and disappears!
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_CHAT_IDCatacombs_ElementalFireNmd_55_Ah_Die1, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_CHAT_IDCatacombs_ElementalFireNmd_55_Ah_Die1, 0);
 		getOwner().getEffectController().removeAllEffects();
 		WorldMapInstance instance = getPosition().getWorldMapInstance();
 		killNpc(instance.getNpcs(281646));

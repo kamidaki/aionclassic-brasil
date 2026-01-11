@@ -10,27 +10,27 @@
  */
 package ai.instance.steelRake;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
-import com.aionemu.gameserver.ai2.AIName;
-import com.aionemu.gameserver.ai2.NpcAI2;
-import com.aionemu.gameserver.ai2.AIState;
 import com.aionemu.gameserver.ai2.AI2Actions;
+import com.aionemu.gameserver.ai2.AIName;
+import com.aionemu.gameserver.ai2.AIState;
 import com.aionemu.gameserver.ai2.manager.EmoteManager;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.model.EmotionType;
-import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.skillengine.SkillEngine;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.services.NpcShoutsService;
+import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 
-import java.util.*;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -89,7 +89,7 @@ public class Engineer_LahulahuAI2 extends AggressiveNpcAI2
 				getSpawnTemplate().setWalkerId("idshulackship_1f_engineer_mobpath2");
 				WalkManager.startWalking(this);
 				getOwner().setState(1);
-				PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
+				PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
 				ThreadPoolManager.getInstance().schedule(new Runnable() {
 					@Override
 					public void run() {
@@ -125,7 +125,7 @@ public class Engineer_LahulahuAI2 extends AggressiveNpcAI2
 								setStateIfNot(AIState.WALKING);
 								getOwner().setState(1);
 								getOwner().getMoveController().moveToTargetObject();
-								PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
+								PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
 							}
 						}
 					}
@@ -187,7 +187,7 @@ public class Engineer_LahulahuAI2 extends AggressiveNpcAI2
 		getOwner().getMoveController().moveToPoint(getOwner().getSpawn().getX(), getOwner().getSpawn().getY(), getOwner().getSpawn().getZ());
 		WalkManager.startWalking(Engineer_LahulahuAI2.this);
 		getOwner().setState(1);
-		PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
+		PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
 		////////////////////////////////////////////
 		WorldMapInstance instance = getPosition().getWorldMapInstance();
 		deleteNpcs(instance.getNpcs(281108));

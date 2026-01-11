@@ -7,11 +7,7 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
 import com.aionemu.gameserver.services.player.PlayerMailboxState;
-import com.aionemu.gameserver.world.MapRegion;
 import com.aionemu.gameserver.world.World;
-import com.aionemu.gameserver.world.zone.ZoneInstance;
-
-import java.util.List;
 
 public class S_NPC_HTML_MESSAGE extends AionServerPacket
 {

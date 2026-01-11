@@ -1,18 +1,19 @@
 package com.aionemu.gameserver.model.gameobjects.player.title;
 
+import java.util.Collection;
+
 import com.aionemu.gameserver.dao.PlayerTitleListDAO;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.stats.listeners.TitleChangeListener;
 import com.aionemu.gameserver.model.templates.TitleTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_TITLE;
 import com.aionemu.gameserver.taskmanager.tasks.ExpireTimerTask;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import javolution.util.FastMap;
 
-import java.util.Collection;
+import javolution.util.FastMap;
 
 public class TitleList {
 
@@ -60,12 +61,12 @@ public class TitleList {
 					ExpireTimerTask.getInstance().addTask(entry, owner);
 				}
 			} else {
-				PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_TOOLTIP_LEARNED_TITLE);
+				PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_TOOLTIP_LEARNED_TITLE);
 				return false;
 			} if (questReward) {
-				PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_QUEST_GET_REWARD_TITLE(tt.getNameId()));
+				PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_QUEST_GET_REWARD_TITLE(tt.getNameId()));
 			} else {
-				PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_MSG_GET_CASH_TITLE(tt.getNameId()));
+				PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_MSG_GET_CASH_TITLE(tt.getNameId()));
 			}
 			PacketSendUtility.sendPacket(owner, new S_TITLE(owner));
 			PlayerTitleListDAO.storeTitles(owner, entry);

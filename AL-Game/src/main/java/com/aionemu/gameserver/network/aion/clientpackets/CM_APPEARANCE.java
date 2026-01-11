@@ -16,7 +16,7 @@ import com.aionemu.gameserver.model.templates.item.actions.AbstractItemAction;
 import com.aionemu.gameserver.model.templates.item.actions.CosmeticItemAction;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.RenameService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -61,12 +61,12 @@ public class CM_APPEARANCE extends AionClientPacket
 		switch (type) {
 			case 0: // Change Char Name,
 				if (RenameService.renamePlayer(player, player.getName(), name, itemObjId)) {
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400157, name));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400157, name));
 				}
 				break;
 			case 1: // Change Legion Name
 				if (RenameService.renameLegion(player, name, itemObjId)) {
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400158, name));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400158, name));
 				}
 				break;
 			case 2: // cosmetic items

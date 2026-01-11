@@ -1,27 +1,28 @@
 package com.aionemu.gameserver.model.templates.item.actions;
 
+import java.util.Iterator;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+
 import com.aionemu.gameserver.controllers.observer.ItemUseObserver;
-import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.DescriptionId;
+import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
 import com.aionemu.gameserver.model.templates.item.ItemCategory;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.EnchantService;
 import com.aionemu.gameserver.services.item.ItemPacketService;
 import com.aionemu.gameserver.services.player.BattlePassService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.World;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-import java.util.Iterator;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "EnchantItemAction")
@@ -48,15 +49,15 @@ public class EnchantItemAction extends AbstractItemAction
 			return false;
 		} if (parentItem == null || targetItem == null) {
 			///The item cannot be found.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ITEM_COLOR_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ITEM_COLOR_ERROR);
 			return false;
 		} if (targetItem.getEnchantLevel() >= 15 && !parentItem.getItemTemplate().isManaStone()) {
 			///You cannot enchant %0 any further.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ENCHANT_ITEM_IT_CAN_NOT_BE_ENCHANTED_MORE_TIME(targetItem.getNameId()));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ENCHANT_ITEM_IT_CAN_NOT_BE_ENCHANTED_MORE_TIME(targetItem.getNameId()));
 			return false;
 		} if (player.getController().isInCombat() || player.isAttackMode()) {
 			///You cannot enchant items while in combat.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ENCHANT_ITEM_INVALID_STANCE(new DescriptionId(2800159)));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ENCHANT_ITEM_INVALID_STANCE(new DescriptionId(2800159)));
 			return false;
 		}
 		int msID = parentItem.getItemTemplate().getTemplateId() / 1000000;
@@ -87,7 +88,7 @@ public class EnchantItemAction extends AbstractItemAction
 				PacketSendUtility.sendPacket(player, new S_USE_ITEM(player.getObjectId(), targetItem.getObjectId(), targetItem.getItemTemplate().getTemplateId(), 0, 3, 0));
 				ItemPacketService.updateItemAfterInfoChange(player, targetItem);
 				///You have cancelled the enchanting of %0.
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ENCHANT_ITEM_CANCELED(targetItem.getItemTemplate().getNameId()));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ENCHANT_ITEM_CANCELED(targetItem.getItemTemplate().getNameId()));
 			}
 		};
 		player.getObserveController().attach(Enchant);
@@ -112,7 +113,7 @@ public class EnchantItemAction extends AbstractItemAction
 						if (targetItem.getEnchantLevel() >= 15 && isSuccess) {
 							if (player2.getRace() == player.getRace()) {
 								///%0 has succeeded in enchanting %1 to Level 15.
-								PacketSendUtility.sendPacket(player2, S_MESSAGE_CODE.STR_MSG_ENCHANT_ITEM_SUCCEEDED_15(player.getName(), targetItem.getItemTemplate().getNameId()));
+								PacketSendUtility.sendPacket(player2, SM_SYSTEM_MESSAGE.STR_MSG_ENCHANT_ITEM_SUCCEEDED_15(player.getName(), targetItem.getItemTemplate().getNameId()));
 							}
 						}
 					}
@@ -171,7 +172,7 @@ public class EnchantItemAction extends AbstractItemAction
                 return true;
             }
             //You cannot use those Supplements.
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ITEM_ENCHANT_ASSISTANT_NO_RIGHT_ITEM);
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ITEM_ENCHANT_ASSISTANT_NO_RIGHT_ITEM);
             return false;
         }
         return true;

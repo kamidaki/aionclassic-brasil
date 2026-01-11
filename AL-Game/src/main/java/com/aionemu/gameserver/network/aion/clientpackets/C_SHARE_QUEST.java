@@ -7,8 +7,8 @@ import com.aionemu.gameserver.model.templates.QuestTemplate;
 import com.aionemu.gameserver.model.templates.quest.QuestTargetType;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_QUEST;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
 import com.aionemu.gameserver.services.QuestService;
@@ -60,11 +60,11 @@ public class C_SHARE_QUEST extends AionClientPacket
 					continue;
 				}
 				if (!MathUtil.isIn3dRange(member, player, GroupConfig.GROUP_MAX_DISTANCE)) {
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1100000, member.getName()));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1100000, member.getName()));
 					continue;
 				}
 				if (questTemplate.getTargetType().equals(QuestTargetType.FORCE)) { //Alliance.
-					PacketSendUtility.sendPacket(member, new S_MESSAGE_CODE(1100005, player.getName()));
+					PacketSendUtility.sendPacket(member, new SM_SYSTEM_MESSAGE(1100005, player.getName()));
 					continue;
 				}
 				if (!questTemplate.isRepeatable()) {
@@ -81,12 +81,12 @@ public class C_SHARE_QUEST extends AionClientPacket
 					}
 				}
 				if (member.isInFlyingState()) {
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1100003, member.getName()));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1100003, member.getName()));
 					continue;
 				}
 				if (!QuestService.checkLevelRequirement(this.questId, member.getLevel())) {
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1100003, member.getName()));
-					PacketSendUtility.sendPacket(member, new S_MESSAGE_CODE(1100003, player.getName()));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1100003, member.getName()));
+					PacketSendUtility.sendPacket(member, new SM_SYSTEM_MESSAGE(1100003, player.getName()));
 					continue;
 				}
 				PacketSendUtility.sendPacket(member, new S_QUEST(this.questId, member.getObjectId(), true));
@@ -97,11 +97,11 @@ public class C_SHARE_QUEST extends AionClientPacket
 					continue;
 				}
 				if (!MathUtil.isIn3dRange(member, player, GroupConfig.GROUP_MAX_DISTANCE)) {
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1100000, member.getName()));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1100000, member.getName()));
 					continue;
 				}
 				if (questTemplate.getTargetType().equals(QuestTargetType.UNION)) { //League.
-					PacketSendUtility.sendPacket(member, new S_MESSAGE_CODE(1100005, player.getName()));
+					PacketSendUtility.sendPacket(member, new SM_SYSTEM_MESSAGE(1100005, player.getName()));
 					continue;
 				}
 				if (!questTemplate.isRepeatable()) {
@@ -118,18 +118,18 @@ public class C_SHARE_QUEST extends AionClientPacket
 					}
 				}
 				if (member.isInFlyingState()) {
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1100003, member.getName()));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1100003, member.getName()));
 					continue;
 				}
 				if (!QuestService.checkLevelRequirement(this.questId, member.getLevel())) {
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1100003, member.getName()));
-					PacketSendUtility.sendPacket(member, new S_MESSAGE_CODE(1100003, player.getName()));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1100003, member.getName()));
+					PacketSendUtility.sendPacket(member, new SM_SYSTEM_MESSAGE(1100003, player.getName()));
 					continue;
 				}
 				PacketSendUtility.sendPacket(member, new S_QUEST(this.questId, member.getObjectId(), true));
 			}
 		} else {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1100000));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1100000));
 			return;
 		}
 	}

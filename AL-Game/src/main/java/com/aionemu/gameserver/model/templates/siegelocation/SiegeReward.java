@@ -1,11 +1,11 @@
 package com.aionemu.gameserver.model.templates.siegelocation;
 
-import com.aionemu.gameserver.services.mail.SiegeResult;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+
+import com.aionemu.gameserver.services.mail.SiegeResult;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SiegeReward")

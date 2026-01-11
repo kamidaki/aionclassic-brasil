@@ -1,24 +1,30 @@
 package com.aionemu.gameserver.services;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.dao.InventoryDAO;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.items.storage.Storage;
 import com.aionemu.gameserver.model.trade.Exchange;
 import com.aionemu.gameserver.model.trade.ExchangeItem;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ADD_XCHG;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_DELETE_ITEM;
+import com.aionemu.gameserver.network.aion.serverpackets.S_XCHG_GOLD;
+import com.aionemu.gameserver.network.aion.serverpackets.S_XCHG_RESULT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_XCHG_START;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
 import com.aionemu.gameserver.services.item.ItemFactory;
 import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.taskmanager.AbstractFIFOPeriodicTaskManager;
 import com.aionemu.gameserver.taskmanager.tasks.TemporaryTradeTimeTask;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ExchangeService
 {
@@ -95,7 +101,7 @@ public class ExchangeService
 		//Lock exchange "Medal Reward & Abyss Item"
 		if (item.getItemTemplate().isMedal() || item.getItemTemplate().isAbyssItem()) {
 			//You cannot register this item.
-			PacketSendUtility.sendPacket(activePlayer, S_MESSAGE_CODE.STR_VENDOR_CAN_NOT_REGISTER_ITEM);
+			PacketSendUtility.sendPacket(activePlayer, SM_SYSTEM_MESSAGE.STR_VENDOR_CAN_NOT_REGISTER_ITEM);
 			return;
 		}
 		Player partner = getCurrentParter(activePlayer);
@@ -224,7 +230,7 @@ public class ExchangeService
 				if (item.getObjectId() != exchangeItem.getItemObjId()) {
 					ItemService.releaseItemId(item);
 				}
-				PacketSendUtility.sendPacket(player, new S_REMOVE_INVENTORY(itemInInventory.getObjectId()));
+				PacketSendUtility.sendPacket(player, new SM_DELETE_ITEM(itemInInventory.getObjectId()));
 			}
 		} if (!player.getInventory().tryDecreaseKinah(exchange.getKinahCount())) {
 			return false;

@@ -1,5 +1,7 @@
 package admincommands;
 
+import java.util.List;
+
 import com.aionemu.gameserver.dao.PlayerDAO;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.PlayerCommonData;
@@ -11,9 +13,8 @@ import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.Util;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 import com.aionemu.gameserver.world.World;
-import javolution.util.FastList;
 
-import java.util.List;
+import javolution.util.FastList;
 
 /**
  * @author KID

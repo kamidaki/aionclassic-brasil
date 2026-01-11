@@ -1,17 +1,17 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.equipmentset.EquipSettingActivator;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_WIELD;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_UPDATE_PLAYER_APPEARANCE;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class CM_EQUIPMENT_CHANGE_USE extends AionClientPacket
 {
@@ -60,7 +60,7 @@ public class CM_EQUIPMENT_CHANGE_USE extends AionClientPacket
 		}
 
 		if (player.getInventory().getFreeSlots() < uneqipItemsSlot) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_WAREHOUSE_FULL_INVENTORY);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_WAREHOUSE_FULL_INVENTORY);
 			return;
 		}
 
@@ -71,6 +71,6 @@ public class CM_EQUIPMENT_CHANGE_USE extends AionClientPacket
 				player.getEquipment().equipItemForMacros(em.getItemObj(), em.getSlot());
 			}
 		}
-		PacketSendUtility.broadcastPacket(player, new S_WIELD(player.getObjectId(), player.getEquipment().getEquippedItemsWithoutStigma()), true);
+		PacketSendUtility.broadcastPacket(player, new SM_UPDATE_PLAYER_APPEARANCE(player.getObjectId(), player.getEquipment().getEquippedItemsWithoutStigma()), true);
 	}
 }

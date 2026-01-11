@@ -32,11 +32,14 @@ import com.aionemu.gameserver.model.gameobjects.StaticObject;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.RewardType;
-import com.aionemu.gameserver.model.templates.item.ItemTemplate;
 import com.aionemu.gameserver.model.templates.item.ItemQuality;
+import com.aionemu.gameserver.model.templates.item.ItemTemplate;
 import com.aionemu.gameserver.model.templates.recipe.ComponentElement;
 import com.aionemu.gameserver.model.templates.recipe.RecipeTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_COMBINE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_COMBINE_OTHER;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.services.item.ItemService;
@@ -80,17 +83,17 @@ public class CraftService
 			(skillId == 40008)) {
 			if ((player.getSkillList().getSkillLevel(skillId) >= 500) && (recipetemplate.getSkillpoint() < 500)) {
                 ///Such basic crafting doesn't affect your skill level, Master.
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DONT_GET_COMBINE_EXP_GRAND_MASTER);
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DONT_GET_COMBINE_EXP_GRAND_MASTER);
             } else if ((player.getSkillList().getSkillLevel(skillId) >= 400) && (recipetemplate.getSkillpoint() < 400)) {
                 ///Your skill level does not increase with low level crafting as you are an Expert.
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DONT_GET_COMBINE_EXP);
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DONT_GET_COMBINE_EXP);
             } else {
                 if (player.getSkillList().addSkillXp(player, recipetemplate.getSkillid(), gainedCraftExp, recipetemplate.getSkillpoint())) {
                     player.getCommonData().addExp(xpReward, RewardType.CRAFTING);
-                    PacketSendUtility.sendPacket(player, new S_STATUS(player));
+                    PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
                 } else {
                     ///The skill level for the %0 skill does not increase as the difficulty is too low.
-                    PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DONT_GET_PRODUCTION_EXP(new DescriptionId(DataManager.SKILL_DATA.getSkillTemplate(recipetemplate.getSkillid()).getNameId())));
+                    PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DONT_GET_PRODUCTION_EXP(new DescriptionId(DataManager.SKILL_DATA.getSkillTemplate(recipetemplate.getSkillid()).getNameId())));
                 }
             }
         }
@@ -100,7 +103,7 @@ public class CraftService
 			if (itemTemplate.getItemQuality() == ItemQuality.UNIQUE || itemTemplate.getItemQuality() == ItemQuality.EPIC) {
 				if (player2.getRace() == player.getRace()) {
 					///%0 succeeded in crafting %1.
-					PacketSendUtility.sendPacket(player2, S_MESSAGE_CODE.STR_MSG_COMBINE_BROADCAST_COMBINE_SUCCESS(player.getName(), itemTemplate.getNameId()));
+					PacketSendUtility.sendPacket(player2, SM_SYSTEM_MESSAGE.STR_MSG_COMBINE_BROADCAST_COMBINE_SUCCESS(player.getName(), itemTemplate.getNameId()));
 				}
 			}
 		} if (recipetemplate.getCraftDelayId() != null) {
@@ -140,7 +143,7 @@ public class CraftService
             return false;
         } if (player.getInventory().isFull()) {
 			///Your inventory is full. Try again after making space.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DEVAPASS_REWARD_INVENTORY_FULL);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DEVAPASS_REWARD_INVENTORY_FULL);
 			return false;
 		} if (recipeTemplate.getCraftDelayId() != null) {
             if (!player.getCraftCooldownList().isCanCraft(recipeTemplate.getCraftDelayId())) {

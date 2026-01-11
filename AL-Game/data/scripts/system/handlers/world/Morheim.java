@@ -10,38 +10,31 @@
  */
 package world;
 
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
+import java.util.List;
 
+import com.aionemu.commons.network.util.ThreadPoolManager;
 import com.aionemu.gameserver.controllers.effect.PlayerEffectController;
-import com.aionemu.gameserver.world.handlers.GeneralWorldHandler;
-import com.aionemu.gameserver.world.handlers.WorldID;
-import com.aionemu.gameserver.model.*;
-import com.aionemu.gameserver.model.drop.DropItem;
+import com.aionemu.gameserver.model.Race;
+import com.aionemu.gameserver.model.TeleportAnimation;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.*;
-import com.aionemu.gameserver.services.item.ItemService;
-import com.aionemu.gameserver.services.instance.InstanceService;
-import com.aionemu.gameserver.services.drop.DropRegistrationService;
-import com.aionemu.gameserver.services.teleport.TeleportService2;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
+import com.aionemu.gameserver.services.instance.InstanceService;
+import com.aionemu.gameserver.services.item.ItemService;
+import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.skillengine.model.Effect;
-import com.aionemu.gameserver.skillengine.model.SkillTemplate;
 import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.world.World;
+import com.aionemu.gameserver.world.WorldMapInstance;
+import com.aionemu.gameserver.world.handlers.GeneralWorldHandler;
+import com.aionemu.gameserver.world.handlers.WorldID;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-import com.aionemu.gameserver.world.*;
-import com.aionemu.gameserver.world.zone.ZoneName;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
+import com.aionemu.gameserver.world.zone.ZoneName;
 
-import javolution.util.*;
-
-import java.util.*;
-import java.util.concurrent.Future;
+import javolution.util.FastList;
 
 /****/
 /** Author Rinzler (Encom)
@@ -130,7 +123,7 @@ public class Morheim extends GeneralWorldHandler
 					}
 				} else {
 					///You cannot move to that destination.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
 				}
 			break;
 			///https://aioncodex.com/3x/quest/2034/
@@ -145,7 +138,7 @@ public class Morheim extends GeneralWorldHandler
 				} else {
 					ItemService.addItem(player, 182204008, 1); //Flint.
 					///Oh, I forgot about the flint and Abex meat.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1100712, player.getObjectId(), 2));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1100712, player.getObjectId(), 2));
 				}
 			break;
 			///https://aioncodex.com/3x/quest/2498/
@@ -164,7 +157,7 @@ public class Morheim extends GeneralWorldHandler
 						ItemService.addItem(player, 182207124, 1);
 					} else {
 						///You have not acquired this quest.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 					}
 				}
 			break;
@@ -174,7 +167,7 @@ public class Morheim extends GeneralWorldHandler
 					final QuestState qs2042 = player.getQuestStateList().getQuestState(2042); //The Last Checkpoint.
 					if (qs2042 == null || qs2042.getStatus() != QuestStatus.COMPLETE) {
 						///You must first complete the Abyss Entry Quest.
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANNOT_TELEPORT_TO_ABYSS);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANNOT_TELEPORT_TO_ABYSS);
 					} else {
 						primumLanding(player, 1068.0000f, 2850.0000f, 1636.0000f, (byte) 0);
 					}
@@ -185,7 +178,7 @@ public class Morheim extends GeneralWorldHandler
 				    symbolOfMauHeroIn(player, 2428.0000f, 555.0000f, 335.0000f, (byte) 76);
                 } else {
 					///You cannot move to that destination.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
 				}
 		    break;
 			case 730052: ///Statue Of Mau Hero.
@@ -193,7 +186,7 @@ public class Morheim extends GeneralWorldHandler
 				    statueOfMauHeroIn(player, 1256.0000f, 257.0000f, 534.0000f, (byte) 22);
                 } else {
 					///You cannot move to that destination.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
 				}
 			break;
 			case 730053: ///Statue Of Mau Hero.
@@ -307,7 +300,7 @@ public class Morheim extends GeneralWorldHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getWorldId() == map.getMapId() && player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});

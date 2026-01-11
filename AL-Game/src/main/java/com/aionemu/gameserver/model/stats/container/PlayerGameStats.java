@@ -1,5 +1,7 @@
 package com.aionemu.gameserver.model.stats.container;
 
+import static com.aionemu.gameserver.model.templates.item.WeaponType.BOW;
+
 import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.EmotionType;
@@ -9,15 +11,11 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
 import com.aionemu.gameserver.model.stats.calc.AdditionStat;
 import com.aionemu.gameserver.model.stats.calc.Stat2;
-import com.aionemu.gameserver.model.templates.item.ArmorType;
-import com.aionemu.gameserver.model.templates.item.WeaponType;
 import com.aionemu.gameserver.model.templates.stats.PlayerStatsTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
-import com.aionemu.gameserver.network.aion.serverpackets.S_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.taskmanager.tasks.PacketBroadcaster.BroadcastMode;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import static com.aionemu.gameserver.model.templates.item.WeaponType.BOW;
 
 public class PlayerGameStats extends CreatureGameStats<Player>
 {
@@ -525,11 +523,11 @@ public class PlayerGameStats extends CreatureGameStats<Player>
 
 	@Override
 	public void updateStatInfo() {
-		PacketSendUtility.sendPacket(owner, new S_STATUS(owner));
+		PacketSendUtility.sendPacket(owner, new SM_STATS_INFO(owner));
 	}
 
 	@Override
 	public void updateSpeedInfo() {
-		PacketSendUtility.broadcastPacket(owner, new S_ACTION(owner, EmotionType.START_EMOTE2, 0, 0), true);
+		PacketSendUtility.broadcastPacket(owner, new SM_EMOTION(owner, EmotionType.START_EMOTE2, 0, 0), true);
 	}
 }

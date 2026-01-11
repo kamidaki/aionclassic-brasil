@@ -16,10 +16,7 @@
  */
 package com.aionemu.gameserver.dataholders;
 
-import com.aionemu.gameserver.model.templates.npcskill.NpcSkillTemplates;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,7 +24,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import java.util.*;
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.gameserver.model.templates.npcskill.NpcSkillTemplates;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 @XmlRootElement(name = "npc_skill_templates")
 @XmlAccessorType(XmlAccessType.FIELD)

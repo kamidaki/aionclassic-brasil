@@ -10,6 +10,12 @@
  */
 package com.aionemu.gameserver.services;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.AITemplate;
 import com.aionemu.gameserver.ai2.poll.AIQuestion;
@@ -22,18 +28,13 @@ import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.npcshout.NpcShout;
 import com.aionemu.gameserver.model.templates.npcshout.ShoutEventType;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.WorldMap;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * This class is handling NPC shouts
@@ -186,14 +187,14 @@ public class NpcShoutsService {
 					npc.getKnownList().doOnAllPlayers(new Visitor<Player>() {
 						@Override
 						public void visit(Player player) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(isShout, msg, Obj, color));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(isShout, msg, Obj, color));
 						}
 					});
 				} else if (instance != null) {
 					instance.doOnAllPlayers(new Visitor<Player>() {
 						@Override
 						public void visit(Player player) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(isShout, msg, Obj, color));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(isShout, msg, Obj, color));
 						}
 
 					});
@@ -218,7 +219,7 @@ public class NpcShoutsService {
 					npc.getKnownList().doOnAllPlayers(new Visitor<Player>() {
 						@Override
 						public void visit(Player player) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(isShout, msg, Obj, color));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(isShout, msg, Obj, color));
 						}
 					});
 				} else if (map != null) {
@@ -226,7 +227,7 @@ public class NpcShoutsService {
 						@Override
 						public void visit(Player player) {
 							if (player.getWorldId() == map.getMapId()) {
-								PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(isShout, msg, Obj, color));
+								PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(isShout, msg, Obj, color));
 							}
 						}
 					});

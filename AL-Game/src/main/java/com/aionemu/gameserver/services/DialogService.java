@@ -10,10 +10,14 @@
  */
 package com.aionemu.gameserver.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.gameserver.controllers.effect.PlayerEffectController;
 import com.aionemu.gameserver.dataholders.DataManager;
-import com.aionemu.gameserver.model.Race;
-import com.aionemu.gameserver.model.PlayerClass;
 import com.aionemu.gameserver.model.DescriptionId;
+import com.aionemu.gameserver.model.PlayerClass;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.TeleportAnimation;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Npc;
@@ -25,9 +29,15 @@ import com.aionemu.gameserver.model.templates.portal.PortalPath;
 import com.aionemu.gameserver.model.templates.teleport.TeleportLocation;
 import com.aionemu.gameserver.model.templates.teleport.TeleporterTemplate;
 import com.aionemu.gameserver.model.templates.tradelist.TradeListTemplate;
-import com.aionemu.gameserver.controllers.effect.PlayerEffectController;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
+import com.aionemu.gameserver.network.aion.serverpackets.S_EDIT_CHARACTER;
+import com.aionemu.gameserver.network.aion.serverpackets.S_FUNCTIONAL_PET;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_STORE_PURCHASE_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_STORE_SALE_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_TRADE_IN;
+import com.aionemu.gameserver.network.aion.serverpackets.S_USER_SELL_HISTORY_LIST;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
@@ -42,8 +52,6 @@ import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.services.trade.PricesService;
 import com.aionemu.gameserver.skillengine.model.SkillTargetSlot;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DialogService
 {
@@ -119,7 +127,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000001) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -129,7 +137,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000006) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -139,7 +147,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000002) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -151,7 +159,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000007) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -167,7 +175,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000003) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -179,7 +187,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000008) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -189,7 +197,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000004) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -201,7 +209,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000009) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -217,7 +225,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000005) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -233,7 +241,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000010) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -245,7 +253,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000018) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -257,7 +265,7 @@ public class DialogService
 					    if (player.getInventory().getItemCountByItemId(186000019) == 0) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -269,7 +277,7 @@ public class DialogService
 					    if (level < 25) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -280,7 +288,7 @@ public class DialogService
 					    if (level < 45) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -289,7 +297,7 @@ public class DialogService
 					    if (level < 50) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -297,7 +305,7 @@ public class DialogService
 					    if (level < 55) {
 						    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 						    ///%0 does not sell items appropriate for you.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300336, new DescriptionId(npcNameId * 2 + 1)));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300336, new DescriptionId(npcNameId * 2 + 1)));
 						    return;
 					    }
                     break;
@@ -329,7 +337,7 @@ public class DialogService
 					final QuestState qs1929 = player.getQuestStateList().getQuestState(1929); //A Sliver Of Darkness.
 					if (qs1929 == null || qs1929.getStatus() != QuestStatus.COMPLETE) {
 						///You cannot use it as the required quest has not been completed.
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
 						PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 					} else {
 						PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 1));
@@ -338,7 +346,7 @@ public class DialogService
 					final QuestState qs2900 = player.getQuestStateList().getQuestState(2900); //No Escaping Destiny.
 					if (qs2900 == null || qs2900.getStatus() != QuestStatus.COMPLETE) {
 						///You cannot use it as the required quest has not been completed.
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
 						PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 					} else {
 						PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 1));
@@ -403,9 +411,9 @@ public class DialogService
 					public void acceptRequest(Creature requester, Player responder) {
 						if (player.getInventory().getKinah() >= price) {
 							///You have gained %num0 XP.
-							PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_GET_EXP2(expLost));
+							PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_GET_EXP2(expLost));
 							///You received Soul Healing.
-							PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_SUCCESS_RECOVER_EXPERIENCE, 2000);
+							PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_SUCCESS_RECOVER_EXPERIENCE, 2000);
 							player.getCommonData().resetRecoverableExp();
 							player.getInventory().decreaseKinah(price);
 							PlayerEffectController effectController = player.getEffectController();
@@ -413,7 +421,7 @@ public class DialogService
 							player.getCommonData().setDeathCount(0);
 						} else {
 							///You don't have enough Kinah. It costs %num0 Kinah.
-							PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_NOT_ENOUGH_KINA(price));
+							PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_NOT_ENOUGH_KINA(price));
 						}
 					}
 					@Override
@@ -427,7 +435,7 @@ public class DialogService
 					}
 				} else {
 					///You do not have any XP to recover.
-					PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_DONOT_HAVE_RECOVER_EXPERIENCE, 0);
+					PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_DONOT_HAVE_RECOVER_EXPERIENCE, 0);
 				} if (expLost == 0) {
 					player.getEffectController().removeAbnormalEffectsByTargetSlot(SkillTargetSlot.SPEC2);
 					player.getCommonData().setDeathCount(0);
@@ -448,7 +456,7 @@ public class DialogService
 					        final QuestState qs1346 = player.getQuestStateList().getQuestState(1346); //Killing For Castor.
 					        if (qs1346 == null || qs1346.getStatus() != QuestStatus.COMPLETE) {
 								///You cannot use it as the required quest has not been completed.
-						        PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
+						        PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
 						        PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 					        } else {
 						        TeleportService2.teleportTo(player, 210020000, 439.0000f, 422.0000f, 274.0000f, (byte) 0);
@@ -494,7 +502,7 @@ public class DialogService
 							final QuestState qs1006 = player.getQuestStateList().getQuestState(1006);
 							if (qs1006 == null || qs1006.getStatus() != QuestStatus.COMPLETE) {
 								///You cannot use it as the required quest has not been completed.
-								PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
+								PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
 								PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 							} else {
 								TeleportService2.showMap(player, targetObjectId, npc.getNpcId());
@@ -506,7 +514,7 @@ public class DialogService
 							final QuestState qs2008 = player.getQuestStateList().getQuestState(2008);
 							if (qs2008 == null || qs2008.getStatus() != QuestStatus.COMPLETE) {
 								///You cannot use it as the required quest has not been completed.
-								PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
+								PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
 								PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(targetObjectId, 27));
 							} else {
 								TeleportService2.showMap(player, targetObjectId, npc.getNpcId());
@@ -546,7 +554,7 @@ public class DialogService
 				//Legion Warehouse.
 				if (player.getLegion() == null) {
 				    ///You must be a Legion member to use the Legion warehouse.
-				    PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_NO_GUILD_TO_DEPOSIT);
+				    PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_NO_GUILD_TO_DEPOSIT);
 				    return;
 				}
 				LegionService.getInstance().openLegionWarehouse(player, npc);
@@ -676,7 +684,7 @@ public class DialogService
 					case 204075:
 						if (!player.getEffectController().hasAbnormalEffect(8610) || player.getEffectController().hasAbnormalEffect(8611)) {
 							///Nothing to purify.
-							PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_PURIFY_DONOT, 0);
+							PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_PURIFY_DONOT, 0);
 						} if (player.getInventory().getKinah() >= 10000) {
 						    if (player.getEffectController().hasAbnormalEffect(8610) || player.getEffectController().hasAbnormalEffect(8611)) {
 								PlayerEffectController effectController = player.getEffectController();
@@ -684,11 +692,11 @@ public class DialogService
 								effectController.removeEffect(8611);
 								player.getInventory().decreaseKinah(10000);
 								///Purified by the Empyrean Lord's authority.
-								PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_PURIFY_SUCCESS, 2000);
+								PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_PURIFY_SUCCESS, 2000);
 							}
 						} else {
 							///You don't have enough Kinah. It costs %num0 Kinah.
-							PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_NOT_ENOUGH_KINA(10000));
+							PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_NOT_ENOUGH_KINA(10000));
 						}
                     break;
 				}

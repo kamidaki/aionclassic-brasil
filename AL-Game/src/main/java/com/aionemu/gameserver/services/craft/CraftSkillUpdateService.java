@@ -10,6 +10,15 @@
  */
 package com.aionemu.gameserver.services.craft;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.main.CraftConfig;
 import com.aionemu.gameserver.dao.PlayerRecipesDAO;
 import com.aionemu.gameserver.dataholders.DataManager;
@@ -22,12 +31,13 @@ import com.aionemu.gameserver.model.gameobjects.player.RecipeList;
 import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
 import com.aionemu.gameserver.model.skill.PlayerSkillList;
 import com.aionemu.gameserver.model.templates.CraftLearnTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ADD_RECIPE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_LIST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
+import com.aionemu.gameserver.network.aion.serverpackets.S_EFFECT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_RECIPE_LIST;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public class CraftSkillUpdateService
 {
@@ -115,7 +125,7 @@ public class CraftSkillUpdateService
 	public void learnSkill(Player player, Npc npc) {
 		if (player.getLevel() < 10) {
 			//You must level up to raise your skill level.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CRAFT_INFO_MAXPOINT_UP);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CRAFT_INFO_MAXPOINT_UP);
 			return;
 		}
 		final CraftLearnTemplate template = npcBySkill.get(npc.getNpcId());
@@ -132,7 +142,7 @@ public class CraftSkillUpdateService
 			skillLvl = skillList.getSkillLevel(skillId);
 		} if (!cost.containsKey(skillLvl)) {
 			//You cannot be promoted as your skill level is too low.
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390233));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390233));
 			return;
 		} if (isCraftingSkill(skillId) && (!canLearnMoreExpertCraftingSkill(player) && skillLvl == 399)) {
 			PacketSendUtility.sendMessage(player, "You can only have " + CraftConfig.MAX_EXPERT_CRAFTING_SKILLS + " Expert crafting skills.");
@@ -145,22 +155,22 @@ public class CraftSkillUpdateService
 		if (skillLvl == 399 && ((skillId == 30002 && //Essencetapping [Journeyman]
 		    (!player.isCompleteQuest(19001) || !player.isCompleteQuest(29001))))) {
 			//You must pass the Expert test in order to be promoted.
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400284));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400284));
 			return;
 		} if (skillLvl == 499 && (skillId == 30002)) { //Essencetapping [Artisan]
 			//You cannot be promoted any more.
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1330069));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1330069));
 			return;
 		}
 		//AETHERTAPPING
 		if (skillLvl == 399 && ((skillId == 30003 && //[Journeyman]
 		    (!player.isCompleteQuest(19003) || !player.isCompleteQuest(29003))))) {
 			//You must pass the Expert test in order to be promoted.
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400284));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400284));
 			return;
 		} if (skillLvl == 499 && (skillId == 30003)) { //Aethertapping [Artisan]
 			//You cannot be promoted any more.
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1330069));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1330069));
 			return;
 		}
 		//CRAFTING
@@ -172,11 +182,11 @@ public class CraftSkillUpdateService
 			|| (skillId == 40007 && (!player.isCompleteQuest(19033) || !player.isCompleteQuest(29033)))
 			|| (skillId == 40008 && (!player.isCompleteQuest(19027) || !player.isCompleteQuest(29027))))) {
 			//You must pass the Master test in order to be promoted.
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400286));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400286));
 			return;
 		} if (skillLvl == 549) { //[Master]
 			//You cannot be promoted any more.
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1330069));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1330069));
 			return;
 		}
 		final int price = cost.get(skillLvl);
@@ -191,11 +201,11 @@ public class CraftSkillUpdateService
 					responder.getRecipeList().autoLearnRecipe(responder, skillId, skillLevel + 1);
 					PacketSendUtility.sendPacket(responder, new S_RECIPE_LIST(responder.getRecipeList().getRecipeList()));
 					//You have learned the %0 skill.
-					PacketSendUtility.sendPacket(responder, new S_ADD_SKILL(skillList.getSkillEntry(skillId), 1330004, false));
+					PacketSendUtility.sendPacket(responder, new SM_SKILL_LIST(skillList.getSkillEntry(skillId), 1330004, false));
 					PacketSendUtility.broadcastPacket(responder, new S_EFFECT(responder.getObjectId(), 4, responder.getCommonData().getLevel()), true);
 				} else {
 					//You do not have enough Kinah.
-					PacketSendUtility.sendPacket(responder, new S_MESSAGE_CODE(1300388));
+					PacketSendUtility.sendPacket(responder, new SM_SYSTEM_MESSAGE(1300388));
 				}
 			}
 			@Override

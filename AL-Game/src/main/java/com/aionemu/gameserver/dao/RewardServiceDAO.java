@@ -1,6 +1,7 @@
 package com.aionemu.gameserver.dao;
 
 import com.aionemu.gameserver.model.templates.rewards.RewardEntryItem;
+
 import javolution.util.FastList;
 
 public class RewardServiceDAO

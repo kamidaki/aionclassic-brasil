@@ -10,18 +10,16 @@
  */
 package ai.siege;
 
+import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.NpcAI2;
-import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.gameobjects.AionObject;
 import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.model.gameobjects.Summon;
-import com.aionemu.gameserver.model.gameobjects.Trap;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.knownlist.Visitor;
@@ -70,7 +68,7 @@ public class Gate_Guardian_StoneAI2 extends NpcAI2
 				if (winner instanceof Creature) {
 					final Creature kill = (Creature) winner;
 					//"Player Name" of the "Race" destroyed the Gate Guardian Stone.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1301054, kill.getRace().getRaceDescriptionId(), kill.getName()));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1301054, kill.getRace().getRaceDescriptionId(), kill.getName()));
 				}
 			}
 		});

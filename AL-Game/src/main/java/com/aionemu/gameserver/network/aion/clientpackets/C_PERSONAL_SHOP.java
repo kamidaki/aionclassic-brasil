@@ -7,7 +7,7 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.trade.TradePSItem;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.PrivateStoreService;
 import com.aionemu.gameserver.skillengine.effect.AbnormalState;
 import com.aionemu.gameserver.utils.PacketSendUtility;
@@ -39,14 +39,14 @@ public class C_PERSONAL_SHOP extends AionClientPacket
 		}
 		if (level < 10) {
 			//Characters under level 10 who are using a free trial cannot open a private store.
-			PacketSendUtility.sendPacket(activePlayer, S_MESSAGE_CODE.STR_FREE_EXPERIENCE_CHARACTER_CANT_OPEN_PERSONAL_SHOP("10"));
+			PacketSendUtility.sendPacket(activePlayer, SM_SYSTEM_MESSAGE.STR_FREE_EXPERIENCE_CHARACTER_CANT_OPEN_PERSONAL_SHOP("10"));
 			return;
 		}
 		if (activePlayer.getController().isInCombat()) {
 			//You cannot open a private store while fighting.
-			PacketSendUtility.sendPacket(activePlayer, S_MESSAGE_CODE.STR_PERSONAL_SHOP_DISABLED_IN_EXCHANGE);
+			PacketSendUtility.sendPacket(activePlayer, SM_SYSTEM_MESSAGE.STR_PERSONAL_SHOP_DISABLED_IN_EXCHANGE);
 			//As you cannot open a private store while fighting, it will be closed automatically.
-			PacketSendUtility.sendPacket(activePlayer, S_MESSAGE_CODE.STR_PERSONAL_SHOP_CLOSED_FOR_COMBAT_MODE);
+			PacketSendUtility.sendPacket(activePlayer, SM_SYSTEM_MESSAGE.STR_PERSONAL_SHOP_CLOSED_FOR_COMBAT_MODE);
 			PrivateStoreService.closePrivateStore(activePlayer);
 			return;
 		}
@@ -54,14 +54,14 @@ public class C_PERSONAL_SHOP extends AionClientPacket
 				(activePlayer.isUsingFlyTeleport()) ||
 				(activePlayer.isInPlayerMode(PlayerMode.WINDSTREAM))) {
 			//You cannot open a private store while flying.
-			PacketSendUtility.sendPacket(activePlayer, S_MESSAGE_CODE.STR_PERSONAL_SHOP_DISABLED_IN_FLY_MODE);
+			PacketSendUtility.sendPacket(activePlayer, SM_SYSTEM_MESSAGE.STR_PERSONAL_SHOP_DISABLED_IN_FLY_MODE);
 			return;
 		}
 		if (activePlayer.getEffectController().isAbnormalSet(AbnormalState.HIDE)) {
 			//You cannot open a private store while hiding.
-			PacketSendUtility.sendPacket(activePlayer, S_MESSAGE_CODE.STR_PERSONAL_SHOP_DISABLED_IN_HIDDEN_MODE);
+			PacketSendUtility.sendPacket(activePlayer, SM_SYSTEM_MESSAGE.STR_PERSONAL_SHOP_DISABLED_IN_HIDDEN_MODE);
 			//Your private store closed automatically because you are currently hiding.
-			PacketSendUtility.sendPacket(activePlayer, S_MESSAGE_CODE.STR_PERSONAL_SHOP_CLOSED_FOR_HIDDEN_MODE);
+			PacketSendUtility.sendPacket(activePlayer, SM_SYSTEM_MESSAGE.STR_PERSONAL_SHOP_CLOSED_FOR_HIDDEN_MODE);
 			PrivateStoreService.closePrivateStore(activePlayer);
 			return;
 		}
@@ -69,7 +69,7 @@ public class C_PERSONAL_SHOP extends AionClientPacket
 		tradePSItems = new TradePSItem[itemCount];
 		if (activePlayer.getMoveController().isInMove()) {
 			//You cannot open the private store on a moving object.
-			PacketSendUtility.sendPacket(activePlayer, S_MESSAGE_CODE.STR_PERSONAL_SHOP_DISABLED_IN_MOVING_OBJECT);
+			PacketSendUtility.sendPacket(activePlayer, SM_SYSTEM_MESSAGE.STR_PERSONAL_SHOP_DISABLED_IN_MOVING_OBJECT);
 			cancelStore = true;
 			return;
 		}
@@ -83,7 +83,7 @@ public class C_PERSONAL_SHOP extends AionClientPacket
 				PacketSendUtility.sendMessage(activePlayer, "Invalid item.");
 				cancelStore = true;
 			} else if (!item.isTradeable(activePlayer)) {
-				PacketSendUtility.sendPacket(activePlayer, new S_MESSAGE_CODE(1300344, new DescriptionId(item.getNameId())));
+				PacketSendUtility.sendPacket(activePlayer, new SM_SYSTEM_MESSAGE(1300344, new DescriptionId(item.getNameId())));
 				cancelStore = true;
 			}
 			tradePSItems[i] = new TradePSItem(itemObjId, itemId, count, price);

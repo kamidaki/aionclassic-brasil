@@ -1,15 +1,17 @@
 package com.aionemu.gameserver.dataholders;
 
-import com.aionemu.gameserver.model.templates.battle_pass.BattlePassActionTemplate;
-import javolution.util.FastMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
-import java.util.Map;
+
+import com.aionemu.gameserver.model.templates.battle_pass.BattlePassActionTemplate;
+
+import javolution.util.FastMap;
 
 @XmlRootElement(name = "battlepass_actions")
 @XmlAccessorType(XmlAccessType.FIELD)

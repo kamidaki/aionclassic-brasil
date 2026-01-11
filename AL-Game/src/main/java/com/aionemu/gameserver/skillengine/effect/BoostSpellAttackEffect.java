@@ -10,10 +10,6 @@
  */
 package com.aionemu.gameserver.skillengine.effect;
 
-import com.aionemu.gameserver.controllers.observer.AttackCalcObserver;
-import com.aionemu.gameserver.skillengine.effect.BuffEffect;
-import com.aionemu.gameserver.skillengine.model.Effect;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;

@@ -1,9 +1,8 @@
 package com.aionemu.gameserver.model.gameobjects.player;
 
-import com.aionemu.gameserver.model.gameobjects.PersistentState;
-import javolution.util.FastList;
-
 import java.util.List;
+
+import javolution.util.FastList;
 
 public class PlayerSweep {
 

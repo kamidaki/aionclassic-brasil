@@ -1,21 +1,23 @@
 package com.aionemu.gameserver.services.player;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.dao.AccountSielEnergyDAO;
 import com.aionemu.gameserver.model.account.Account;
 import com.aionemu.gameserver.model.account.AccountSielEnergy;
 import com.aionemu.gameserver.model.account.SielEnergyType;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_GAMEPASS_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
-import javolution.util.FastMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Map;
+import javolution.util.FastMap;
 
 public class SielEnergyService
 {
@@ -28,7 +30,7 @@ public class SielEnergyService
 
         if(account.getMembership() == 2) {
             PacketSendUtility.sendPacket(player, new S_GAMEPASS_INFO(3, player));
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_ALARM_PLAYTIME_CLASSIC_ACCOUNT_MEMBERSHIP((int) account.getMembershipExpire().getTime()));
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_ALARM_PLAYTIME_CLASSIC_ACCOUNT_MEMBERSHIP((int) account.getMembershipExpire().getTime()));
         } else {
             if(player.getAccountSielEnergy() == null) {
                 Calendar cal = Calendar.getInstance();

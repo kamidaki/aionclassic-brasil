@@ -843,6 +843,21 @@ public class BoundingBox extends BoundingVolume {
         zExtent = FastMath.abs(max.z - center.z);
     }
 
+    /**
+     * Determines if this bounding box intersects the triangle defined by three vertices.
+     *
+     * @param v1
+     *            first vertex of the triangle
+     * @param v2
+     *            second vertex of the triangle
+     * @param v3
+     *            third vertex of the triangle
+     * @return true if the triangle intersects this bounding box, false otherwise
+     */
+    public boolean intersectsTriangle(Vector3f v1, Vector3f v2, Vector3f v3) {
+        return Intersection.intersect(this, v1, v2, v3);
+    }
+
     @Override
     public float getVolume() {
         return (8 * xExtent * yExtent * zExtent);

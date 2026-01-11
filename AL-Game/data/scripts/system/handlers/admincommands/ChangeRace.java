@@ -4,7 +4,7 @@ import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_PUT_USER;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_INFO;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 
@@ -30,7 +30,7 @@ public class ChangeRace extends AdminCommand
 				targetPlayer.getCommonData().setRace(Race.ELYOS);
 			}
 			targetPlayer.clearKnownlist();
-			PacketSendUtility.sendPacket(targetPlayer, new S_PUT_USER(targetPlayer, false));
+			PacketSendUtility.sendPacket(targetPlayer, new SM_PLAYER_INFO(targetPlayer, false));
 			targetPlayer.updateKnownlist();
 			PacketSendUtility.sendMessage(player, targetPlayer.getName() + " change <RACE>!!!");
 		}

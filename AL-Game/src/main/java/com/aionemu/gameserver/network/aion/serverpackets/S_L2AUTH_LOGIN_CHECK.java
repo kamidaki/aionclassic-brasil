@@ -17,13 +17,8 @@
 package com.aionemu.gameserver.network.aion.serverpackets;
 
 
-import com.aionemu.commons.utils.PrintUtils;
-import com.aionemu.gameserver.dataholders.DataManager;
-import com.aionemu.gameserver.model.templates.world.WorldMapTemplate;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-
-import java.util.List;
 
 /**
  * @author -Nemesiss-

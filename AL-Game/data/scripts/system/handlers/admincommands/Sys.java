@@ -1,5 +1,7 @@
 package admincommands;
 
+import java.util.List;
+
 import com.aionemu.commons.utils.AEInfos;
 import com.aionemu.gameserver.ShutdownHook;
 import com.aionemu.gameserver.ShutdownHook.ShutdownMode;
@@ -8,8 +10,6 @@ import com.aionemu.gameserver.utils.AEVersions;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
-
-import java.util.List;
 
 public class Sys extends AdminCommand
 {

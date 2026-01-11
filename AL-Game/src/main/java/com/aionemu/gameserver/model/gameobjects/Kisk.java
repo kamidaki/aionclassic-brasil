@@ -1,22 +1,23 @@
 	package com.aionemu.gameserver.model.gameobjects;
 
-    import com.aionemu.gameserver.controllers.NpcController;
-    import com.aionemu.gameserver.model.Race;
-    import com.aionemu.gameserver.model.gameobjects.player.Player;
-    import com.aionemu.gameserver.model.team.legion.Legion;
-    import com.aionemu.gameserver.model.templates.npc.NpcTemplate;
-    import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
-    import com.aionemu.gameserver.model.templates.stats.KiskStatsTemplate;
-    import com.aionemu.gameserver.network.aion.serverpackets.S_PLACEABLE_BINDSTONE_INFO;
-    import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-    import com.aionemu.gameserver.utils.PacketSendUtility;
-    import com.aionemu.gameserver.world.World;
-    import com.aionemu.gameserver.world.knownlist.Visitor;
-    import javolution.util.FastList;
-    import javolution.util.FastSet;
-
     import java.util.List;
-    import java.util.Set;
+import java.util.Set;
+
+import com.aionemu.gameserver.controllers.NpcController;
+import com.aionemu.gameserver.model.Race;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.model.team.legion.Legion;
+import com.aionemu.gameserver.model.templates.npc.NpcTemplate;
+import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
+import com.aionemu.gameserver.model.templates.stats.KiskStatsTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PLACEABLE_BINDSTONE_INFO;
+import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.world.World;
+import com.aionemu.gameserver.world.knownlist.Visitor;
+
+import javolution.util.FastList;
+import javolution.util.FastSet;
 
 public class Kisk extends SummonedObject<Player>
 {
@@ -167,7 +168,7 @@ public class Kisk extends SummonedObject<Player>
 		});
 	}
 	
-	public void broadcastPacket(S_MESSAGE_CODE message) {
+	public void broadcastPacket(SM_SYSTEM_MESSAGE message) {
 		for (Player member : this.getCurrentMemberList()) {
 			if (member != null) {
 				PacketSendUtility.sendPacket(member, message);

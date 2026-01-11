@@ -16,10 +16,10 @@
  */
 package com.aionemu.gameserver.network.aion.serverpackets;
 
+import java.util.Set;
+
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-
-import java.util.Set;
 
 public class S_RECIPE_LIST extends AionServerPacket
 {

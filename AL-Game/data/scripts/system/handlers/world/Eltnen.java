@@ -10,39 +10,30 @@
  */
 package world;
 
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
+import java.util.List;
 
-import com.aionemu.gameserver.controllers.effect.PlayerEffectController;
-import com.aionemu.gameserver.world.handlers.GeneralWorldHandler;
-import com.aionemu.gameserver.world.handlers.WorldID;
-import com.aionemu.gameserver.model.*;
-import com.aionemu.gameserver.model.drop.DropItem;
+import com.aionemu.commons.network.util.ThreadPoolManager;
+import com.aionemu.commons.utils.Rnd;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.model.templates.item.ItemTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.*;
-import com.aionemu.gameserver.services.item.ItemService;
-import com.aionemu.gameserver.services.instance.InstanceService;
-import com.aionemu.gameserver.services.drop.DropRegistrationService;
-import com.aionemu.gameserver.services.teleport.TeleportService2;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PLAY_CUTSCENE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
+import com.aionemu.gameserver.services.ClassChangeService;
+import com.aionemu.gameserver.services.item.ItemService;
+import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.skillengine.model.Effect;
-import com.aionemu.gameserver.skillengine.model.SkillTemplate;
 import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.world.World;
+import com.aionemu.gameserver.world.handlers.GeneralWorldHandler;
+import com.aionemu.gameserver.world.handlers.WorldID;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-import com.aionemu.gameserver.world.*;
-import com.aionemu.gameserver.world.zone.ZoneName;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
+import com.aionemu.gameserver.world.zone.ZoneName;
 
-import javolution.util.*;
-
-import java.util.*;
-import java.util.concurrent.Future;
+import javolution.util.FastList;
 
 /****/
 /** Author Rinzler (Encom)
@@ -193,7 +184,7 @@ public class Eltnen extends GeneralWorldHandler
 					spawn(210020000, 203331, npc.getX(), npc.getY(), npc.getZ(), (byte) 0); //Hippolytus.
 				} else {
 					///You have not acquired this quest.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 				}
 			break;
 			///https://aioncodex.com/3x/quest/3939/
@@ -206,7 +197,7 @@ public class Eltnen extends GeneralWorldHandler
 						ItemService.addItem(player, 182206098, 1);
 					} else {
 						///You have not acquired this quest.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 					}
 				}
 			break;
@@ -216,7 +207,7 @@ public class Eltnen extends GeneralWorldHandler
 					final QuestState qs1044 = player.getQuestStateList().getQuestState(1044); //Testing Flight Skills.
 					if (qs1044 == null || qs1044.getStatus() != QuestStatus.COMPLETE) {
 						///You must first complete the Abyss Entry Quest.
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANNOT_TELEPORT_TO_ABYSS);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANNOT_TELEPORT_TO_ABYSS);
 					} else {
 						teminonLanding(player, 2923.0000f, 972.0000f, 1538.0000f, (byte) 0);
 					}
@@ -339,7 +330,7 @@ public class Eltnen extends GeneralWorldHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getWorldId() == map.getMapId() && player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});

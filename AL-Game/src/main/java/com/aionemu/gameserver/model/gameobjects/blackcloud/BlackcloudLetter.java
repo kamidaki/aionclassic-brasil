@@ -1,13 +1,13 @@
 package com.aionemu.gameserver.model.gameobjects.blackcloud;
 
-import com.aionemu.gameserver.model.gameobjects.AionObject;
-import com.aionemu.gameserver.model.gameobjects.Item;
-import com.aionemu.gameserver.model.gameobjects.LetterType;
-import com.aionemu.gameserver.model.gameobjects.PersistentState;
-import javolution.util.FastList;
-
 import java.sql.Timestamp;
 import java.util.List;
+
+import com.aionemu.gameserver.model.gameobjects.AionObject;
+import com.aionemu.gameserver.model.gameobjects.LetterType;
+import com.aionemu.gameserver.model.gameobjects.PersistentState;
+
+import javolution.util.FastList;
 
 public class BlackcloudLetter extends AionObject {
 

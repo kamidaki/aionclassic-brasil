@@ -1,5 +1,8 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
@@ -13,8 +16,6 @@ import com.aionemu.gameserver.network.aion.AionConnection.State;
 import com.aionemu.gameserver.services.PrivateStoreService;
 import com.aionemu.gameserver.services.RepurchaseService;
 import com.aionemu.gameserver.services.TradeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class C_BUY_SELL extends AionClientPacket
 {

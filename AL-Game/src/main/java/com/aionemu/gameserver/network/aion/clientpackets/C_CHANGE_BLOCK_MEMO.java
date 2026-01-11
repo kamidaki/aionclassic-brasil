@@ -14,7 +14,7 @@ import com.aionemu.gameserver.model.gameobjects.player.BlockedPlayer;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.SocialService;
 
 /**
@@ -55,7 +55,7 @@ public class C_CHANGE_BLOCK_MEMO extends AionClientPacket
 		BlockedPlayer target = activePlayer.getBlockList().getBlockedPlayer(targetName);
 
 		if (target == null) {
-			sendPacket(S_MESSAGE_CODE.STR_BLOCKLIST_NOT_IN_LIST);
+			sendPacket(SM_SYSTEM_MESSAGE.STR_BLOCKLIST_NOT_IN_LIST);
 		} else {
 			SocialService.setBlockedReason(activePlayer, target, reason);
 		}

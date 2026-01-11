@@ -1,5 +1,11 @@
 package com.aionemu.gameserver.services.mail;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.dao.InventoryDAO;
 import com.aionemu.gameserver.dao.MailDAO;
 import com.aionemu.gameserver.dao.PlayerDAO;
@@ -13,18 +19,13 @@ import com.aionemu.gameserver.model.gameobjects.player.PlayerCommonData;
 import com.aionemu.gameserver.model.items.storage.StorageType;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
 import com.aionemu.gameserver.model.templates.mail_reward.MailRewardTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_MAIL;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.item.ItemFactory;
 import com.aionemu.gameserver.services.player.PlayerMailboxState;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.idfactory.IDFactory;
 import com.aionemu.gameserver.world.World;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.Timestamp;
-import java.util.Calendar;
 
 public class SystemMailService
 {
@@ -111,7 +112,7 @@ public class SystemMailService
 				PacketSendUtility.sendPacket(recipient, new S_MAIL(recipient, recipientMailbox.getLetters(), isPostman));
 			} if (letterType == LetterType.EXPRESS) {
 				//Express mail has arrived.
-				PacketSendUtility.sendPacket(recipient, S_MESSAGE_CODE.STR_POSTMAN_NOTIFY);
+				PacketSendUtility.sendPacket(recipient, SM_SYSTEM_MESSAGE.STR_POSTMAN_NOTIFY);
 			}
 		} if (!recipientCommonData.isOnline()) {
 			recipientCommonData.setMailboxLetters(recipientCommonData.getMailboxLetters() + 1);
@@ -166,7 +167,7 @@ public class SystemMailService
 			PacketSendUtility.sendPacket(onlineRecipient, new S_MAIL(onlineRecipient.getMailbox()));
 			//Express mail has arrived.
 			if (type == LetterType.EXPRESS || type == LetterType.BLACKCLOUD) {
-				PacketSendUtility.sendPacket(recipient, S_MESSAGE_CODE.STR_POSTMAN_NOTIFY);
+				PacketSendUtility.sendPacket(recipient, SM_SYSTEM_MESSAGE.STR_POSTMAN_NOTIFY);
 			}
 		} if (!recipientCommonData.isOnline()) {
 			recipientCommonData.setMailboxLetters(recipientCommonData.getMailboxLetters() + 1);

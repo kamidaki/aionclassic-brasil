@@ -10,13 +10,12 @@
  */
 package ai.worlds.eltnen;
 
-import ai.AggressiveNpcAI2;
-
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
-import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AI2Actions;
+import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.skillengine.SkillEngine;
+
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)

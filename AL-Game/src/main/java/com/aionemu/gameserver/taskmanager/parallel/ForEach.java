@@ -1,12 +1,13 @@
 package com.aionemu.gameserver.taskmanager.parallel;
 
-import com.google.common.base.Predicate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
 import java.util.concurrent.CountedCompleter;
 import java.util.concurrent.ForkJoinTask;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Predicate;
 
 /**
  * To use forEach method, statically import the method

@@ -10,6 +10,9 @@
  */
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.administration.AdminConfig;
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -17,11 +20,9 @@ import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
 import com.aionemu.gameserver.model.templates.zone.ZoneType;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author SoulKeeper
@@ -134,12 +135,12 @@ public class C_ACTION extends AionClientPacket
 			case FLY:
 				if (player.getAccessLevel() < AdminConfig.GM_FLIGHT_FREE) {
 					if (!player.isInsideZoneType(ZoneType.FLY)) {
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_FLYING_FORBIDDEN_HERE);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_FLYING_FORBIDDEN_HERE);
 						return;
 					}
 				}
 				if (player.isUnderNoFly()) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANT_FLY_NOW_DUE_TO_NOFLY);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANT_FLY_NOW_DUE_TO_NOFLY);
 					return;
 				}
 				player.getFlyController().startFly();
@@ -172,19 +173,19 @@ public class C_ACTION extends AionClientPacket
 				break;
 			case POWERSHARD_ON:
 				if (!player.getEquipment().isPowerShardEquipped()) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_WEAPON_BOOST_NO_BOOSTER_EQUIPED);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_WEAPON_BOOST_NO_BOOSTER_EQUIPED);
 					return;
 				}
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_WEAPON_BOOST_BOOST_MODE_STARTED);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_WEAPON_BOOST_BOOST_MODE_STARTED);
 				player.setState(CreatureState.POWERSHARD);
 				break;
 			case POWERSHARD_OFF:
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_WEAPON_BOOST_BOOST_MODE_ENDED);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_WEAPON_BOOST_BOOST_MODE_ENDED);
 				player.unsetState(CreatureState.POWERSHARD);
 				break;
 		}
 		if (player.getEmotions().canUse(emotion)) {
-			PacketSendUtility.broadcastPacket(player, new S_ACTION(player, emotionType, emotion, x, y, z, heading, getTargetObjectId(player)), true);
+			PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, emotionType, emotion, x, y, z, heading, getTargetObjectId(player)), true);
 		}
 	}
 

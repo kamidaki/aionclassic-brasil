@@ -10,21 +10,24 @@
  */
 package ai.instance.beshmundirTemple;
 
-import ai.ActionItemNpcAI2;
-
-import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.AI2Request;
+import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.dataholders.DataManager;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.autogroup.AutoGroupType;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.portal.PortalPath;
 import com.aionemu.gameserver.model.templates.portal.PortalUse;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PARTY_MATCH;
 import com.aionemu.gameserver.services.teleport.PortalService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
+
+import ai.ActionItemNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -39,7 +42,7 @@ public class Beshmundirs_WalkAI2 extends ActionItemNpcAI2
 		    PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getObjectId(), 10));
 		} else {
             PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getObjectId(), 27));
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_USE_DIRECT_PORTAL_LEVEL_LIMIT);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_DIRECT_PORTAL_LEVEL_LIMIT);
         }
 	}
 	
@@ -55,14 +58,14 @@ public class Beshmundirs_WalkAI2 extends ActionItemNpcAI2
 			case 60:
 				if (player.getPlayerGroup2() == null) {
 					//This area is only accessible to groups.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_ENTER_ONLY_PARTY_DON);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_ENTER_ONLY_PARTY_DON);
 					return true;
 				} if (player.isInGroup2() && player.getPlayerGroup2().isLeader(player)) {
 					PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getObjectId(), 4762));
 				} else {
 					if (!isAGroupMemberInInstance(player)) {
 						///You can only enter after the Group Leader has created the instance.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400361));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400361));
 						return true;
 					}
 					moveToInstance(player);

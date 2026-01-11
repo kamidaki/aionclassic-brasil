@@ -10,36 +10,39 @@
  */
 package instance;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Future;
+
 import com.aionemu.gameserver.ai2.NpcAI2;
-import com.aionemu.gameserver.ai2.AIState;
-import com.aionemu.gameserver.ai2.AbstractAI;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.controllers.effect.PlayerEffectController;
 import com.aionemu.gameserver.instance.handlers.GeneralInstanceHandler;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.Race;
+import com.aionemu.gameserver.model.TeleportAnimation;
 import com.aionemu.gameserver.model.drop.DropItem;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.StaticDoor;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.items.storage.Storage;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.ClassChangeService;
-import com.aionemu.gameserver.services.item.ItemService;
-import com.aionemu.gameserver.services.teleport.TeleportService2;
-import com.aionemu.gameserver.services.drop.DropRegistrationService;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PLAY_CUTSCENE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
+import com.aionemu.gameserver.services.ClassChangeService;
+import com.aionemu.gameserver.services.drop.DropRegistrationService;
+import com.aionemu.gameserver.services.item.ItemService;
+import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.utils.*;
+import com.aionemu.gameserver.utils.MathUtil;
+import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 
 import javolution.util.FastList;
-
-import java.util.*;
-import java.util.concurrent.Future;
 
 /****/
 /** Author Rinzler (Encom)
@@ -284,7 +287,7 @@ public class Abyssal_Splinter extends GeneralInstanceHandler
 							PacketSendUtility.sendPacket(player, new S_PLAY_CUTSCENE(0, 458));
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 					case ASMODIANS:
@@ -294,7 +297,7 @@ public class Abyssal_Splinter extends GeneralInstanceHandler
 							PacketSendUtility.sendPacket(player, new S_PLAY_CUTSCENE(0, 459));
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 				}
@@ -304,7 +307,7 @@ public class Abyssal_Splinter extends GeneralInstanceHandler
 					ItemService.addItem(player, 182209803, 1);
 				} else {
 					///That item is limited to one per person, and you already have one in your inventory.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300392));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300392));
 				}
 			break;
 			case 700865: //Worn Book.
@@ -312,7 +315,7 @@ public class Abyssal_Splinter extends GeneralInstanceHandler
 					ItemService.addItem(player, 182209824, 1);
 				} else {
 					///That item is limited to one per person, and you already have one in your inventory.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300392));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300392));
 				}
 			break;
 			case 281905: //Teleporter Device.
@@ -416,7 +419,7 @@ public class Abyssal_Splinter extends GeneralInstanceHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});

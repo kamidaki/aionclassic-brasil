@@ -10,22 +10,23 @@
  */
 package ai.instance.beshmundirTemple;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
-import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AI2Actions;
-import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.NpcShoutsService;
 import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 
-import java.util.*;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -65,7 +66,7 @@ public class Thurzon_The_UndyingAI2 extends AggressiveNpcAI2
 					case 85:
 					case 80:
 					    ///Thurzon the Undying assumes an attacking posture!
-						PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_CHAT_IDCatacombs_BonedrakeNmd_55_Ah_Start1, 0);
+						PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_CHAT_IDCatacombs_BonedrakeNmd_55_Ah_Start1, 0);
 						scheduleSkill(19043, 0); //Terrorizing Flame.
 					    scheduleSkill(19042, 2000); //Inevitable Flame.
 					break;
@@ -85,7 +86,7 @@ public class Thurzon_The_UndyingAI2 extends AggressiveNpcAI2
 	
 	private void immortalWatcher() {
 		///Thurzon the Undying roars!
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_CHAT_IDCatacombs_BonedrakeNmd_55_Ah_Skill1, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_CHAT_IDCatacombs_BonedrakeNmd_55_Ah_Skill1, 0);
 		for (Player player: getKnownList().getKnownPlayers().values()) {
 			final Npc immortalWatcher = getPosition().getWorldMapInstance().getNpc(281664);
 			if (immortalWatcher == null) {
@@ -162,7 +163,7 @@ public class Thurzon_The_UndyingAI2 extends AggressiveNpcAI2
         super.handleDied();
 		percents.clear();
 		///Thurzon the Undying screams!
-		PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_CHAT_IDCatacombs_BonedrakeNmd_55_Ah_Die1, 0);
+		PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_CHAT_IDCatacombs_BonedrakeNmd_55_Ah_Die1, 0);
 		getOwner().getEffectController().removeAllEffects();
 		WorldMapInstance instance = getPosition().getWorldMapInstance();
 		killNpc(instance.getNpcs(281664));

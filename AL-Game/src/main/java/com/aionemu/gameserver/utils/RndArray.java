@@ -1,8 +1,8 @@
 package com.aionemu.gameserver.utils;
 
-import com.aionemu.commons.utils.MTRandom;
-
 import java.util.List;
+
+import com.aionemu.commons.utils.MTRandom;
 
 public class RndArray
 {

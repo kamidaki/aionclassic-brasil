@@ -10,35 +10,41 @@
  */
 package ai.worlds.inggison;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aionemu.commons.utils.Rnd;
-
-import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AI2Actions;
+import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AttackIntention;
 import com.aionemu.gameserver.ai2.event.AIEventType;
-import com.aionemu.gameserver.ai2.handler.*;
-import com.aionemu.gameserver.ai2.manager.*;
-import com.aionemu.gameserver.ai2.poll.*;
-import com.aionemu.gameserver.model.Race;
-import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.ai2.handler.AggroEventHandler;
+import com.aionemu.gameserver.ai2.handler.AttackEventHandler;
+import com.aionemu.gameserver.ai2.handler.CreatureEventHandler;
+import com.aionemu.gameserver.ai2.handler.TargetEventHandler;
+import com.aionemu.gameserver.ai2.handler.ThinkEventHandler;
+import com.aionemu.gameserver.ai2.manager.SkillAttackManager;
+import com.aionemu.gameserver.ai2.poll.AIAnswer;
+import com.aionemu.gameserver.ai2.poll.AIAnswers;
+import com.aionemu.gameserver.ai2.poll.AIQuestion;
 import com.aionemu.gameserver.model.gameobjects.AionObject;
+import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.skill.NpcSkillEntry;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
-import com.aionemu.gameserver.spawnengine.SpawnEngine;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.NpcShoutsService;
-import com.aionemu.gameserver.utils.*;
-import com.aionemu.gameserver.world.*;
+import com.aionemu.gameserver.spawnengine.SpawnEngine;
+import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.world.World;
+import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -142,7 +148,7 @@ public class Enraged_VeilleAI2 extends AggressiveNpcAI2
 				if (winner instanceof Creature) {
 					final Creature kill = (Creature) winner;
 					//"Player Name" of the "Race" has killed Kaisinel's Agent Veille.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400324, kill.getRace().getRaceDescriptionId(), kill.getName()));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400324, kill.getRace().getRaceDescriptionId(), kill.getName()));
 				}
 			}
 		});
@@ -153,7 +159,7 @@ public class Enraged_VeilleAI2 extends AggressiveNpcAI2
 			@Override
 			public void visit(Player player) {
 				//Kaisinel's Agent Veille is under attack!
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_FIELDABYSS_LIGHTBOSS_ATTACKED, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_FIELDABYSS_LIGHTBOSS_ATTACKED, 0);
 			}
 		});
 	}
@@ -163,9 +169,9 @@ public class Enraged_VeilleAI2 extends AggressiveNpcAI2
 			@Override
 			public void visit(Player player) {
 				//The Empyrean Lord Agent summoned the Aether Concentrator.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_LDF4_Jusin_OdSpawn, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_LDF4_Jusin_OdSpawn, 0);
 				//The Empyrean Lord Agent has enabled the Aether Concentrator.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_LDF4_Jusin_OdStart, 20000);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_LDF4_Jusin_OdStart, 20000);
 			}
 		});
 	}
@@ -175,7 +181,7 @@ public class Enraged_VeilleAI2 extends AggressiveNpcAI2
 			@Override
 			public void visit(Player player) {
 				//The Empyrean Lord Agent's HP has dropped below 50%
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_LDF4_Jusin_Hp50, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_LDF4_Jusin_Hp50, 0);
 			}
 		});
 	}
@@ -185,7 +191,7 @@ public class Enraged_VeilleAI2 extends AggressiveNpcAI2
 			@Override
 			public void visit(Player player) {
 				//The Empyrean Lord Agent's HP has dropped below 10%
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_LDF4_Jusin_Hp10, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_LDF4_Jusin_Hp10, 0);
 			}
 		});
 	}
@@ -195,7 +201,7 @@ public class Enraged_VeilleAI2 extends AggressiveNpcAI2
 			@Override
 			public void visit(Player player) {
 				//Kaisinel's Agent Veille has disappeared.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_FIELDABYSS_LIGHTBOSS_DESPAWN, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_FIELDABYSS_LIGHTBOSS_DESPAWN, 0);
 			}
 		});
 	}

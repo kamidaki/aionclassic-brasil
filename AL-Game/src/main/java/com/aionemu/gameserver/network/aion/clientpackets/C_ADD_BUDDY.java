@@ -16,9 +16,9 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_BUDDY_RESULT;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_BUDDY_RESULT;
 import com.aionemu.gameserver.services.SocialService;
 import com.aionemu.gameserver.world.World;
 
@@ -66,7 +66,7 @@ public class C_ADD_BUDDY extends AionClientPacket
 		} else if (activePlayer.getFriendList().getFriend(targetPlayer.getObjectId()) != null) {
 			sendPacket(new S_BUDDY_RESULT(targetPlayer.getName(), S_BUDDY_RESULT.TARGET_ALREADY_FRIEND));
 		} else if (activePlayer.getFriendList().isFull()) {
-			sendPacket(S_MESSAGE_CODE.STR_BUDDYLIST_LIST_FULL);
+			sendPacket(SM_SYSTEM_MESSAGE.STR_BUDDYLIST_LIST_FULL);
 		} else if (activePlayer.getCommonData().getRace() != targetPlayer.getCommonData().getRace()) {
 			sendPacket(new S_BUDDY_RESULT(targetPlayer.getName(), S_BUDDY_RESULT.TARGET_NOT_FOUND));
 		} else if (targetPlayer.getFriendList().isFull()) {
@@ -74,7 +74,7 @@ public class C_ADD_BUDDY extends AionClientPacket
 		} else if (activePlayer.getBlockList().contains(targetPlayer.getObjectId())) {
 			sendPacket(new S_BUDDY_RESULT(targetPlayer.getName(), S_BUDDY_RESULT.TARGET_BLOCKED));
 		} else if (targetPlayer.getBlockList().contains(activePlayer.getObjectId())) {
-			sendPacket(S_MESSAGE_CODE.STR_YOU_EXCLUDED(targetName));
+			sendPacket(SM_SYSTEM_MESSAGE.STR_YOU_EXCLUDED(targetName));
 		} else // Send request
 		{
 			RequestResponseHandler responseHandler = new RequestResponseHandler(activePlayer)
@@ -105,10 +105,10 @@ public class C_ADD_BUDDY extends AionClientPacket
 					S_ASK.STR_BUDDYLIST_ADD_BUDDY_REQUEST, responseHandler);
 			// If the player is busy and could not be asked
 			if (!requested) {
-				sendPacket(S_MESSAGE_CODE.STR_BUDDYLIST_BUSY);
+				sendPacket(SM_SYSTEM_MESSAGE.STR_BUDDYLIST_BUSY);
 			} else {
 				if (targetPlayer.getPlayerSettings().isInDeniedStatus(DeniedStatus.FRIEND)) {
-					sendPacket(S_MESSAGE_CODE.STR_MSG_REJECTED_FRIEND(targetPlayer.getName()));
+					sendPacket(SM_SYSTEM_MESSAGE.STR_MSG_REJECTED_FRIEND(targetPlayer.getName()));
 					return;
 				}
 				// Send question packet to buddy

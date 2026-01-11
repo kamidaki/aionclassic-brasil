@@ -18,7 +18,6 @@ package com.aionemu.gameserver.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import javolution.util.FastMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +34,8 @@ import com.aionemu.gameserver.model.siege.SiegeLocation;
 import com.aionemu.gameserver.model.siege.SiegeShield;
 import com.aionemu.gameserver.model.templates.shield.ShieldTemplate;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
+
+import javolution.util.FastMap;
 
 /**
  * @author xavier

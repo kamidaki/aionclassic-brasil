@@ -20,7 +20,7 @@ import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.Summon;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.skillengine.model.DispelCategoryType;
 import com.aionemu.gameserver.skillengine.model.Skill;
 import com.aionemu.gameserver.utils.PacketSendUtility;
@@ -65,7 +65,7 @@ public class FirstTargetProperty
 					}
 				} if (changeTargetToMe) {
 					if (skill.getEffector() instanceof Player) {
-						PacketSendUtility.sendPacket((Player) skill.getEffector(), S_MESSAGE_CODE.STR_SKILL_AUTO_CHANGE_TARGET_TO_MY);
+						PacketSendUtility.sendPacket((Player) skill.getEffector(), SM_SYSTEM_MESSAGE.STR_SKILL_AUTO_CHANGE_TARGET_TO_MY);
 					}
 					skill.setFirstTarget(skill.getEffector());
 				}
@@ -79,7 +79,7 @@ public class FirstTargetProperty
 							}
 							TargetRelationAttribute relation = skill.getSkillTemplate().getProperties().getTargetRelation();
 							if (relation != TargetRelationAttribute.ALL) {
-								PacketSendUtility.sendPacket((Player) skill.getEffector(), S_MESSAGE_CODE.STR_SKILL_TARGET_IS_NOT_VALID);
+								PacketSendUtility.sendPacket((Player) skill.getEffector(), SM_SYSTEM_MESSAGE.STR_SKILL_TARGET_IS_NOT_VALID);
 								return false;
 							}
 						}

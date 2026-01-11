@@ -17,11 +17,11 @@
 
 package com.aionemu.gameserver.network.loginserver.clientpackets;
 
+import java.sql.Timestamp;
+
 import com.aionemu.gameserver.model.account.AccountTime;
 import com.aionemu.gameserver.network.loginserver.LoginServer;
 import com.aionemu.gameserver.network.loginserver.LsClientPacket;
-
-import java.sql.Timestamp;
 
 /**
  * In this packet LoginServer is answering on GameServer request about valid authentication data and also sends account

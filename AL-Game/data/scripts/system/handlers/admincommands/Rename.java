@@ -1,5 +1,7 @@
 package admincommands;
 
+import java.util.Iterator;
+
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.dao.OldNamesDAO;
 import com.aionemu.gameserver.dao.PlayerDAO;
@@ -7,17 +9,15 @@ import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Friend;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.PlayerCommonData;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_GUILD_MEMBER_INFO;
 import com.aionemu.gameserver.network.aion.serverpackets.S_CUSTOM_ANIM;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_PUT_USER;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_INFO;
 import com.aionemu.gameserver.services.NameRestrictionService;
 import com.aionemu.gameserver.services.player.PlayerService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.Util;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
-
-import java.util.Iterator;
 
 /**
  * @author xTz
@@ -59,7 +59,7 @@ public class Rename extends AdminCommand {
 			recipientCommonData.setName(rename);
 			PlayerDAO.storePlayerName(recipientCommonData);
 			if (recipientCommonData.isOnline()) {
-				PacketSendUtility.sendPacket(player, new S_PUT_USER(player, false));
+				PacketSendUtility.sendPacket(player, new SM_PLAYER_INFO(player, false));
 				PacketSendUtility.sendPacket(player, new S_CUSTOM_ANIM(player.getObjectId(), player.getMotions().getActiveMotions()));
 				sendPacket(admin, player, rename, recipient);
 			}
@@ -83,7 +83,7 @@ public class Rename extends AdminCommand {
 				if (!CustomConfig.OLD_NAMES_COMMAND_DISABLED)
 					OldNamesDAO.insertNames(player.getObjectId(), player.getName(), rename);
 				player.getCommonData().setName(rename);
-				PacketSendUtility.sendPacket(player, new S_PUT_USER(player, false));
+				PacketSendUtility.sendPacket(player, new SM_PLAYER_INFO(player, false));
 				PlayerDAO.storePlayerName(player.getCommonData());
 			}
 			else
@@ -96,15 +96,15 @@ public class Rename extends AdminCommand {
 
 	private static boolean check(Player admin, String rename) {
 		if (!NameRestrictionService.isValidName(rename)) {
-			PacketSendUtility.sendPacket(admin, new S_MESSAGE_CODE(1400151));
+			PacketSendUtility.sendPacket(admin, new SM_SYSTEM_MESSAGE(1400151));
 			return false;
 		}
 		if (!PlayerService.isFreeName(rename)) {
-			PacketSendUtility.sendPacket(admin, new S_MESSAGE_CODE(1400155));
+			PacketSendUtility.sendPacket(admin, new SM_SYSTEM_MESSAGE(1400155));
 			return false;
 		}
 		if (!CustomConfig.OLD_NAMES_COMMAND_DISABLED && PlayerService.isOldName(rename)) {
-			PacketSendUtility.sendPacket(admin, new S_MESSAGE_CODE(1400155));
+			PacketSendUtility.sendPacket(admin, new SM_SYSTEM_MESSAGE(1400155));
 			return false;
 		}
 		return true;
@@ -116,7 +116,7 @@ public class Rename extends AdminCommand {
 		while (knownFriends.hasNext()) {
 			Friend nextObject = knownFriends.next();
 			if (nextObject.getPlayer() != null && nextObject.getPlayer().isOnline()) {
-				PacketSendUtility.sendPacket(nextObject.getPlayer(), new S_PUT_USER(player, false));
+				PacketSendUtility.sendPacket(nextObject.getPlayer(), new SM_PLAYER_INFO(player, false));
 			}
 		}
 

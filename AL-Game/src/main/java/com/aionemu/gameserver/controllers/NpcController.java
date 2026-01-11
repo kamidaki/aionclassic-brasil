@@ -1,16 +1,26 @@
 package com.aionemu.gameserver.controllers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Future;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.ai2.event.AIEventType;
 import com.aionemu.gameserver.ai2.poll.AIQuestion;
-
 import com.aionemu.gameserver.configs.main.GroupConfig;
-
 import com.aionemu.gameserver.controllers.attack.AggroInfo;
 import com.aionemu.gameserver.controllers.attack.AggroList;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.TaskId;
-import com.aionemu.gameserver.model.gameobjects.*;
+import com.aionemu.gameserver.model.gameobjects.AionObject;
+import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.model.gameobjects.Summon;
+import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.RewardType;
 import com.aionemu.gameserver.model.gameobjects.siege.SiegeNpc;
@@ -20,11 +30,11 @@ import com.aionemu.gameserver.model.team2.alliance.PlayerAlliance;
 import com.aionemu.gameserver.model.team2.common.service.PlayerTeamDistributionService;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.LOG;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.TYPE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
-import com.aionemu.gameserver.network.aion.serverpackets.S_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.LOG;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.TYPE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.services.DialogService;
@@ -39,12 +49,6 @@ import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.stats.StatFunctions;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.concurrent.Future;
 
 public class NpcController extends CreatureController<Npc>
 {
@@ -123,7 +127,7 @@ public class NpcController extends CreatureController<Npc>
 		if (owner.getSpawn().hasPool()) {
 			owner.getSpawn().setUse(false);
 		}
-		PacketSendUtility.broadcastPacket(owner, new S_ACTION(owner, EmotionType.DIE, 0, owner.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()));
+		PacketSendUtility.broadcastPacket(owner, new SM_EMOTION(owner, EmotionType.DIE, 0, owner.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()));
 		try {
 			if (owner.getAi2().poll(AIQuestion.SHOULD_REWARD)) {
 				this.doReward();
@@ -155,7 +159,7 @@ public class NpcController extends CreatureController<Npc>
 		if (owner.getSpawn().hasPool()) {
 			owner.getSpawn().setUse(false);
 		}
-		PacketSendUtility.broadcastPacket(owner, new S_ACTION(owner, EmotionType.DIE, 0, owner.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()));
+		PacketSendUtility.broadcastPacket(owner, new SM_EMOTION(owner, EmotionType.DIE, 0, owner.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()));
 		try {
 			if (owner.getAi2().poll(AIQuestion.SHOULD_REWARD)) {
 				this.doReward();
@@ -229,7 +233,7 @@ public class NpcController extends CreatureController<Npc>
 					player.getCommonData().addDp(rewardDp);
 					if (rewardAp >= 1) {
 						AbyssPointsService.addAp(player, getOwner(), (int) rewardAp);
-						PacketSendUtility.sendPacket(player, new S_STATUS(player));
+						PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
 					} if (attacker.equals(winner)) {
 						DropRegistrationService.getInstance().registerDrop(getOwner(), player, player.getLevel(), null);
 					}
@@ -238,7 +242,7 @@ public class NpcController extends CreatureController<Npc>
 					if (getOwner().getLevel() >= 10) {
 						repose = (long) ((rewardXp / 100f) * 40);
 						player.getCommonData().addReposteEnergy(-repose);
-						PacketSendUtility.sendPacket(player, new S_STATUS(player));
+						PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
 					}
 				}
 			}
@@ -295,7 +299,7 @@ public class NpcController extends CreatureController<Npc>
 		} else {
 			npc.getPosition().getWorld().getWorldMap(npc.getWorldId()).getWorldHandler().onAttack(npc);
 		}
-		PacketSendUtility.broadcastPacket(npc, new S_HIT_POINT_OTHER(npc, actingCreature, type, skillId, damage, log));
+		PacketSendUtility.broadcastPacket(npc, new SM_ATTACK_STATUS(npc, actingCreature, type, skillId, damage, log));
 	}
 
 	@Override
@@ -347,7 +351,7 @@ public class NpcController extends CreatureController<Npc>
 						int baseApReward = StatFunctions.calculatePvEApGained(member, getOwner());
 						int apRewardPerMember = Math.round(baseApReward * percentage / players.size());
 						if (apRewardPerMember > 0) {
-							PacketSendUtility.sendPacket(member, new S_STATUS(member));
+							PacketSendUtility.sendPacket(member, new SM_STATS_INFO(member));
 							AbyssPointsService.addAp(member, getOwner(), apRewardPerMember);
 						}
 					}
@@ -364,7 +368,7 @@ public class NpcController extends CreatureController<Npc>
 						int baseApReward = StatFunctions.calculatePvEApGained(member, getOwner());
 						int apRewardPerMember = Math.round(baseApReward * percentage / players.size());
 						if (apRewardPerMember > 0) {
-							PacketSendUtility.sendPacket(member, new S_STATUS(member));
+							PacketSendUtility.sendPacket(member, new SM_STATS_INFO(member));
 							AbyssPointsService.addAp(member, getOwner(), apRewardPerMember);
 						}
 					}

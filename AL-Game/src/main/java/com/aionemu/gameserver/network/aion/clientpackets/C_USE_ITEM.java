@@ -1,22 +1,23 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import java.util.ArrayList;
+
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
-import com.aionemu.gameserver.model.templates.item.actions.*;
+import com.aionemu.gameserver.model.templates.item.actions.AbstractItemAction;
+import com.aionemu.gameserver.model.templates.item.actions.ItemActions;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.handlers.HandlerResult;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
 import com.aionemu.gameserver.services.player.BattlePassService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.ArrayList;
 
 public class C_USE_ITEM extends AionClientPacket
 {
@@ -69,23 +70,23 @@ public class C_USE_ITEM extends AionClientPacket
 			targetItem = player.getEquipment().getEquippedItemByObjId(targetItemId);
 		}
 		if (item.getItemTemplate().getTemplateId() == 165000001 && targetItem.getItemTemplate().canExtract()) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ITEM_COLOR_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ITEM_COLOR_ERROR);
 			return;
 		}
 		if (!RestrictionsManager.canUseItem(player, item)) {
 			return;
 		}
 		if (item.getItemTemplate().getRace() != Race.PC_ALL && item.getItemTemplate().getRace() != player.getRace()) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_USE_ITEM_INVALID_RACE);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ITEM_INVALID_RACE);
 			return;
 		}
 		int requiredLevel = item.getItemTemplate().getRequiredLevel(player.getCommonData().getPlayerClass());
 		if (requiredLevel == -1) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_USE_ITEM_INVALID_CLASS);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ITEM_INVALID_CLASS);
 			return;
 		}
 		if (requiredLevel > player.getLevel()) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_USE_ITEM_TOO_LOW_LEVEL_MUST_BE_THIS_LEVEL(item.getNameId(), requiredLevel));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ITEM_TOO_LOW_LEVEL_MUST_BE_THIS_LEVEL(item.getNameId(), requiredLevel));
 			return;
 		}
 		HandlerResult result = QuestEngine.getInstance().onItemUseEvent(new QuestEnv(null, player, 0, 0), item);
@@ -103,13 +104,13 @@ public class C_USE_ITEM extends AionClientPacket
 			}
 		}
 		if (actions.size() == 0) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ITEM_IS_NOT_USABLE);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ITEM_IS_NOT_USABLE);
 			return;
 		}
 		// Store Item CD in server Player variable.
 		// Prevents potion spamming, and relogging to use kisks/aether jelly/long CD items.
 		if (player.isItemUseDisabled(item.getItemTemplate().getUseLimits())) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ITEM_CANT_USE_UNTIL_DELAY_TIME);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ITEM_CANT_USE_UNTIL_DELAY_TIME);
 			return;
 		}
 		int useDelay = player.getItemCooldown(item.getItemTemplate());

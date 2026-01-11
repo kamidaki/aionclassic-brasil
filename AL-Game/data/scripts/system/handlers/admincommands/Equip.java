@@ -1,5 +1,7 @@
 package admincommands;
 
+import java.lang.reflect.Field;
+
 import com.aionemu.gameserver.configs.administration.CommandsConfig;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.Item;
@@ -8,20 +10,16 @@ import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.items.ManaStone;
 import com.aionemu.gameserver.model.stats.listeners.ItemEquipmentListener;
-import com.aionemu.gameserver.model.templates.item.ArmorType;
 import com.aionemu.gameserver.model.templates.item.GodstoneInfo;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
 import com.aionemu.gameserver.model.templates.item.ItemType;
-import com.aionemu.gameserver.network.aion.serverpackets.S_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
 import com.aionemu.gameserver.services.item.ItemPacketService;
 import com.aionemu.gameserver.services.item.ItemSocketService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import com.aionemu.gameserver.utils.RndArray;
 import com.aionemu.gameserver.utils.Util;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 import com.aionemu.gameserver.world.World;
-
-import java.lang.reflect.Field;
 
 public class Equip extends AdminCommand
 {
@@ -122,7 +120,7 @@ public class Equip extends AdminCommand
 						counter--;
 					}
 				}
-				PacketSendUtility.sendPacket(player, new S_STATUS(player));
+				PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
 				ItemPacketService.updateItemAfterInfoChange(player, targetItem);
 				targetItem.setPersistentState(PersistentState.UPDATE_REQUIRED);
 			}
@@ -153,7 +151,7 @@ public class Equip extends AdminCommand
 				return;
 			}
 			targetItem.addGodStone(godstone);
-			PacketSendUtility.sendPacket(player, new S_STATUS(player));
+			PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
 			ItemPacketService.updateItemAfterInfoChange(player, targetItem);
 			targetItem.setPersistentState(PersistentState.UPDATE_REQUIRED);
 			if (player == admin) {

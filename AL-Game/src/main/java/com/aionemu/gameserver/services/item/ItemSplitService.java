@@ -16,20 +16,21 @@
  */
 package com.aionemu.gameserver.services.item;
 
+import static com.aionemu.gameserver.services.item.ItemPacketService.sendStorageUpdatePacket;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.items.storage.IStorage;
 import com.aionemu.gameserver.model.items.storage.StorageType;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_EVENT;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.ExchangeService;
-import com.aionemu.gameserver.services.legion.LegionService;
 import com.aionemu.gameserver.services.item.ItemPacketService.ItemUpdateType;
+import com.aionemu.gameserver.services.legion.LegionService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static com.aionemu.gameserver.services.item.ItemPacketService.sendStorageUpdatePacket;
 
 /**
  * @author ATracer
@@ -48,7 +49,7 @@ public class ItemSplitService {
         }
         if (player.isTrading()) {
             // You cannot split items in the inventory during a trade.
-            PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300713));
+            PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300713));
             return;
         }
 

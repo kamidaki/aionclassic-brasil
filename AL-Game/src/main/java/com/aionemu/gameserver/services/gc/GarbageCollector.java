@@ -1,11 +1,12 @@
 package com.aionemu.gameserver.services.gc;
 
-import com.aionemu.gameserver.configs.main.GSConfig;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import com.aionemu.gameserver.configs.main.GSConfig;
 
 public class GarbageCollector extends Thread
 {

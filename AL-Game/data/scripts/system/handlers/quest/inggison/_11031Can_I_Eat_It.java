@@ -12,16 +12,16 @@ package quest.inggison;
 
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.HandlerResult;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.services.QuestService;
 import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import com.aionemu.gameserver.services.QuestService;
 
 /****/
 /** Author Rinzler (Encom)
@@ -59,6 +59,8 @@ public class _11031Can_I_Eat_It extends QuestHandler
 					} case REFUSE_QUEST: {
 				        return closeDialogWindow(env);
 					}
+				default:
+					break;
                 }
 			}
 		} else if (qs != null && qs.getStatus() == QuestStatus.START) {
@@ -85,6 +87,8 @@ public class _11031Can_I_Eat_It extends QuestHandler
 					} case FINISH_DIALOG: {
 						return sendQuestSelectionDialog(env);
 					}
+				default:
+					break;
 				}
 			}
 		} else if (qs != null && qs.getStatus() == QuestStatus.REWARD) {
@@ -110,11 +114,11 @@ public class _11031Can_I_Eat_It extends QuestHandler
 			if (var == 2) {
 				SkillEngine.getInstance().applyEffectDirectly(2253, player, player, 30000); //Sleep.
 				///I...feel so... Zzzzzzzz...
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1122006, player.getObjectId(), 2));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1122006, player.getObjectId(), 2));
 				///Ugh... It's... My stomach... My head...!
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1122007, player.getObjectId(), 2));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1122007, player.getObjectId(), 2));
 				///Yuck, it tastes awful!
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1122008, player.getObjectId(), 2));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1122008, player.getObjectId(), 2));
                 return HandlerResult.fromBoolean(useQuestItem(env, item, 2, 2, true));
             }
         }

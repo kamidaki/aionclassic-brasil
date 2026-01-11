@@ -16,21 +16,21 @@
  */
 package com.aionemu.gameserver.controllers.effect;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ABNORMAL_STATUS;
-import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_STANCE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_STANCE;
 import com.aionemu.gameserver.skillengine.model.Effect;
 import com.aionemu.gameserver.skillengine.model.SkillTargetSlot;
 import com.aionemu.gameserver.skillengine.model.SkillTemplate;
 import com.aionemu.gameserver.taskmanager.tasks.PacketBroadcaster.BroadcastMode;
 import com.aionemu.gameserver.taskmanager.tasks.TeamEffectUpdater;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * @author ATracer
@@ -132,7 +132,7 @@ public class PlayerEffectController extends EffectController {
 		super.broadCastEffectsImp();
 		Player player = getOwner();
 		if (player.getController().isUnderStance()) {
-			PacketSendUtility.broadcastPacket(player, new S_CHANGE_STANCE(player, 1), true);
+			PacketSendUtility.broadcastPacket(player, new SM_PLAYER_STANCE(player, 1), true);
 		}
 	}
 }

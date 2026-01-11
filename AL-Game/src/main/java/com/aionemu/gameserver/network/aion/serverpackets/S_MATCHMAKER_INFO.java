@@ -1,9 +1,10 @@
 package com.aionemu.gameserver.network.aion.serverpackets;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.aionemu.gameserver.model.autogroup.AutoGroupType;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-import org.apache.commons.lang.StringUtils;
 
 public class S_MATCHMAKER_INFO extends AionServerPacket
 {

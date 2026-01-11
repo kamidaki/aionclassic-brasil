@@ -10,6 +10,8 @@
  */
 package zone;
 
+import java.io.IOException;
+
 import com.aionemu.gameserver.controllers.observer.CollisionDieActor;
 import com.aionemu.gameserver.geoEngine.GeoWorldLoader;
 import com.aionemu.gameserver.geoEngine.math.Matrix3f;
@@ -20,9 +22,8 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
 import com.aionemu.gameserver.world.zone.handler.ZoneHandler;
 import com.aionemu.gameserver.world.zone.handler.ZoneNameAnnotation;
-import javolution.util.FastMap;
 
-import java.io.IOException;
+import javolution.util.FastMap;
 
 @ZoneNameAnnotation("CORE_400010000")
 public class AbyssCore implements ZoneHandler

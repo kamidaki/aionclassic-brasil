@@ -16,19 +16,20 @@
  */
 package admincommands;
 
+import java.util.Iterator;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.assemblednpc.AssembledNpc;
 import com.aionemu.gameserver.model.assemblednpc.AssembledNpcPart;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.assemblednpc.AssembledNpcTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_CUTSCENE_NPC_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_NPC_ASSEMBLER;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 import com.aionemu.gameserver.utils.idfactory.IDFactory;
 import com.aionemu.gameserver.world.World;
-import javolution.util.FastList;
 
-import java.util.Iterator;
+import javolution.util.FastList;
 
 /**
  *
@@ -69,7 +70,7 @@ public class SpawnAssembledNpc  extends AdminCommand {
 		Player findedPlayer = null;
 		while (iter.hasNext()) {
 			findedPlayer = iter.next();
-			PacketSendUtility.sendPacket(findedPlayer, new S_CUTSCENE_NPC_INFO(npc));
+			PacketSendUtility.sendPacket(findedPlayer, new SM_NPC_ASSEMBLER(npc));
 		}
 	}
 

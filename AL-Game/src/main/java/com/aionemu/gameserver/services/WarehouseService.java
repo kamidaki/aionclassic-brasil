@@ -1,5 +1,10 @@
 package com.aionemu.gameserver.services;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Item;
@@ -8,14 +13,10 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
 import com.aionemu.gameserver.model.items.storage.StorageType;
 import com.aionemu.gameserver.model.templates.WarehouseExpandTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_LOAD_WAREHOUSE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class WarehouseService
 {
@@ -36,7 +37,7 @@ public class WarehouseService
 					@Override
 					public void acceptRequest(Creature requester, Player responder) {
 						if (player.getInventory().getKinah() < price) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300831));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300831));
 							return;
 						}
 						expand(responder);
@@ -52,14 +53,14 @@ public class WarehouseService
 				}
 			}
 		} else {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300432));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300432));
 		}
 	}
 	
 	public static void expand(Player player) {
 		if (!canExpand(player))
 			return;
-		PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300433, "8"));
+		PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300433, "8"));
 		player.setWarehouseSize(player.getWarehouseSize() + 1);
 		sendWarehouseInfo(player, false);
 	}

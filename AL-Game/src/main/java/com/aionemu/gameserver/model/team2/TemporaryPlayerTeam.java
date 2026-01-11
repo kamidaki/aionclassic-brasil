@@ -10,19 +10,19 @@
  */
 package com.aionemu.gameserver.model.team2;
 
+import java.util.Collection;
+
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.team2.common.legacy.LootGroupRules;
 import com.aionemu.gameserver.model.team2.common.legacy.LootRuleType;
 import com.aionemu.gameserver.model.team2.group.PlayerFilters;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_FUNCTIONAL_PET;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-
-import java.util.Collection;
 
 /**
  * @author ATracer
@@ -82,7 +82,7 @@ public abstract class TemporaryPlayerTeam<TM extends TeamMember<Player>> extends
         this.lootGroupRules = lootGroupRules;
         if (lootGroupRules != null && lootGroupRules.getLootRule() == LootRuleType.FREEFORALL) {
             applyOnMembers(new TeamPacketGroupSender(PlayerFilters.HAS_LOOT_PET,
-                    S_MESSAGE_CODE.STR_MSG_LOOTING_PET_MESSAGE03, new S_FUNCTIONAL_PET(13, false)));
+            		SM_SYSTEM_MESSAGE.STR_MSG_LOOTING_PET_MESSAGE03, new S_FUNCTIONAL_PET(13, false)));
         }
     }
 

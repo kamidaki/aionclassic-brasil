@@ -2,7 +2,7 @@ package com.aionemu.gameserver.questEngine.handlers.template;
 
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.skill.PlayerSkillEntry;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ADD_SKILL;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_LIST;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
@@ -120,8 +120,8 @@ public class CraftingRewards extends QuestHandler
 		if (qs.getStatus() == QuestStatus.REWARD && movieId == questMovie && canLearn(player)) {
 			player.getSkillList().addSkill(player, skillId, levelReward);
 			player.getRecipeList().autoLearnRecipe(player, skillId, levelReward);
-			PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player));
-			PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player.getSkillList().getSkillEntry(skillId), 1330064, false));
+			PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player));
+			PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player.getSkillList().getSkillEntry(skillId), 1330064, false));
 			return true;
 		}
 		return false;

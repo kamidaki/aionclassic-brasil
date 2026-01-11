@@ -1,8 +1,10 @@
 package com.aionemu.gameserver.model.team2.common.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.configs.main.GroupConfig;
-
 import com.aionemu.gameserver.model.gameobjects.AionObject;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -10,7 +12,7 @@ import com.aionemu.gameserver.model.gameobjects.player.RewardType;
 import com.aionemu.gameserver.model.gameobjects.player.XPCape;
 import com.aionemu.gameserver.model.team2.TemporaryPlayerTeam;
 import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
-import com.aionemu.gameserver.network.aion.serverpackets.S_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.services.abyss.AbyssPointsService;
@@ -19,11 +21,7 @@ import com.aionemu.gameserver.services.player.BattlePassService;
 import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.stats.StatFunctions;
-
 import com.google.common.base.Predicate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PlayerTeamDistributionService
 {
@@ -73,12 +71,12 @@ public class PlayerTeamDistributionService
             if (owner.getLevel() >= 10) {
                 repose = (long) ((rewardXp / 100f) * 40);
                 member.getCommonData().addReposteEnergy(-repose);
-                PacketSendUtility.sendPacket(member, new S_STATUS(member));
+                PacketSendUtility.sendPacket(member, new SM_STATS_INFO(member));
             } if (!(filteredStats.mentorCount > 0 && CustomConfig.MENTOR_GROUP_AP)) {
                 int ap = (int) rewardAp / filteredStats.players.size();
                 if (ap >= 1) {
                     AbyssPointsService.addAp(member, owner, ap);
-                    PacketSendUtility.sendPacket(member, new S_STATUS(member));
+                    PacketSendUtility.sendPacket(member, new SM_STATS_INFO(member));
                 }
             }
 			//Daeva Pass.

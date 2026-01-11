@@ -10,6 +10,13 @@
  */
 package com.aionemu.gameserver.model.team2.group;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.callbacks.metadata.GlobalCallback;
 import com.aionemu.gameserver.configs.main.GroupConfig;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -22,7 +29,17 @@ import com.aionemu.gameserver.model.team2.common.legacy.LootGroupRules;
 import com.aionemu.gameserver.model.team2.group.callback.AddPlayerToGroupCallback;
 import com.aionemu.gameserver.model.team2.group.callback.PlayerGroupCreateCallback;
 import com.aionemu.gameserver.model.team2.group.callback.PlayerGroupDisbandCallback;
-import com.aionemu.gameserver.model.team2.group.events.*;
+import com.aionemu.gameserver.model.team2.group.events.ChangeGroupLeaderEvent;
+import com.aionemu.gameserver.model.team2.group.events.ChangeGroupLootRulesEvent;
+import com.aionemu.gameserver.model.team2.group.events.GroupDisbandEvent;
+import com.aionemu.gameserver.model.team2.group.events.PlayerConnectedEvent;
+import com.aionemu.gameserver.model.team2.group.events.PlayerDisconnectedEvent;
+import com.aionemu.gameserver.model.team2.group.events.PlayerEnteredEvent;
+import com.aionemu.gameserver.model.team2.group.events.PlayerGroupInvite;
+import com.aionemu.gameserver.model.team2.group.events.PlayerGroupLeavedEvent;
+import com.aionemu.gameserver.model.team2.group.events.PlayerGroupStopMentoringEvent;
+import com.aionemu.gameserver.model.team2.group.events.PlayerGroupUpdateEvent;
+import com.aionemu.gameserver.model.team2.group.events.PlayerStartMentoringEvent;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
 import com.aionemu.gameserver.utils.PacketSendUtility;
@@ -30,13 +47,8 @@ import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.utils.TimeUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import javolution.util.FastMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
+import javolution.util.FastMap;
 
 public class PlayerGroupService
 {

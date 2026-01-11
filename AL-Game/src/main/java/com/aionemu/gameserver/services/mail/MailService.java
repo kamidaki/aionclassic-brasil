@@ -16,6 +16,14 @@
  */
 package com.aionemu.gameserver.services.mail;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.administration.AdminConfig;
 import com.aionemu.gameserver.dao.InventoryDAO;
 import com.aionemu.gameserver.dao.MailDAO;
@@ -29,9 +37,9 @@ import com.aionemu.gameserver.model.gameobjects.player.PlayerCommonData;
 import com.aionemu.gameserver.model.items.storage.Storage;
 import com.aionemu.gameserver.model.items.storage.StorageType;
 import com.aionemu.gameserver.model.templates.mail.MailMessage;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_MAIL;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_REMOVE_INVENTORY;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_DELETE_ITEM;
 import com.aionemu.gameserver.services.AdminService;
 import com.aionemu.gameserver.services.item.ItemFactory;
 import com.aionemu.gameserver.services.player.PlayerMailboxState;
@@ -40,13 +48,6 @@ import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.utils.audit.AuditLogger;
 import com.aionemu.gameserver.utils.idfactory.IDFactory;
 import com.aionemu.gameserver.world.World;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author kosyachok
@@ -160,7 +161,7 @@ public class MailService {
 			// reuse item in case of full decrease of count
 			if (senderItem.getItemCount() == attachedItemCount) {
 				senderInventory.remove(senderItem);
-				PacketSendUtility.sendPacket(sender, new S_REMOVE_INVENTORY(attachedItemObjId));
+				PacketSendUtility.sendPacket(sender, new SM_DELETE_ITEM(attachedItemObjId));
 				attachedItem = senderItem;
 			}
 			else if (senderItem.getItemCount() > attachedItemCount) {
@@ -230,7 +231,7 @@ public class MailService {
 			}
 
 			if (letterType == LetterType.EXPRESS)
-				PacketSendUtility.sendPacket(recipient, S_MESSAGE_CODE.STR_POSTMAN_NOTIFY);
+				PacketSendUtility.sendPacket(recipient, SM_SYSTEM_MESSAGE.STR_POSTMAN_NOTIFY);
 		}
 
 		if (attachedItem != null) {
@@ -280,7 +281,7 @@ public class MailService {
 				if (attachedItem == null)
 					return;
 				if (player.getInventory().isFull()) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_FULL_INVENTORY);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_FULL_INVENTORY);
 					return;
 				}
 				player.getInventory().add(attachedItem);

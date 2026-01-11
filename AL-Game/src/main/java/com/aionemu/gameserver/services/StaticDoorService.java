@@ -1,16 +1,16 @@
 package com.aionemu.gameserver.services;
 
-import com.aionemu.gameserver.dataholders.DataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.dataholders.DataManager;
+import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.gameobjects.StaticDoor;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.instance.InstanceService;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import org.slf4j.*;
 
 public class StaticDoorService
 {
@@ -47,7 +47,7 @@ public class StaticDoorService
 			return false;
 		} if (!player.getInventory().decreaseByItemId(keyId, 1)) {
 			///You need %0 to open the door.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_OPEN_DOOR_NEED_NAMED_KEY_ITEM(new DescriptionId(itemTemplate.getNameId())));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_OPEN_DOOR_NEED_NAMED_KEY_ITEM(new DescriptionId(itemTemplate.getNameId())));
 			return false;
 		}
 		return true;

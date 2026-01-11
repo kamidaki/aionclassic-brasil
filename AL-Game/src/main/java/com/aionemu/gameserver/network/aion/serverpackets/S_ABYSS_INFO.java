@@ -1,5 +1,10 @@
 package com.aionemu.gameserver.network.aion.serverpackets;
 
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.main.SiegeConfig;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.siege.SiegeLocation;
@@ -7,15 +12,10 @@ import com.aionemu.gameserver.model.team.legion.LegionEmblem;
 import com.aionemu.gameserver.model.team.legion.LegionEmblemType;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
-import com.aionemu.gameserver.services.legion.LegionService;
 import com.aionemu.gameserver.services.SiegeService;
+import com.aionemu.gameserver.services.legion.LegionService;
 
 import javolution.util.FastMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 public class S_ABYSS_INFO extends AionServerPacket
 {

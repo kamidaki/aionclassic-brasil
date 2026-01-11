@@ -21,9 +21,9 @@ import com.aionemu.gameserver.model.gameobjects.LetterType;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.mail.MailService;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 
 public class C_MAIL_WRITE extends AionClientPacket
 {
@@ -76,7 +76,7 @@ public class C_MAIL_WRITE extends AionClientPacket
 		}
 		if (item.getItemTemplate().isMedal() || item.getItemTemplate().isAbyssItem()) {
 			//You cannot mail items that are not tradable.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MAIL_SEND_ITEM_CAN_NOT_BE_EXCHANGED);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MAIL_SEND_ITEM_CAN_NOT_BE_EXCHANGED);
 			return;
 		}
 		if (!player.isTrading() && kinahCount < 1000000000 && kinahCount > -1 && itemCount > -2) {

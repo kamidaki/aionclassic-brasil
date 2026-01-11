@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.skillengine.model.Skill;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -37,7 +37,7 @@ public class MpUseAction extends Action
 			valueWithDelta = valueWithDelta - ((valueWithDelta / ((100 / changeMpPercent))));
 		} if (effector instanceof Player) {
 			if (currentMp <= 0 || currentMp < valueWithDelta) {
-				PacketSendUtility.sendPacket((Player) effector, S_MESSAGE_CODE.STR_SKILL_NOT_ENOUGH_MP);
+				PacketSendUtility.sendPacket((Player) effector, SM_SYSTEM_MESSAGE.STR_SKILL_NOT_ENOUGH_MP);
 				return;
 			}
 		}

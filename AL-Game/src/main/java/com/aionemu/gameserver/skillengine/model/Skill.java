@@ -10,18 +10,25 @@
  */
 package com.aionemu.gameserver.skillengine.model;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.Future;
 
-import com.aionemu.gameserver.ai2.NpcAI2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.AISubState;
+import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.handler.ShoutEventHandler;
 import com.aionemu.gameserver.ai2.manager.SkillAttackManager;
 import com.aionemu.gameserver.ai2.poll.AIQuestion;
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.configs.main.GeoDataConfig;
 import com.aionemu.gameserver.configs.main.SecurityConfig;
-import com.aionemu.gameserver.controllers.attack.AttackStatus;
 import com.aionemu.gameserver.controllers.PlayerController;
+import com.aionemu.gameserver.controllers.attack.AttackStatus;
 import com.aionemu.gameserver.controllers.observer.StartMovingListener;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.DescriptionId;
@@ -29,11 +36,17 @@ import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
-import com.aionemu.gameserver.model.gameobjects.player.*;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.stats.calc.Stat2;
 import com.aionemu.gameserver.model.stats.container.StatEnum;
-import com.aionemu.gameserver.model.templates.item.*;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.model.templates.item.ItemTemplate;
+import com.aionemu.gameserver.model.templates.item.WeaponType;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ASK_QUIT_RESULT;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_CASTSPELL_RESULT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_CASTSPELL;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
@@ -51,12 +64,6 @@ import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.geo.GeoService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.concurrent.Future;
 
 public class Skill
 {
@@ -138,7 +145,7 @@ public class Skill
 			Player player = (Player) effector;
 			if (this.skillTemplate.isDeityAvatar() && player.isTransformed()) {
 				//You cannot use this skill while transformed.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_SKILL_CAN_NOT_CAST_IN_SHAPECHANGE, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_SKILL_CAN_NOT_CAST_IN_SHAPECHANGE, 0);
 				return false;
 			}
 		} if (!preCastCheck()) {
@@ -151,7 +158,7 @@ public class Skill
                     return false;
                 }
             } if (skillMethod == SkillMethod.ITEM && duration > 0 && player.getMoveController().isInMove()) {
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_ITEM_CANCELED(new DescriptionId(getItemTemplate().getNameId())));
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_ITEM_CANCELED(new DescriptionId(getItemTemplate().getNameId())));
                 return false;
             }
         } if (!validateEffectedList()) {
@@ -372,7 +379,7 @@ public class Skill
 		if (skillMethod == SkillMethod.CAST) {
             switch (targetType) {
                 case 0:
-                    PacketSendUtility.broadcastPacketAndReceive(effector, new S_USE_SKILL(effector.getObjectId(), skillTemplate.getSkillId(), skillLevel, targetType, targetObjId, this.duration));
+                    PacketSendUtility.broadcastPacketAndReceive(effector, new SM_CASTSPELL(effector.getObjectId(), skillTemplate.getSkillId(), skillLevel, targetType, targetObjId, this.duration));
                     if (effector instanceof Npc && firstTarget instanceof Player) {
                         NpcAI2 ai = (NpcAI2) effector.getAi2();
                         if (ai.poll(AIQuestion.CAN_SHOUT)) {
@@ -381,10 +388,10 @@ public class Skill
                     }
                 break;
                 case 3:
-                    PacketSendUtility.broadcastPacketAndReceive(effector, new S_USE_SKILL(effector.getObjectId(), skillTemplate.getSkillId(), skillLevel, targetType, 0, this.duration));
+                    PacketSendUtility.broadcastPacketAndReceive(effector, new SM_CASTSPELL(effector.getObjectId(), skillTemplate.getSkillId(), skillLevel, targetType, 0, this.duration));
                 break;
                 case 1:
-                    PacketSendUtility.broadcastPacketAndReceive(effector, new S_USE_SKILL(effector.getObjectId(), skillTemplate.getSkillId(), skillLevel, targetType, x, y, z, this.duration));
+                    PacketSendUtility.broadcastPacketAndReceive(effector, new SM_CASTSPELL(effector.getObjectId(), skillTemplate.getSkillId(), skillLevel, targetType, x, y, z, this.duration));
                 break;
             }
         } else if (skillMethod == SkillMethod.ITEM && duration > 0) {
@@ -532,16 +539,16 @@ public class Skill
 		if ((this.skillMethod == SkillMethod.CAST)) {
             switch (this.targetType) {
                 case 0:
-                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new S_SKILL_SUCCEDED(this, effects, this.serverTime, this.chainSuccess, spellStatus, dashStatus));
-                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new S_HIT_POINT_OTHER(this.firstTarget, this.effector, S_HIT_POINT_OTHER.TYPE.REGULAR, 0, 0, S_HIT_POINT_OTHER.LOG.ATTACK));
+                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new SM_CASTSPELL_RESULT(this, effects, this.serverTime, this.chainSuccess, spellStatus, dashStatus));
+                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new SM_ATTACK_STATUS(this.firstTarget, this.effector, SM_ATTACK_STATUS.TYPE.REGULAR, 0, 0, SM_ATTACK_STATUS.LOG.ATTACK));
                 break;
                 case 3:
-                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new S_SKILL_SUCCEDED(this, effects, this.serverTime, this.chainSuccess, spellStatus, dashStatus));
-                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new S_HIT_POINT_OTHER(this.firstTarget, this.effector, S_HIT_POINT_OTHER.TYPE.REGULAR, 0, 0, S_HIT_POINT_OTHER.LOG.ATTACK));
+                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new SM_CASTSPELL_RESULT(this, effects, this.serverTime, this.chainSuccess, spellStatus, dashStatus));
+                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new SM_ATTACK_STATUS(this.firstTarget, this.effector, SM_ATTACK_STATUS.TYPE.REGULAR, 0, 0, SM_ATTACK_STATUS.LOG.ATTACK));
                 break;
                 case 1:
-                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new S_SKILL_SUCCEDED(this, effects, this.serverTime, this.chainSuccess, spellStatus, dashStatus, this.targetType));
-                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new S_HIT_POINT_OTHER(this.firstTarget, this.effector, S_HIT_POINT_OTHER.TYPE.REGULAR, 0, 0, S_HIT_POINT_OTHER.LOG.ATTACK));
+                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new SM_CASTSPELL_RESULT(this, effects, this.serverTime, this.chainSuccess, spellStatus, dashStatus, this.targetType));
+                    PacketSendUtility.broadcastPacketAndReceive(this.effector, new SM_ATTACK_STATUS(this.firstTarget, this.effector, SM_ATTACK_STATUS.TYPE.REGULAR, 0, 0, SM_ATTACK_STATUS.LOG.ATTACK));
 				break;
             }
         } else if (this.skillMethod == SkillMethod.ITEM) {

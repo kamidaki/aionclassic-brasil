@@ -11,16 +11,16 @@
 package quest.kromedes_trial;
 
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.utils.PacketSendUtility;
-import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.services.instance.InstanceService;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
+import com.aionemu.gameserver.skillengine.SkillEngine;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.zone.ZoneName;
 
@@ -85,7 +85,7 @@ public class _18602Nightmare_In_Shining_Armor extends QuestHandler
 					} case STEP_TO_3: {
                         ///Oh, Robstin.... I'll avenge you with blood!
 						SkillEngine.getInstance().applyEffectDirectly(CROMEDE_BUFF5_NR, player, player, 3600000);
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111307, player.getObjectId(), 2));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111307, player.getObjectId(), 2));
 						changeQuestStep(env, 2, 3, false);
 						return closeDialogWindow(env);
 					}

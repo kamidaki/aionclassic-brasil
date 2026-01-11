@@ -10,7 +10,7 @@ import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.items.storage.Storage;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.skillengine.model.Skill;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -31,7 +31,7 @@ public class ItemUseAction extends Action
 			Player player = (Player) skill.getEffector();
 			Storage inventory = player.getInventory();
 			if (!inventory.decreaseByItemId(itemid, count)) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_SKILL_NOT_ENOUGH_ITEM(new DescriptionId(item.getNameId())));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_SKILL_NOT_ENOUGH_ITEM(new DescriptionId(item.getNameId())));
 				return;
 			}
 		}

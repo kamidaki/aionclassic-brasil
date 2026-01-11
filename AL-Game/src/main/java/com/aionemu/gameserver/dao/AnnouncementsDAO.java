@@ -19,11 +19,11 @@
  */
 package com.aionemu.gameserver.dao;
 
-import com.aionemu.commons.database.DB;
-import com.aionemu.gameserver.model.Announcement;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import com.aionemu.commons.database.DB;
+import com.aionemu.gameserver.model.Announcement;
 
 /**
  * DAO that manages Announcements

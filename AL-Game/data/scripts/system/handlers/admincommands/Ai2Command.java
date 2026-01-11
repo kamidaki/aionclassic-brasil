@@ -1,6 +1,14 @@
 package admincommands;
 
-import com.aionemu.gameserver.ai2.*;
+import java.util.Iterator;
+
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.gameserver.ai2.AI2Engine;
+import com.aionemu.gameserver.ai2.AIState;
+import com.aionemu.gameserver.ai2.AISubState;
+import com.aionemu.gameserver.ai2.AbstractAI;
+import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.event.AIEventLog;
 import com.aionemu.gameserver.ai2.event.AIEventType;
 import com.aionemu.gameserver.configs.main.AIConfig;
@@ -11,9 +19,6 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 import com.aionemu.gameserver.world.World;
-import org.slf4j.LoggerFactory;
-
-import java.util.Iterator;
 
 /**
  * @author ATracer

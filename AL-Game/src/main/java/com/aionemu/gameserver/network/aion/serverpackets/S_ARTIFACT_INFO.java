@@ -16,16 +16,13 @@
  */
 package com.aionemu.gameserver.network.aion.serverpackets;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.aionemu.gameserver.model.siege.ArtifactLocation;
-import com.aionemu.gameserver.model.siege.SiegeLocation;
-import com.aionemu.gameserver.model.siege.SiegeType;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
 import com.aionemu.gameserver.services.SiegeService;
-import javolution.util.FastList;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class S_ARTIFACT_INFO extends AionServerPacket
 {

@@ -1,20 +1,22 @@
 package com.aionemu.gameserver.model.stats.container;
 
-import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.LOG;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.TYPE;
-import com.aionemu.gameserver.services.LifeStatsRestoreService;
-import com.aionemu.gameserver.skillengine.effect.AbnormalState;
-import com.aionemu.gameserver.utils.PacketSendUtility;
+import java.util.concurrent.Future;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import java.util.concurrent.Future;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.LOG;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.TYPE;
+import com.aionemu.gameserver.services.LifeStatsRestoreService;
+import com.aionemu.gameserver.skillengine.effect.AbnormalState;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 
 public abstract class CreatureLifeStats<T extends Creature>
 {
@@ -100,11 +102,11 @@ public abstract class CreatureLifeStats<T extends Creature>
 		return currentMp;
 	}
 	
-	protected void sendAttackStatusPacketUpdate(S_HIT_POINT_OTHER.TYPE type, int value, int skillId, S_HIT_POINT_OTHER.LOG log) {
+	protected void sendAttackStatusPacketUpdate(SM_ATTACK_STATUS.TYPE type, int value, int skillId, SM_ATTACK_STATUS.LOG log) {
         if (this.owner == null) {
             return;
         }
-        PacketSendUtility.broadcastPacketAndReceive(this.owner, new S_HIT_POINT_OTHER(this.owner, this.owner, type, skillId, value, log));
+        PacketSendUtility.broadcastPacketAndReceive(this.owner, new SM_ATTACK_STATUS(this.owner, this.owner, type, skillId, value, log));
     }
 	
 	public int increaseHp(TYPE type, int value) {

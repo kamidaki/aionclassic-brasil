@@ -1,10 +1,11 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class C_ANSWER extends AionClientPacket
 {

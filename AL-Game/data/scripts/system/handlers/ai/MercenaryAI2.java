@@ -10,17 +10,20 @@
  */
 package ai;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.aionemu.gameserver.ai2.AIName;
-import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.controllers.SummonController;
 import com.aionemu.gameserver.controllers.effect.EffectController;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.gameobjects.Summon;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_FLAG;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_MASTER;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /****/
 /** Author Rinzler (Encom)
@@ -44,7 +47,7 @@ public class MercenaryAI2 extends GeneralNpcAI2
 			PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getObjectId(), 0));
 			if (player.getSummon() != null) {
 				//You already have a spirit following you.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300072, new Object[0]));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300072, new Object[0]));
 				return true;
 			}
 			Summon summon = new Summon(getObjectId(), new SummonController(), getSpawnTemplate(), getObjectTemplate(), getObjectTemplate().getLevel(), 120);
@@ -58,7 +61,7 @@ public class MercenaryAI2 extends GeneralNpcAI2
 			PacketSendUtility.sendPacket(player, new S_CHANGE_MASTER(player, getObjectId()));
 			PacketSendUtility.sendPacket(player, new S_CHANGE_FLAG(getObjectId(), 0, 38, 0));
 			summon.setState(1);
-			PacketSendUtility.broadcastPacket(summon, new S_ACTION(summon, EmotionType.START_EMOTE2, 0, summon.getObjectId()));
+			PacketSendUtility.broadcastPacket(summon, new SM_EMOTION(summon, EmotionType.START_EMOTE2, 0, summon.getObjectId()));
 		} else if (dialogId == 1011) {
 			PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(getObjectId(), 1011));
         }

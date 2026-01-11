@@ -16,6 +16,9 @@
  */
 package com.aionemu.gameserver.services;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.configs.main.MembershipConfig;
 import com.aionemu.gameserver.model.PlayerClass;
@@ -26,9 +29,6 @@ import com.aionemu.gameserver.network.aion.serverpackets.S_QUEST;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.sql.Timestamp;
-import java.util.Calendar;
 
 public class ClassChangeService
 {

@@ -1,7 +1,13 @@
 package com.aionemu.gameserver.questEngine.handlers.template;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.HandlerResult;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.handlers.models.NpcInfos;
@@ -10,15 +16,9 @@ import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
 import com.aionemu.gameserver.services.QuestService;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 import javolution.util.FastMap;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 public class ReportToMany extends QuestHandler
 {
@@ -116,7 +116,7 @@ public class ReportToMany extends QuestHandler
 					} case ACCEPT_QUEST: {
 						if (player.getInventory().isFullSpecialCube()) {
 							///Your inventory is full. Try again after making space.
-							PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DEVAPASS_REWARD_INVENTORY_FULL);
+							PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DEVAPASS_REWARD_INVENTORY_FULL);
 							return false;
 						} else if (itemId != 0) {
 							if (giveQuestItem(env, itemId, 1)) {

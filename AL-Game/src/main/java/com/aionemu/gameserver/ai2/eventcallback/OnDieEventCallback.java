@@ -1,6 +1,5 @@
 package com.aionemu.gameserver.ai2.eventcallback;
 
-import com.aionemu.gameserver.ai2.AbstractAI;
 import com.aionemu.gameserver.ai2.GeneralAIEvent;
 import com.aionemu.gameserver.ai2.event.AIEventType;
 import com.aionemu.gameserver.events.EventListener;

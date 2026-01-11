@@ -4,7 +4,6 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
 import com.aionemu.gameserver.services.player.BattlePassService;
-import com.aionemu.gameserver.utils.PacketSendUtility;
 
 public class CM_BATTLE_PASS_REWARD extends AionClientPacket
 {

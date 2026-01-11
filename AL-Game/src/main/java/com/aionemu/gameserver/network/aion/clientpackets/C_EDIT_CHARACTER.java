@@ -10,7 +10,7 @@ import com.aionemu.gameserver.model.gameobjects.player.PlayerCommonData;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.player.PlayerEnterWorldService;
 import com.aionemu.gameserver.services.player.PlayerService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
@@ -144,9 +144,9 @@ public class C_EDIT_CHARACTER extends AionClientPacket
 		Player player = client.getActivePlayer();
 		if (!check_ticket) {
 			if (!gender_change) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_EDIT_CHAR_ALL_CANT_NO_ITEM);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_EDIT_CHAR_ALL_CANT_NO_ITEM);
 			} else {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_EDIT_CHAR_GENDER_CANT_NO_ITEM);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_EDIT_CHAR_GENDER_CANT_NO_ITEM);
 			}
 		} else {
 			if (!gender_change) {

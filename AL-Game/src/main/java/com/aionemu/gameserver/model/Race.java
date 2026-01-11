@@ -1,8 +1,8 @@
 package com.aionemu.gameserver.model;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import javax.xml.bind.annotation.XmlEnum;
+
+import org.apache.commons.lang.NotImplementedException;
 
 @XmlEnum
 public enum Race

@@ -22,7 +22,7 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.items.storage.Storage;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.item.ItemPacketService.ItemDeleteType;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
@@ -65,7 +65,7 @@ public class C_DESTROY_ITEM extends AionClientPacket
 		Item item = inventory.getItemByObjId(itemObjectId);
 		if (item != null) {
 			if (!item.getItemTemplate().isBreakable()) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_UNBREAKABLE_ITEM(new DescriptionId(item.getNameId())));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_UNBREAKABLE_ITEM(new DescriptionId(item.getNameId())));
 			} else {
 				inventory.delete(item, ItemDeleteType.DISCARD);
 			}

@@ -1,5 +1,10 @@
 package com.aionemu.gameserver.network.aion.serverpackets;
 
+import java.util.Iterator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.main.GSConfig;
 import com.aionemu.gameserver.dao.InventoryDAO;
 import com.aionemu.gameserver.dao.MailDAO;
@@ -13,10 +18,6 @@ import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.PlayerInfo;
 import com.aionemu.gameserver.services.BrokerService;
 import com.aionemu.gameserver.services.player.PlayerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Iterator;
 
 public class S_CHARACTER_LIST extends PlayerInfo {
     private static Logger log = LoggerFactory.getLogger(S_CHARACTER_LIST.class);

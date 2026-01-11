@@ -1,7 +1,12 @@
 package com.aionemu.gameserver.model.gameobjects.player.npcFaction;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.Race;
@@ -12,11 +17,13 @@ import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
 import com.aionemu.gameserver.model.templates.QuestTemplate;
 import com.aionemu.gameserver.model.templates.factions.NpcFactionTemplate;
 import com.aionemu.gameserver.model.templates.quest.QuestMentorType;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_QUEST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_TITLE;
 import com.aionemu.gameserver.services.QuestService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.*;
 
 public class NpcFactions
 {
@@ -93,7 +100,7 @@ public class NpcFactions
 	
 	private void leaveNpcFaction(NpcFaction npcFaction) {
 		NpcFactionTemplate npcFactionTemplate = DataManager.NPC_FACTIONS_DATA.getNpcFactionById(npcFaction.getId());
-		PacketSendUtility.sendPacket(owner, new S_MESSAGE_CODE(1300526, new DescriptionId(npcFactionTemplate.getNameId())));
+		PacketSendUtility.sendPacket(owner, new SM_SYSTEM_MESSAGE(1300526, new DescriptionId(npcFactionTemplate.getNameId())));
 		npcFaction.setActive(false);
 		activeNpcFaction[npcFactionTemplate.isMentor() ? 1 : 0] = null;
 		if (npcFaction.getState() == ENpcFactionQuestState.START) {
@@ -120,13 +127,13 @@ public class NpcFactions
 			PacketSendUtility.sendPacket(owner, new S_NPC_HTML_MESSAGE(targetObjectId, 1097));
 			return;
 		} if (npcFaction != null && npcFaction.isActive()) {
-			PacketSendUtility.sendPacket(owner, new S_MESSAGE_CODE(1300525));
+			PacketSendUtility.sendPacket(owner, new SM_SYSTEM_MESSAGE(1300525));
 			return;
 		} if (activeNpcFaction != null && activeNpcFaction.getId() != npcFactionId) {
 			askLeaveNpcFaction(npc);
 			return;
 		} if (npcFaction == null || !npcFaction.isActive()) {
-			PacketSendUtility.sendPacket(owner, new S_MESSAGE_CODE(1300524, new DescriptionId(npcFactionTemplate.getNameId())));
+			PacketSendUtility.sendPacket(owner, new SM_SYSTEM_MESSAGE(1300524, new DescriptionId(npcFactionTemplate.getNameId())));
 			PacketSendUtility.sendPacket(owner, new S_NPC_HTML_MESSAGE(targetObjectId, 1012));
 			setActive(npcFactionId);
 			sendDailyQuest();
@@ -238,7 +245,7 @@ public class NpcFactions
 					owner.getController().updateNearbyQuests();
 					QuestService.abandonQuest(owner, faction.getQuestId());
 				}
-				PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_FACTION_LEAVE_BY_LEVEL_LIMIT(npcFactionTemplate.getNameId()));
+				PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_FACTION_LEAVE_BY_LEVEL_LIMIT(npcFactionTemplate.getNameId()));
 				faction.setState(ENpcFactionQuestState.NOTING);
 			}
 		}

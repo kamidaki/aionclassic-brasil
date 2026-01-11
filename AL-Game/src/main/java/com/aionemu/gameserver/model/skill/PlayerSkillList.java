@@ -16,15 +16,20 @@
  */
 package com.aionemu.gameserver.model.skill;
 
-import com.aionemu.gameserver.model.gameobjects.PersistentState;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ADD_SKILL;
-import com.aionemu.gameserver.utils.PacketSendUtility;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import com.aionemu.gameserver.model.gameobjects.PersistentState;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_LIST;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 
 public final class PlayerSkillList implements SkillList<Player>
 {
@@ -114,7 +119,7 @@ public final class PlayerSkillList implements SkillList<Player>
 		PlayerSkillEntry skill = new PlayerSkillEntry(skillId, true, skillLevel, PersistentState.NOACTION);
 		this.stigmaSkills.put(skillId, skill);
 		if (equipedByNpc) {
-			PacketSendUtility.sendPacket(player, new S_ADD_SKILL(skill, 1300401, false));
+			PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(skill, 1300401, false));
 		}
 	}
 
@@ -122,7 +127,7 @@ public final class PlayerSkillList implements SkillList<Player>
 		PlayerSkillEntry skill = new PlayerSkillEntry(skillId, true, skillLevel, PersistentState.NOACTION);
 		this.stigmaSkills.put(skillId, skill);
 		if (equipedByNpc) {
-			PacketSendUtility.sendPacket(player, new S_ADD_SKILL(skill, withMsg ? 1300401 : 0, false));
+			PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(skill, withMsg ? 1300401 : 0, false));
 		}
 	}
 
@@ -141,7 +146,7 @@ public final class PlayerSkillList implements SkillList<Player>
 		} if (player.isSpawned()) {
 			sendMessage(player, skillId, isNew);
 		}
-		PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player));
+		PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player));
 		return true;
 	}
 
@@ -253,7 +258,7 @@ public final class PlayerSkillList implements SkillList<Player>
 			case 30001:
 			case 30002:
 			case 30003:
-				PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player.getSkillList().getSkillEntry(skillId), 1330005, false));
+				PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player.getSkillList().getSkillEntry(skillId), 1330005, false));
 			break;
 			case 40001:
 			case 40002:
@@ -264,13 +269,13 @@ public final class PlayerSkillList implements SkillList<Player>
 			case 40007:
 			case 40008:
 			case 40009:
-				PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player.getSkillList().getSkillEntry(skillId), 1330061, false));
+				PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player.getSkillList().getSkillEntry(skillId), 1330061, false));
 			break;
 		    default:
 			if (player.getSkillList().getSkillEntry(skillId).getSkillLevel() > 1) {
-				PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player.getSkillList().getSkillEntry(skillId), 0, isNew));
+				PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player.getSkillList().getSkillEntry(skillId), 0, isNew));
 			} else {
-				PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player.getSkillList().getSkillEntry(skillId), 1300050, isNew));
+				PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player.getSkillList().getSkillEntry(skillId), 1300050, isNew));
 			}
 		}
 	}

@@ -10,13 +10,13 @@
  */
 package ai.instance.dredgion;
 
-import ai.OneDmgPerHitAI2;
-
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.event.AIEventType;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.VisibleObject;
+
+import ai.OneDmgPerHitAI2;
 
 /****/
 /** Author Rinzler (Encom)

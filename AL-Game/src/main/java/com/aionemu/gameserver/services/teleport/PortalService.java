@@ -1,5 +1,10 @@
 package com.aionemu.gameserver.services.teleport;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.administration.AdminConfig;
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.configs.main.MembershipConfig;
@@ -13,8 +18,12 @@ import com.aionemu.gameserver.model.team2.alliance.PlayerAlliance;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.league.League;
 import com.aionemu.gameserver.model.templates.InstanceCooltime;
-import com.aionemu.gameserver.model.templates.portal.*;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.model.templates.portal.ItemReq;
+import com.aionemu.gameserver.model.templates.portal.PortalLoc;
+import com.aionemu.gameserver.model.templates.portal.PortalPath;
+import com.aionemu.gameserver.model.templates.portal.PortalReq;
+import com.aionemu.gameserver.model.templates.portal.QuestReq;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
@@ -23,10 +32,6 @@ import com.aionemu.gameserver.services.instance.InstanceService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.WorldMapInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class PortalService
 {
@@ -59,14 +64,14 @@ public class PortalService
 			instanceGroupReq = !player.havePermission(MembershipConfig.INSTANCES_GROUP_REQ);
 			instanceCooldownRate = InstanceService.getInstanceRate(player, loc.getWorldId());
 		} if (instanceRaceReq && !checkRace(player, portalPath.getRace())) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MOVE_PORTAL_ERROR_INVALID_RACE);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MOVE_PORTAL_ERROR_INVALID_RACE);
 			return;
 		} if (instanceGroupReq && !checkPlayerSize(player, portalPath, npcObjectId)) {
 			return;
 		}
 		int siegeId = portalPath.getSiegeId();
 		if (instanceRaceReq && siegeId != 0 && !checkSiegeId(player, siegeId)) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MOVE_PORTAL_ERROR_INVALID_RACE);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MOVE_PORTAL_ERROR_INVALID_RACE);
 			return;
 		}
 		PortalReq portalReq = portalPath.getPortalReq();
@@ -79,7 +84,7 @@ public class PortalService
 			int titleId = portalReq.getTitleId();
 			if (instanceTitleReq && titleId != 0) {
 				if (!checkTitle(player, titleId)) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NO_ROUTE);
 					return;
 				}
 			} if (!checkKinah(player, portalReq.getKinahReq())) {
@@ -121,11 +126,11 @@ public class PortalService
 					}
 				break;
 			} if (instance == null) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANNOT_MAKE_INSTANCE_COOL_TIME);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANNOT_MAKE_INSTANCE_COOL_TIME);
 				return;
 			} else {
 				if (!instance.isRegistered(player.getObjectId())) {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANNOT_MAKE_INSTANCE_COOL_TIME);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANNOT_MAKE_INSTANCE_COOL_TIME);
 					return;
 				} else {
 					reenter = true;
@@ -245,7 +250,7 @@ public class PortalService
 	private static boolean checkKinah(Player player, int kinah) {
 		Storage inventory = player.getInventory();
 		if (!inventory.tryDecreaseKinah(kinah)) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_NOT_ENOUGH_KINA(kinah));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_NOT_ENOUGH_KINA(kinah));
 			return false;
 		}
 		return true;
@@ -256,7 +261,7 @@ public class PortalService
 		InstanceCooltime instancecooltime = DataManager.INSTANCE_COOLTIME_DATA.getInstanceCooltimeByWorldId(mapId);
 		if (instancecooltime != null && player.isMentor()) {
 			if (!instancecooltime.getCanEnterMentor()) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_MENTOR_CANT_ENTER(World.getInstance().getWorldMap(mapId).getName()));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_MENTOR_CANT_ENTER(World.getInstance().getWorldMap(mapId).getName()));
 				return false;
 			}
 		} if (player.getLevel() < enterMinLvl) {
@@ -264,7 +269,7 @@ public class PortalService
 			if (errDialog != 0) {
 				PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npcObjectId, errDialog));
 			} else {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CANT_INSTANCE_ENTER_LEVEL);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CANT_INSTANCE_ENTER_LEVEL);
 			}
 			return false;
 		}
@@ -279,7 +284,7 @@ public class PortalService
 				if (errDialog != 0) {
 					PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npcObjectId, errDialog));
 				} else {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_ENTER_ONLY_PARTY_DON);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_ENTER_ONLY_PARTY_DON);
 				}
 				return false;
 			}
@@ -288,7 +293,7 @@ public class PortalService
 				if (errDialog != 0) {
 					PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npcObjectId, errDialog));
 				} else {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_ENTER_ONLY_FORCE_DON);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_ENTER_ONLY_FORCE_DON);
 				}
 				return false;
 			}
@@ -297,7 +302,7 @@ public class PortalService
 				if (errDialog != 0) {
 					PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npcObjectId, errDialog));
 				} else {
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_ENTER_ONLY_UNION_DON);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_ENTER_ONLY_UNION_DON);
 				}
 				return false ;
 			}
@@ -332,7 +337,7 @@ public class PortalService
 					if (errDialog != 0) {
 						PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npcObjectId, errDialog));
 					} else {
-						PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
+						PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_MOVE_TO_AIRPORT_NEED_FINISH_QUEST);
 					}
 					return false;
 				}
@@ -350,7 +355,7 @@ public class PortalService
 					if (errDialog != 0) {
 				        PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npcObjectId, errDialog));
 			        } else {
-				        PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_CANT_ENTER_WITHOUT_ITEM_TRY_LATER);
+				        PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_CANT_ENTER_WITHOUT_ITEM_TRY_LATER);
 			        }
 			        return false;
 				}

@@ -11,10 +11,10 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.summons.SkillOrder;
 import com.aionemu.gameserver.model.summons.SummonMode;
 import com.aionemu.gameserver.model.summons.UnsummonType;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.LOG;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.TYPE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.LOG;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.TYPE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_PET_STATUS;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
 import com.aionemu.gameserver.services.summons.SummonsService;
@@ -93,7 +93,7 @@ public class SummonController extends CreatureController<Summon>
 		    SummonsService.doMode(SummonMode.RELEASE, getOwner(), UnsummonType.DISTANCE);
 		}
 		super.onAttack(creature, skillId, type, damage, notifyAttack, log);
-		PacketSendUtility.broadcastPacket(getOwner(), new S_HIT_POINT_OTHER(getOwner(), creature, TYPE.REGULAR, 0, damage, log));
+		PacketSendUtility.broadcastPacket(getOwner(), new SM_ATTACK_STATUS(getOwner(), creature, TYPE.REGULAR, 0, damage, log));
 		PacketSendUtility.sendPacket(getOwner().getMaster(), new S_CHANGE_PET_STATUS(getOwner()));
 	}
 	
@@ -106,7 +106,7 @@ public class SummonController extends CreatureController<Summon>
 		SummonsService.release(getOwner(), UnsummonType.UNSPECIFIED, isAttacked);
 		Summon owner = getOwner();
 		final Player master = getOwner().getMaster();
-		PacketSendUtility.broadcastPacket(owner, new S_ACTION(owner, EmotionType.DIE, 0, lastAttacker.equals(owner) ? 0 : lastAttacker.getObjectId()));
+		PacketSendUtility.broadcastPacket(owner, new SM_EMOTION(owner, EmotionType.DIE, 0, lastAttacker.equals(owner) ? 0 : lastAttacker.getObjectId()));
 		if (!master.equals(lastAttacker) && !owner.equals(lastAttacker) && !master.getLifeStats().isAlreadyDead() && !lastAttacker.getLifeStats().isAlreadyDead()) {
 			ThreadPoolManager.getInstance().schedule(new Runnable() {
 				@Override

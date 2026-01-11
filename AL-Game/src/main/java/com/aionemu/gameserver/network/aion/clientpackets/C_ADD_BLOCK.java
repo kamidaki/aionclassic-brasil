@@ -10,15 +10,16 @@
  */
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_BLOCK_RESULT;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.SocialService;
 import com.aionemu.gameserver.world.World;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Ben
@@ -74,12 +75,12 @@ public class C_ADD_BLOCK extends AionClientPacket
 
 		// Player is your friend
 		else if (activePlayer.getFriendList().getFriend(targetPlayer.getObjectId()) != null) {
-			sendPacket(S_MESSAGE_CODE.STR_BLOCKLIST_NO_BUDDY);
+			sendPacket(SM_SYSTEM_MESSAGE.STR_BLOCKLIST_NO_BUDDY);
 		}
 
 		// Player already blocked
 		else if (activePlayer.getBlockList().contains(targetPlayer.getObjectId())) {
-			sendPacket(S_MESSAGE_CODE.STR_BLOCKLIST_ALREADY_BLOCKED);
+			sendPacket(SM_SYSTEM_MESSAGE.STR_BLOCKLIST_ALREADY_BLOCKED);
 		}
 
 		// Try and block player

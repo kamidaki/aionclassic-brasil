@@ -9,7 +9,8 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
 import com.aionemu.gameserver.services.AutoGroupService;
-import com.aionemu.gameserver.services.instance.*;
+import com.aionemu.gameserver.services.instance.DredgionService;
+import com.aionemu.gameserver.services.instance.TiakResearchBaseService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 public class C_MATCHMAKER_REQ extends AionClientPacket

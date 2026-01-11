@@ -1,14 +1,14 @@
 package com.aionemu.gameserver.skillengine.effect;
 
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_RESURRECT_BY_OTHER;
-import com.aionemu.gameserver.skillengine.model.Effect;
-import com.aionemu.gameserver.utils.PacketSendUtility;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+
+import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.S_RESURRECT_BY_OTHER;
+import com.aionemu.gameserver.skillengine.model.Effect;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ResurrectEffect")

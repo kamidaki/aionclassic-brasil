@@ -1,10 +1,11 @@
 package com.aionemu.gameserver.model.gameobjects.player.battlePass;
 
+import java.util.Map;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.templates.battle_pass.BattlePassSeasonTemplate;
-import javolution.util.FastMap;
 
-import java.util.Map;
+import javolution.util.FastMap;
 
 public class BattlePassSeason {
 

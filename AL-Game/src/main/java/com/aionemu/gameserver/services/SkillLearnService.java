@@ -10,19 +10,20 @@
  */
 package com.aionemu.gameserver.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.main.MembershipConfig;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.PlayerClass;
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.skill.PlayerSkillList;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ADD_SKILL;
-import com.aionemu.gameserver.network.aion.serverpackets.S_DELETE_SKILL;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_LIST;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_REMOVE;
 import com.aionemu.gameserver.skillengine.model.SkillLearnTemplate;
 import com.aionemu.gameserver.skillengine.model.SkillTemplate;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SkillLearnService
 {
@@ -32,7 +33,7 @@ public class SkillLearnService
 		int level = player.getCommonData().getLevel();
 		PlayerClass playerClass = player.getCommonData().getPlayerClass();
 		Race playerRace = player.getRace();
-		PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player));
+		PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player));
 		addSkills(player, level, playerClass, playerRace);
 	}
 	
@@ -47,7 +48,7 @@ public class SkillLearnService
 			for (int i = 1; i < 10; i++) {
 				addSkills(player, i, startinClass, playerRace);
 			}
-			PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player));
+			PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player));
 		}
 	}
 	
@@ -62,7 +63,7 @@ public class SkillLearnService
 			for (int i = 1; i < 10; i++) {
 				addSkills(player, i, startinClass, playerRace);
 			}
-			PacketSendUtility.sendPacket(player, new S_ADD_SKILL(player));
+			PacketSendUtility.sendPacket(player, new SM_SKILL_LIST(player));
 		}
 	}
 	
@@ -122,7 +123,7 @@ public class SkillLearnService
 			} if (player.getEffectController().hasAbnormalEffect(skillId) || passiveSkill.isPassive()) {
 				player.getEffectController().removeEffect(skillId);
 			}
-			PacketSendUtility.sendPacket(player, new S_DELETE_SKILL(skillId, skillLevel, player.getSkillList().getSkillEntry(skillId).isStigma()));
+			PacketSendUtility.sendPacket(player, new SM_SKILL_REMOVE(skillId, skillLevel, player.getSkillList().getSkillEntry(skillId).isStigma()));
 			player.getSkillList().removeSkill(skillId);
 		}
 	}

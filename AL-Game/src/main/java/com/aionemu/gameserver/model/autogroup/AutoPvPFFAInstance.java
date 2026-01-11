@@ -10,19 +10,22 @@
  */
 package com.aionemu.gameserver.model.autogroup;
 
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.select;
+
+import java.util.List;
+
+import org.hamcrest.Matchers;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.PlayerClass;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.instance.instancereward.PvPArenaReward;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_MATCHMAKER_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.AutoGroupService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.hamcrest.Matchers;
-
-import java.util.List;
-
-import static ch.lambdaj.Lambda.*;
 
 public class AutoPvPFFAInstance extends AutoInstance
 {
@@ -54,7 +57,7 @@ public class AutoPvPFFAInstance extends AutoInstance
 			} else {
 				player.getPortalCooldownList().addEntry(worldId);
 				//You have successfully entered the area, consuming one of your permitted entries.
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_DUNGEON_COUNT_USE);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_DUNGEON_COUNT_USE);
 			}
         }
         Integer object = player.getObjectId();

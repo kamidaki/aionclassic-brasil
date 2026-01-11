@@ -10,6 +10,9 @@
  */
 package com.aionemu.gameserver.services.item;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.Item;
@@ -19,17 +22,14 @@ import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
 import com.aionemu.gameserver.model.items.ChargeInfo;
 import com.aionemu.gameserver.model.stats.calc.functions.StatFunction;
 import com.aionemu.gameserver.model.templates.item.Improvement;
-import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_ITEM_DESC;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_INVENTORY_UPDATE_ITEM;
 import com.aionemu.gameserver.services.abyss.AbyssPointsService;
 import com.aionemu.gameserver.services.item.ItemPacketService.ItemUpdateType;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-
-import java.util.Collection;
-import java.util.Collections;
 
 public class ItemChargeService
 {
@@ -48,7 +48,7 @@ public class ItemChargeService
 	public static void startChargingEquippedItems(final Player player, int senderObj, final int chargeWay) {
 		final Collection<Item> filteredItems = filterItemsToCondition(player, null, chargeWay);
 		if (filteredItems.isEmpty()) {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(chargeWay == 1 ? 1400895 : 1401343));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(chargeWay == 1 ? 1400895 : 1401343));
 			return;
 		}
 		final long payAmount = calculatePrice(filteredItems);
@@ -106,13 +106,13 @@ public class ItemChargeService
 		} if (!verifyRecomendRank(player, item)) {
 			return;
 		} else {
-			PacketSendUtility.sendPacket(player, new S_CHANGE_ITEM_DESC(player, item, ItemUpdateType.CHARGE));
+			PacketSendUtility.sendPacket(player, new SM_INVENTORY_UPDATE_ITEM(player, item, ItemUpdateType.CHARGE));
 			player.getEquipment().setPersistentState(PersistentState.UPDATE_REQUIRED);
 			player.getInventory().setPersistentState(PersistentState.UPDATE_REQUIRED);
 			if (chargeWay == 1) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_ITEM_CHARGE_SUCCESS(new DescriptionId(item.getNameId()), level));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_ITEM_CHARGE_SUCCESS(new DescriptionId(item.getNameId()), level));
 			} else {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_ITEM_CHARGE2_SUCCESS(new DescriptionId(item.getNameId()), level));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_ITEM_CHARGE2_SUCCESS(new DescriptionId(item.getNameId()), level));
 			}
 			player.getGameStats().updateStatsVisually();
 		}

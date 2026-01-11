@@ -11,6 +11,10 @@
 package com.aionemu.gameserver.model.team2.alliance.events;
 
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
@@ -20,13 +24,9 @@ import com.aionemu.gameserver.model.team2.alliance.PlayerAllianceService;
 import com.aionemu.gameserver.model.team2.group.PlayerFilters.ExcludePlayerFilter;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.google.common.base.Preconditions;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class PlayerAllianceInvite extends RequestResponseHandler
 {
@@ -43,7 +43,7 @@ public class PlayerAllianceInvite extends RequestResponseHandler
     public void acceptRequest(Creature requester, Player responder) {
         if (PlayerAllianceService.canInvite(inviter, invited)) {
             //%0 has joined the alliance.
-			PacketSendUtility.sendPacket(inviter, S_MESSAGE_CODE.STR_FORCE_ENTER_HIM(invited.getName()));
+			PacketSendUtility.sendPacket(inviter, SM_SYSTEM_MESSAGE.STR_FORCE_ENTER_HIM(invited.getName()));
 			PlayerAlliance alliance = inviter.getPlayerAlliance2();
             if (alliance != null) {
                 if (alliance.size() == 24) {
@@ -90,6 +90,6 @@ public class PlayerAllianceInvite extends RequestResponseHandler
     @Override
     public void denyRequest(Creature requester, Player responder) {
         //%0 has declined your invitation to join the alliance.
-		PacketSendUtility.sendPacket(inviter, S_MESSAGE_CODE.STR_PARTY_ALLIANCE_HE_REJECT_INVITATION(responder.getName()));
+		PacketSendUtility.sendPacket(inviter, SM_SYSTEM_MESSAGE.STR_PARTY_ALLIANCE_HE_REJECT_INVITATION(responder.getName()));
     }
 }

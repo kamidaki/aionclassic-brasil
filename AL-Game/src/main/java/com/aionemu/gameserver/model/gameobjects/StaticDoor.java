@@ -10,16 +10,16 @@
  */
 package com.aionemu.gameserver.model.gameobjects;
 
+import java.util.EnumSet;
+
 import com.aionemu.gameserver.controllers.StaticObjectController;
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
 import com.aionemu.gameserver.model.templates.staticdoor.StaticDoorState;
 import com.aionemu.gameserver.model.templates.staticdoor.StaticDoorTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.geo.GeoService;
-
-import java.util.EnumSet;
 
 
 /**
@@ -82,14 +82,14 @@ public class StaticDoor extends StaticObject {
 			GeoService.getInstance().setDoorState(getWorldId(), getInstanceId(), doorName, open);
 		}
 		// int stateFlags = StaticDoorState.getFlags(states);
-		PacketSendUtility.broadcastPacket(this, new S_ACTION(this.getSpawn().getEntityId(), emotion, packetState));
+		PacketSendUtility.broadcastPacket(this, new SM_EMOTION(this.getSpawn().getEntityId(), emotion, packetState));
 	}
 
 	public void changeState(boolean open, int state) {
 		state = state & 0xF;
 		StaticDoorState.setStates(state, states);
 		EmotionType emotion = open ? emotion = EmotionType.OPEN_DOOR : EmotionType.CLOSE_DOOR;
-		PacketSendUtility.broadcastPacket(this, new S_ACTION(this.getSpawn().getEntityId(), emotion, state));
+		PacketSendUtility.broadcastPacket(this, new SM_EMOTION(this.getSpawn().getEntityId(), emotion, state));
 	}
 
 	@Override

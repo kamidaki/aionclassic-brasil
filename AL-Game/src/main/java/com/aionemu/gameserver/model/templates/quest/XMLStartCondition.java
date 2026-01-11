@@ -16,18 +16,23 @@
  */
 package com.aionemu.gameserver.model.templates.quest;
 
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlType;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.QuestStateList;
 import com.aionemu.gameserver.model.templates.QuestTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import javax.xml.bind.annotation.*;
-import java.util.List;
 
 /**
  * Checks quest start conditions, listed in quest_data.xml
@@ -119,7 +124,7 @@ public class XMLStartCondition {
 			for (int itemId : equipped) {
 				if (!player.getEquipment().getEquippedItemIds().contains(itemId)) {
 					int requiredItemNameId = DataManager.ITEM_DATA.getItemTemplate(itemId).getNameId();
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_QUEST_ACQUIRE_ERROR_EQUIP_ITEM(new DescriptionId(requiredItemNameId)));
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_QUEST_ACQUIRE_ERROR_EQUIP_ITEM(new DescriptionId(requiredItemNameId)));
 					return false;
 				}
 			}

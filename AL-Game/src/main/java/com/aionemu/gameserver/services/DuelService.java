@@ -1,5 +1,10 @@
 package com.aionemu.gameserver.services;
 
+import java.util.concurrent.Future;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.DuelResult;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -7,9 +12,9 @@ import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
 import com.aionemu.gameserver.model.summons.SummonMode;
 import com.aionemu.gameserver.model.summons.UnsummonType;
 import com.aionemu.gameserver.model.templates.zone.ZoneType;
-import com.aionemu.gameserver.network.aion.serverpackets.S_DUEL;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_DUEL;
 import com.aionemu.gameserver.services.summons.SummonsService;
 import com.aionemu.gameserver.skillengine.model.SkillTargetSlot;
 import com.aionemu.gameserver.utils.MathUtil;
@@ -18,11 +23,8 @@ import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
-import javolution.util.FastMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Future;
+import javolution.util.FastMap;
 
 public class DuelService
 {
@@ -42,14 +44,14 @@ public class DuelService
 	
 	public void onDuelRequest(Player requester, Player responder) {
 		if (requester.isInsideZoneType(ZoneType.PVP) || responder.isInsideZoneType(ZoneType.PVP)) {
-			PacketSendUtility.sendPacket(requester, S_MESSAGE_CODE.STR_DUEL_PARTNER_INVALID(responder.getName()));
+			PacketSendUtility.sendPacket(requester, SM_SYSTEM_MESSAGE.STR_DUEL_PARTNER_INVALID(responder.getName()));
 			return;
 		} if (isDueling(requester.getObjectId()) || isDueling(responder.getObjectId())) {
-			PacketSendUtility.sendPacket(requester, S_MESSAGE_CODE.STR_DUEL_HE_REJECT_DUEL(responder.getName()));
+			PacketSendUtility.sendPacket(requester, SM_SYSTEM_MESSAGE.STR_DUEL_HE_REJECT_DUEL(responder.getName()));
 			return;
 		} for (ZoneInstance zone : responder.getPosition().getMapRegion().getZones(responder)) {
 			if (((!zone.isOtherRaceDuelsAllowed()) && (!responder.getRace().equals(requester.getRace()))) || ((!zone.isSameRaceDuelsAllowed()) && (responder.getRace().equals(requester.getRace())))) {
-				PacketSendUtility.sendPacket(requester, S_MESSAGE_CODE.STR_MSG_DUEL_CANT_IN_THIS_ZONE);
+				PacketSendUtility.sendPacket(requester, SM_SYSTEM_MESSAGE.STR_MSG_DUEL_CANT_IN_THIS_ZONE);
 				return;
 			}
 		}
@@ -65,7 +67,7 @@ public class DuelService
 		};
 		responder.getResponseRequester().putRequest(S_ASK.STR_DUEL_DO_YOU_ACCEPT_REQUEST, rrh);
 		PacketSendUtility.sendPacket(responder, new S_ASK(S_ASK.STR_DUEL_DO_YOU_ACCEPT_REQUEST, 0, 0, requester.getName()));
-		PacketSendUtility.sendPacket(responder, S_MESSAGE_CODE.STR_DUEL_REQUESTED(requester.getName()));
+		PacketSendUtility.sendPacket(responder, SM_SYSTEM_MESSAGE.STR_DUEL_REQUESTED(requester.getName()));
 	}
 	
 	public void confirmDuelWith(Player requester, Player responder) {
@@ -83,17 +85,17 @@ public class DuelService
 		};
 		requester.getResponseRequester().putRequest(S_ASK.STR_DUEL_DO_YOU_WITHDRAW_REQUEST, rrh);
 		PacketSendUtility.sendPacket(requester, new S_ASK(S_ASK.STR_DUEL_DO_YOU_WITHDRAW_REQUEST, 0, 0, responder.getName()));
-		PacketSendUtility.sendPacket(requester, S_MESSAGE_CODE.STR_DUEL_REQUEST_TO_PARTNER(responder.getName()));
+		PacketSendUtility.sendPacket(requester, SM_SYSTEM_MESSAGE.STR_DUEL_REQUEST_TO_PARTNER(responder.getName()));
 	}
 	
 	private void rejectDuelRequest(Player requester, Player responder) {
-		PacketSendUtility.sendPacket(requester, S_MESSAGE_CODE.STR_DUEL_HE_REJECT_DUEL(responder.getName()));
-		PacketSendUtility.sendPacket(responder, S_MESSAGE_CODE.STR_DUEL_REJECT_DUEL(requester.getName()));
+		PacketSendUtility.sendPacket(requester, SM_SYSTEM_MESSAGE.STR_DUEL_HE_REJECT_DUEL(responder.getName()));
+		PacketSendUtility.sendPacket(responder, SM_SYSTEM_MESSAGE.STR_DUEL_REJECT_DUEL(requester.getName()));
 	}
 	
 	private void cancelDuelRequest(Player owner, Player target) {
-		PacketSendUtility.sendPacket(target, S_MESSAGE_CODE.STR_DUEL_REQUESTER_WITHDRAW_REQUEST(owner.getName()));
-		PacketSendUtility.sendPacket(owner, S_MESSAGE_CODE.STR_DUEL_WITHDRAW_REQUEST(target.getName()));
+		PacketSendUtility.sendPacket(target, SM_SYSTEM_MESSAGE.STR_DUEL_REQUESTER_WITHDRAW_REQUEST(owner.getName()));
+		PacketSendUtility.sendPacket(owner, SM_SYSTEM_MESSAGE.STR_DUEL_WITHDRAW_REQUEST(target.getName()));
 	}
 	
 	private void startDuel(final Player requester, final Player responder) {
@@ -110,7 +112,7 @@ public class DuelService
             public void visit(Player object) {
                 if (MathUtil.isInRange(player1, object, 100)) {
 				    //A duel between %0 and %1 has started.
-				    PacketSendUtility.sendPacket(object, S_MESSAGE_CODE.STR_DUEL_START_BROADCAST(player2.getName(), player1.getName()));
+				    PacketSendUtility.sendPacket(object, SM_SYSTEM_MESSAGE.STR_DUEL_START_BROADCAST(player2.getName(), player1.getName()));
 				}
             }
         });
@@ -122,7 +124,7 @@ public class DuelService
             public void visit(Player object) {
                 if (MathUtil.isInRange(player1, object, 100)) {
 				    //%0 defeated %1 in a duel.
-				    PacketSendUtility.sendPacket(object, S_MESSAGE_CODE.STR_DUEL_STOP_BROADCAST(player2.getName(), player1.getName()));
+				    PacketSendUtility.sendPacket(object, SM_SYSTEM_MESSAGE.STR_DUEL_STOP_BROADCAST(player2.getName(), player1.getName()));
 				}
             }
         });
@@ -134,7 +136,7 @@ public class DuelService
             public void visit(Player object) {
                 if (MathUtil.isInRange(player1, object, 100)) {
 				    //The duel between %0 and %1 was a draw.
-				    PacketSendUtility.sendPacket(object, S_MESSAGE_CODE.STR_DUEL_TIMEOUT_BROADCAST(player2.getName(), player1.getName()));
+				    PacketSendUtility.sendPacket(object, SM_SYSTEM_MESSAGE.STR_DUEL_TIMEOUT_BROADCAST(player2.getName(), player1.getName()));
 				}	
             }
         });

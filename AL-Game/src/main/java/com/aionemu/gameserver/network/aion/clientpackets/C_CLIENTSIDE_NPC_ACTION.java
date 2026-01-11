@@ -1,16 +1,16 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.gameobjects.Summon;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class C_CLIENTSIDE_NPC_ACTION extends AionClientPacket
 {
@@ -48,16 +48,16 @@ public class C_CLIENTSIDE_NPC_ACTION extends AionClientPacket
 		switch (emotionType) {
 			case FLY:
 			case LAND:
-				PacketSendUtility.broadcastPacket(summon, new S_ACTION(summon, EmotionType.START_EMOTE2));
-				PacketSendUtility.broadcastPacket(summon, new S_ACTION(summon, emotionType));
+				PacketSendUtility.broadcastPacket(summon, new SM_EMOTION(summon, EmotionType.START_EMOTE2));
+				PacketSendUtility.broadcastPacket(summon, new SM_EMOTION(summon, emotionType));
 				break;
 			case ATTACKMODE:
 				summon.setState(CreatureState.WEAPON_EQUIPPED);
-				PacketSendUtility.broadcastPacket(summon, new S_ACTION(summon, emotionType));
+				PacketSendUtility.broadcastPacket(summon, new SM_EMOTION(summon, emotionType));
 				break;
 			case NEUTRALMODE:
 				summon.unsetState(CreatureState.WEAPON_EQUIPPED);
-				PacketSendUtility.broadcastPacket(summon, new S_ACTION(summon, emotionType));
+				PacketSendUtility.broadcastPacket(summon, new SM_EMOTION(summon, emotionType));
 				break;
 		}
 	}

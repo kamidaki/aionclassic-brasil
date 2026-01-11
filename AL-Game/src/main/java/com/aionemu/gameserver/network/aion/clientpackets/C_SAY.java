@@ -10,6 +10,9 @@
  */
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.objects.filter.ObjectFilter;
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.configs.main.LoggingConfig;
@@ -17,7 +20,7 @@ import com.aionemu.gameserver.model.ChatType;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_MESSAGE;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
 import com.aionemu.gameserver.services.NameRestrictionService;
 import com.aionemu.gameserver.services.player.PlayerChatService;
@@ -25,8 +28,6 @@ import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.audit.AuditLogger;
 import com.aionemu.gameserver.utils.chathandlers.ChatProcessor;
 import com.aionemu.gameserver.utils.stats.AbyssRankEnum;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class C_SAY extends AionClientPacket
 {
@@ -127,7 +128,7 @@ public class C_SAY extends AionClientPacket
 	private void broadcastFromCommander(final Player player)
 	{
 		final int senderRace = player.getRace().getRaceId();
-		PacketSendUtility.broadcastPacket(player, new S_MESSAGE(player, message, type), true, new ObjectFilter<Player>()
+		PacketSendUtility.broadcastPacket(player, new SM_MESSAGE(player, message, type), true, new ObjectFilter<Player>()
 		{
 			@Override
 			public boolean acceptObject(Player object)
@@ -139,12 +140,12 @@ public class C_SAY extends AionClientPacket
 
 	private void broadcastFromGm(final Player player)
 	{
-		PacketSendUtility.broadcastPacket(player, new S_MESSAGE(player, message, type), true);
+		PacketSendUtility.broadcastPacket(player, new SM_MESSAGE(player, message, type), true);
 	}
 
 	private void broadcastToNonBlockedPlayers(final Player player)
 	{
-		PacketSendUtility.broadcastPacket(player, new S_MESSAGE(player, message, type), true, new ObjectFilter<Player>()
+		PacketSendUtility.broadcastPacket(player, new SM_MESSAGE(player, message, type), true, new ObjectFilter<Player>()
 		{
 			@Override
 			public boolean acceptObject(Player object)
@@ -157,7 +158,7 @@ public class C_SAY extends AionClientPacket
 	private void broadcastToNonBlockedRacePlayers(final Player player)
 	{
 		final int senderRace = player.getRace().getRaceId();
-		PacketSendUtility.broadcastPacket(player, new S_MESSAGE(player, message, type), true, new ObjectFilter<Player>()
+		PacketSendUtility.broadcastPacket(player, new SM_MESSAGE(player, message, type), true, new ObjectFilter<Player>()
 		{
 			@Override
 			public boolean acceptObject(Player object)
@@ -165,7 +166,7 @@ public class C_SAY extends AionClientPacket
 				return ((senderRace == object.getRace().getRaceId() && !object.getBlockList().contains(player.getObjectId())) || object.isGM());
 			}
 		});
-		PacketSendUtility.broadcastPacket(player, new S_MESSAGE(player, "Unknow Message", type), false, new ObjectFilter<Player>()
+		PacketSendUtility.broadcastPacket(player, new SM_MESSAGE(player, "Unknow Message", type), false, new ObjectFilter<Player>()
 		{
 			@Override
 			public boolean acceptObject(Player object)
@@ -178,7 +179,7 @@ public class C_SAY extends AionClientPacket
 	private void broadcastToGroupMembers(final Player player)
 	{
 		if (player.isInTeam()) {
-			player.getCurrentGroup().sendPacket(new S_MESSAGE(player, message, type));
+			player.getCurrentGroup().sendPacket(new SM_MESSAGE(player, message, type));
 		} else {
 			PacketSendUtility.sendMessage(player, "You are not in an alliance or group.");
 		}
@@ -186,18 +187,18 @@ public class C_SAY extends AionClientPacket
 
 	private void broadcastToAllianceMembers(final Player player)
 	{
-		player.getPlayerAlliance2().sendPacket(new S_MESSAGE(player, message, type));
+		player.getPlayerAlliance2().sendPacket(new SM_MESSAGE(player, message, type));
 	}
 
 	private void broadcastToLeagueMembers(final Player player)
 	{
-		player.getPlayerAlliance2().getLeague().sendPacket(new S_MESSAGE(player, message, type));
+		player.getPlayerAlliance2().getLeague().sendPacket(new SM_MESSAGE(player, message, type));
 	}
 
 	private void broadcastToLegionMembers(final Player player)
 	{
 		if (player.isLegionMember()) {
-			PacketSendUtility.broadcastPacketToLegion(player.getLegion(), new S_MESSAGE(player, message, type));
+			PacketSendUtility.broadcastPacketToLegion(player.getLegion(), new SM_MESSAGE(player, message, type));
 		}
 	}
 }

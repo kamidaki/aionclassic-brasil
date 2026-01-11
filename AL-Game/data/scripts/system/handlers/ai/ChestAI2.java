@@ -10,6 +10,12 @@
  */
 package ai;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+
 import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.poll.AIAnswer;
@@ -21,13 +27,11 @@ import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.chest.ChestTemplate;
 import com.aionemu.gameserver.model.templates.chest.KeyItem;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.drop.DropRegistrationService;
 import com.aionemu.gameserver.services.drop.DropService;
 import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.*;
 
 @AIName("chest")
 public class ChestAI2 extends ActionItemNpcAI2
@@ -70,7 +74,7 @@ public class ChestAI2 extends ActionItemNpcAI2
 			DropRegistrationService.getInstance().registerDrop(getOwner(), player, Collections.max(players, Comparator.comparingInt(Player::getLevel)).getLevel(), players);
 			DropService.getInstance().requestDropList(player, getObjectId());
 		} else {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(false, 1111300, player.getObjectId(), 2));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(false, 1111300, player.getObjectId(), 2));
 		}
 	}
 

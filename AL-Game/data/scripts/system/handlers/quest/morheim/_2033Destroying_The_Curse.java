@@ -10,21 +10,22 @@
  */
 package quest.morheim;
 
-import com.aionemu.gameserver.ai2.*;
+import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
-import com.aionemu.gameserver.model.*;
-import com.aionemu.gameserver.model.gameobjects.*;
+import com.aionemu.gameserver.model.EmotionType;
+import com.aionemu.gameserver.model.gameobjects.Item;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.questEngine.handlers.HandlerResult;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
+import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.questEngine.model.QuestDialog;
-import com.aionemu.gameserver.services.*;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.services.NpcShoutsService;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.zone.ZoneName;
-import com.aionemu.gameserver.utils.*;
 
 /****/
 /** Author Rinzler (Encom)
@@ -122,7 +123,7 @@ public class _2033Destroying_The_Curse extends QuestHandler
 						npc.getSpawn().setWalkerId("df2_df2_npcpath_q2033");
 						WalkManager.startWalking((NpcAI2) npc.getAi2());
 						npc.setState(1);
-						PacketSendUtility.broadcastPacket(npc, new S_ACTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
+						PacketSendUtility.broadcastPacket(npc, new SM_EMOTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
 						///Follow me!
 						NpcShoutsService.getInstance().sendMsg(npc, 1100702, npc.getObjectId(), 0, 0);
 						///I'm so tired!

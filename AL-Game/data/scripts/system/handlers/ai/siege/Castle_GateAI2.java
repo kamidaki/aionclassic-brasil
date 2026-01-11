@@ -10,11 +10,17 @@
  */
 package ai.siege;
 
-import com.aionemu.gameserver.ai2.*;
-import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.ai2.AI2Actions;
+import com.aionemu.gameserver.ai2.AI2Request;
+import com.aionemu.gameserver.ai2.AIName;
+import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.model.gameobjects.AionObject;
+import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
+import com.aionemu.gameserver.network.aion.serverpackets.S_POLYMORPH;
+import com.aionemu.gameserver.network.aion.serverpackets.S_USER_CHANGED_TARGET;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
@@ -71,7 +77,7 @@ public class Castle_GateAI2 extends NpcAI2
 				if (winner instanceof Creature) {
 					final Creature kill = (Creature) winner;
 					//"Player Name" of the "Race" destroyed the Castle Gate.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1301049, kill.getRace().getRaceDescriptionId(), kill.getName()));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1301049, kill.getRace().getRaceDescriptionId(), kill.getName()));
 				}
 			}
 		});

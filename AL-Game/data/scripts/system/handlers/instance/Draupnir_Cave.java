@@ -10,30 +10,24 @@
  */
 package instance;
 
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
+import java.util.List;
 
+import com.aionemu.commons.network.util.ThreadPoolManager;
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.NpcAI2;
-import com.aionemu.gameserver.ai2.AIState;
-import com.aionemu.gameserver.ai2.AbstractAI;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.instance.handlers.GeneralInstanceHandler;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
 import com.aionemu.gameserver.model.Race;
-import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.*;
+import com.aionemu.gameserver.services.ClassChangeService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-
-import java.util.*;
-import java.util.concurrent.Future;
 
 /****/
 /** Author Rinzler (Encom)
@@ -140,7 +134,7 @@ public class Draupnir_Cave extends GeneralInstanceHandler
 					ClassChangeService.onUpdateQuest2633(player);
 				} else {
 					///You have not acquired this quest.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 				}
 			break;
 			case 700514: //Artifact Of Sealing.
@@ -150,7 +144,7 @@ public class Draupnir_Cave extends GeneralInstanceHandler
 					spawn(215385, npc.getX(), npc.getY(), npc.getZ(), (byte) 0); //Garnokk.
 				} else {
 					///You have not acquired this quest.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 				}
 			break;
 		}
@@ -176,7 +170,7 @@ public class Draupnir_Cave extends GeneralInstanceHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});

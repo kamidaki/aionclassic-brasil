@@ -11,7 +11,6 @@
 package com.aionemu.gameserver.ai2.handler;
 
 import com.aionemu.gameserver.ai2.NpcAI2;
-import com.aionemu.gameserver.ai2.handler.TargetEventHandler;
 
 public class MoveEventHandler
 {

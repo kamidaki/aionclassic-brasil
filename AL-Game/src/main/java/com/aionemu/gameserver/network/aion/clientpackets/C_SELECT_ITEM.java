@@ -1,21 +1,22 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.controllers.observer.ItemUseObserver;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.DescriptionId;
+import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.decomposable.DecomposableItemList;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
 import com.aionemu.gameserver.network.aion.serverpackets.missing.SM_SELECT_ITEM_ADD;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class C_SELECT_ITEM extends AionClientPacket
 {
@@ -68,7 +69,7 @@ public class C_SELECT_ITEM extends AionClientPacket
 			public void abort()
 			{
 				player.getController().cancelTask(TaskId.ITEM_USE);
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400453, new DescriptionId(nameId)));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400453, new DescriptionId(nameId)));
 				player.getObserveController().removeObserver(this);
 				sendPacket(new S_USE_ITEM(player.getObjectId(), player.getObjectId(), uniqueItemId, item.getItemId(), 0, 2, 2));
 			}

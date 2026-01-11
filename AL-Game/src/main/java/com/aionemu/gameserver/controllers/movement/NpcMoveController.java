@@ -46,7 +46,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
     private static final int MAX_NAV_FAILURES = 3;
     private static final long NAV_FAILURE_RESET_MS = 5000L;
     private static final float NAV_FAILURE_DISTANCE_EPSILON = 1.0f;
-    
+
     private int returnAttempts;
     private Destination destination = Destination.TARGET_OBJECT;
     private float pointX;
@@ -63,11 +63,11 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
     int walkPause;
     private float cachedTargetZ;
     private boolean nextPointFromGeo;
-    
+
     // NAV failure tracking
     private int navFailureCount;
     private long lastNavFailureTime;
-    
+
     // Flee tracking
     private float lastTargetX, lastTargetY;
     private float lastOwnerX, lastOwnerY;
@@ -78,7 +78,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
     }
 
     private static enum Destination {
-        TARGET_OBJECT, 
+        TARGET_OBJECT,
         POINT,
         HOME,
         FLEE_FROM_FLYING_TARGET
@@ -173,11 +173,11 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 
         // Array de ângulos para testar
         double[] testAngles = {
-            baseFleeAngle,
-            baseFleeAngle + Math.toRadians(30),
-            baseFleeAngle - Math.toRadians(30),
-            baseFleeAngle + Math.toRadians(60),
-            baseFleeAngle - Math.toRadians(60)
+                baseFleeAngle,
+                baseFleeAngle + Math.toRadians(30),
+                baseFleeAngle - Math.toRadians(30),
+                baseFleeAngle + Math.toRadians(60),
+                baseFleeAngle - Math.toRadians(60)
         };
 
         float fleeDistance = 15.0f;
@@ -209,7 +209,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
      * Verifica se um ponto de fuga é válido
      */
     private boolean isValidFleePoint(float startX, float startY, float startZ,
-        float endX, float endY, float endZ) {
+                                     float endX, float endY, float endZ) {
 
         if (Float.isNaN(endZ)) {
             return false;
@@ -221,8 +221,8 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
         }
 
         if (GeoDataConfig.GEO_ENABLE && !GeoService.getInstance().canSee(
-            owner.getWorldId(), startX, startY, startZ + 1.0f,
-            endX, endY, endZ + 1.0f, 0, owner.getInstanceId())) {
+                owner.getWorldId(), startX, startY, startZ + 1.0f,
+                endX, endY, endZ + 1.0f, 0, owner.getInstanceId())) {
             return false;
         }
 
@@ -272,9 +272,9 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
                 if (!(target instanceof Creature)) {
                     return;
                 }
-                
+
                 Creature creatureTarget = (Creature) target;
-                
+
                 // VERIFICAÇÃO: NPC terrestre vs alvo voador
                 if (creatureTarget.isFlying() && !npc.isFlying()) {
                     destination = Destination.FLEE_FROM_FLYING_TARGET;
@@ -289,11 +289,11 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
                     pointZ = getTargetZ(npc, creatureTarget);
                     cachedPathValid = false;
                 }
-                
+
                 // SISTEMA NAV MELHORADO
                 if (!cachedPathValid || cachedPath == null) {
                     cachedPath = NavService.getInstance().navigateToTarget(owner, (Creature) target);
-                    
+
                     // Verifica se é falha de navegação
                     if (isNavFailurePath(cachedPath)) {
                         cachedPath = null;
@@ -303,7 +303,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
                         }
                     } else {
                         resetNavFailureTracker();
-                        
+
                         // Processa caminho se válido
                         if (cachedPath != null && cachedPath.length > 0) {
                             // Valida Z de todos os pontos
@@ -313,7 +313,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
                                     point[2] = getValidTargetZ(point[0], point[1], point[2], creatureTarget);
                                 }
                             }
-                            
+
                             // Adiciona aleatoriedade no ponto final
                             if (cachedPath.length > 1) {
                                 float[] lastPoint = cachedPath[cachedPath.length - 1];
@@ -332,13 +332,13 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 
                                 // Recalcula Z após mudança X,Y
                                 lastPoint[2] = getValidTargetZ(lastPoint[0], lastPoint[1],
-                                    lastPoint[2], creatureTarget);
+                                        lastPoint[2], creatureTarget);
                             }
                         }
                         cachedPathValid = true;
                     }
                 }
-                
+
                 if (cachedPath != null && cachedPath.length > 0) {
                     float[] p1 = cachedPath[0];
                     moveToLocation(p1[0], p1[1], getValidTargetZ(p1[0], p1[1], p1[2], creatureTarget), offset);
@@ -347,7 +347,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
                     moveToLocation(pointX, pointY, pointZ, offset);
                 }
                 break;
-                
+
             case FLEE_FROM_FLYING_TARGET:
                 Creature fleeTarget = owner.getTarget() instanceof Creature ? (Creature) owner.getTarget() : null;
                 if (fleeTarget == null) {
@@ -366,12 +366,12 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
                     calculateFleePoint();
                 }
                 break;
-                
+
             case POINT:
                 offset = 0.1f;
                 moveToLocation(pointX, pointY, pointZ, offset);
                 break;
-                
+
             case HOME:
                 if ((!cachedPathValid || cachedPath == null) && (returnAttempts < 3)) {
                     cachedPath = NavService.getInstance().navigateToLocation(owner, pointX, pointY, pointZ);
@@ -403,7 +403,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 
         // Tenta encontrar Z na superfície
         float geoZ = GeoService.getInstance().getZ(worldId, targetX, targetY,
-            originalZ + searchMargin, originalZ - searchMargin, instanceId);
+                originalZ + searchMargin, originalZ - searchMargin, instanceId);
 
         if (!Float.isNaN(geoZ)) {
             return geoZ;
@@ -415,7 +415,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
 
         // Fallback: busca em torno da altura atual do NPC
         geoZ = GeoService.getInstance().getZ(worldId, targetX, targetY,
-            ownerZ + fallbackRange, ownerZ - fallbackRange, instanceId);
+                ownerZ + fallbackRange, ownerZ - fallbackRange, instanceId);
 
         if (!Float.isNaN(geoZ)) {
             return geoZ;
@@ -424,7 +424,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
         // Tentativa final: busca mais ampla
         float extendedRange = Math.max(fallbackRange * 1.5f, searchMargin * 2f);
         geoZ = GeoService.getInstance().getZ(worldId, targetX, targetY,
-            originalZ + extendedRange, originalZ - extendedRange, instanceId);
+                originalZ + extendedRange, originalZ - extendedRange, instanceId);
 
         return !Float.isNaN(geoZ) ? geoZ : originalZ;
     }
@@ -519,7 +519,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
         if (futureDistPassed > dist) {
             futureDistPassed = dist;
         }
-        
+
         // Código para processamento de caminhos em cache
         if (futureDistPassed == dist
                 && (destination == Destination.TARGET_OBJECT || destination == Destination.HOME)) {
@@ -542,24 +542,24 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
         if (ownerX == newX && ownerY == newY && owner.getSpawn().getRandomWalk() > 0) {
             return;
         }
-        
+
         // CORREÇÃO ESCADAS: VALIDAÇÃO DE Z ADAPTATIVA
         boolean walkerMovement = destination == Destination.POINT && currentRoute != null;
 
         if (GeoDataConfig.GEO_NPC_MOVE && GeoDataConfig.GEO_ENABLE &&
-            !walkerMovement &&
-            owner.getAi2().getSubState() != AISubState.WALK_PATH &&
-            owner.getAi2().getState() != AIState.RETURNING) {
+                !walkerMovement &&
+                owner.getAi2().getSubState() != AISubState.WALK_PATH &&
+                owner.getAi2().getState() != AIState.RETURNING) {
 
             // Validação de Z melhorada
             if (!owner.isFlying()) {
                 long now = System.currentTimeMillis();
                 if (owner.getSpawn().getX() != targetDestX ||
-                    owner.getSpawn().getY() != targetDestY ||
-                    owner.getSpawn().getZ() != targetDestZ) {
+                        owner.getSpawn().getY() != targetDestY ||
+                        owner.getSpawn().getZ() != targetDestZ) {
 
                     float geoZ = GeoService.getInstance().getZ(owner.getWorldId(), newX, newY,
-                        newZ + 2, Math.min(newZ, ownerZ) - 2, owner.getInstanceId());
+                            newZ + 2, Math.min(newZ, ownerZ) - 2, owner.getInstanceId());
 
                     if (!Float.isNaN(geoZ)) {
                         if (Math.abs(newZ - geoZ) > 1) {
@@ -640,19 +640,19 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
         pointY = 0.0f;
         pointZ = 0.0f;
         nextPointFromGeo = false;
-        
+
         // Reset NAV
         resetNavFailureTracker();
         cachedPathValid = false;
         cachedPath = null;
-        
+
         // Reset flee tracking
         lastTargetX = 0;
         lastTargetY = 0;
         lastOwnerX = 0;
         lastOwnerY = 0;
         lastMovementTime = System.currentTimeMillis();
-        
+
         // Reset destination para evitar fuga infinita
         if (destination == Destination.FLEE_FROM_FLYING_TARGET) {
             destination = Destination.TARGET_OBJECT;
@@ -690,7 +690,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
             float[] point = path[0];
             if (point.length >= 3) {
                 double distance = MathUtil.getDistance(owner.getX(), owner.getY(), owner.getZ(),
-                    point[0], point[1], point[2]);
+                        point[0], point[1], point[2]);
                 return distance <= NAV_FAILURE_DISTANCE_EPSILON;
             }
         }
@@ -783,7 +783,7 @@ public class NpcMoveController extends CreatureMoveController<Npc> {
     public boolean isFollowingTarget() {
         return destination == Destination.TARGET_OBJECT;
     }
-    
+
     /**
      * Verifica se o NPC está fugindo de um alvo voador
      */

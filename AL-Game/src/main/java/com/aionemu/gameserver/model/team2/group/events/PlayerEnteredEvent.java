@@ -15,10 +15,10 @@ import com.aionemu.gameserver.model.team2.TeamEvent;
 import com.aionemu.gameserver.model.team2.common.legacy.GroupEvent;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_INSTANCE_DUNGEON_COOLTIMES;
 import com.aionemu.gameserver.network.aion.serverpackets.S_PARTY_INFO;
 import com.aionemu.gameserver.network.aion.serverpackets.S_PARTY_MEMBER_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_INSTANCE_DUNGEON_COOLTIMES;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.google.common.base.Predicate;
 
@@ -48,7 +48,7 @@ public class PlayerEnteredEvent implements Predicate<Player>, TeamEvent {
         PlayerGroupService.addPlayerToGroup(group, enteredPlayer);
         PacketSendUtility.sendPacket(enteredPlayer, new S_PARTY_INFO(group));
         PacketSendUtility.sendPacket(enteredPlayer, new S_PARTY_MEMBER_INFO(group, enteredPlayer, GroupEvent.JOIN));
-        PacketSendUtility.sendPacket(enteredPlayer, S_MESSAGE_CODE.STR_PARTY_ENTERED_PARTY);
+        PacketSendUtility.sendPacket(enteredPlayer, SM_SYSTEM_MESSAGE.STR_PARTY_ENTERED_PARTY);
         group.applyOnMembers(this);
     }
 
@@ -58,7 +58,7 @@ public class PlayerEnteredEvent implements Predicate<Player>, TeamEvent {
             // TODO probably here JOIN event
             PacketSendUtility.sendPacket(player, new S_PARTY_MEMBER_INFO(group, enteredPlayer, GroupEvent.ENTER));
             PacketSendUtility.sendPacket(player, new S_INSTANCE_DUNGEON_COOLTIMES(enteredPlayer, false, group));
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_PARTY_HE_ENTERED_PARTY(enteredPlayer.getName()));
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_PARTY_HE_ENTERED_PARTY(enteredPlayer.getName()));
 
             PacketSendUtility.sendPacket(enteredPlayer, new S_PARTY_MEMBER_INFO(group, player, GroupEvent.ENTER));
         }

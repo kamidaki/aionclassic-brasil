@@ -14,9 +14,8 @@ import com.aionemu.gameserver.configs.main.GSConfig;
 import com.aionemu.gameserver.network.aion.AionConnection;
 import com.aionemu.gameserver.network.aion.AionServerPacket;
 import com.aionemu.gameserver.questEngine.model.QuestState;
-import javolution.util.FastList;
 
-import static com.aionemu.gameserver.dataholders.DataManager.QUEST_DATA;
+import javolution.util.FastList;
 
 public class S_LOAD_FINISHEDQUEST extends AionServerPacket
 {

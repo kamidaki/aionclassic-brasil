@@ -10,10 +10,7 @@
  */
 package com.aionemu.gameserver.dataholders;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
-import com.aionemu.gameserver.model.Race;
-import com.aionemu.gameserver.model.templates.serial_killer.RankRestriction;
+import java.util.List;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -23,7 +20,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import java.util.*;
+import com.aionemu.gameserver.model.Race;
+import com.aionemu.gameserver.model.templates.serial_killer.RankRestriction;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {"rankRestriction"})

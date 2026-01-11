@@ -16,14 +16,21 @@
  */
 package com.aionemu.gameserver.services.item;
 
+import java.util.Collections;
+
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.items.storage.StorageType;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_INVENTORY_ADD_ITEM;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ADD_WAREHOUSE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_GUILD_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_INVENTORY_UPDATE_ITEM;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_WAREHOUSE_ITEM_DESC;
+import com.aionemu.gameserver.network.aion.serverpackets.S_EVENT;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_DELETE_ITEM;
+import com.aionemu.gameserver.network.aion.serverpackets.S_REMOVE_WAREHOUSE;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.Collections;
 
 /**
  * TODO: <br>
@@ -167,15 +174,15 @@ public class ItemPacketService {
     }
 
     public static final void updateItemAfterInfoChange(Player player, Item item) {
-        PacketSendUtility.sendPacket(player, new S_CHANGE_ITEM_DESC(player, item));
+        PacketSendUtility.sendPacket(player, new SM_INVENTORY_UPDATE_ITEM(player, item));
     }
 
     public static final void updateItemAfterInfoChange(Player player, Item item, ItemUpdateType updateType) {
-        PacketSendUtility.sendPacket(player, new S_CHANGE_ITEM_DESC(player, item, updateType));
+        PacketSendUtility.sendPacket(player, new SM_INVENTORY_UPDATE_ITEM(player, item, updateType));
     }
 
     public static final void updateItemAfterEquip(Player player, Item item) {
-        PacketSendUtility.sendPacket(player, new S_CHANGE_ITEM_DESC(player, item, ItemUpdateType.EQUIP_UNEQUIP));
+        PacketSendUtility.sendPacket(player, new SM_INVENTORY_UPDATE_ITEM(player, item, ItemUpdateType.EQUIP_UNEQUIP));
     }
 
     public static final void sendItemPacket(Player player, StorageType storageType, Item item, ItemUpdateType updateType) {
@@ -192,7 +199,7 @@ public class ItemPacketService {
     public static final void sendItemDeletePacket(Player player, StorageType storageType, Item item, ItemDeleteType deleteType) {
         switch (storageType) {
             case CUBE:
-                PacketSendUtility.sendPacket(player, new S_REMOVE_INVENTORY(item.getObjectId(), deleteType));
+                PacketSendUtility.sendPacket(player, new SM_DELETE_ITEM(item.getObjectId(), deleteType));
                 break;
             default:
                 PacketSendUtility.sendPacket(player, new S_REMOVE_WAREHOUSE(storageType.getId(), item.getObjectId(), deleteType));
@@ -206,7 +213,7 @@ public class ItemPacketService {
     public static final void sendItemUpdatePacket(Player player, StorageType storageType, Item item, ItemUpdateType updateType) {
         switch (storageType) {
             case CUBE:
-                PacketSendUtility.sendPacket(player, new S_CHANGE_ITEM_DESC(player, item, updateType));
+                PacketSendUtility.sendPacket(player, new SM_INVENTORY_UPDATE_ITEM(player, item, updateType));
                 break;
             case LEGION_WAREHOUSE:
                 if (item.getItemTemplate().isKinah()) {
@@ -228,7 +235,7 @@ public class ItemPacketService {
     public static final void sendStorageUpdatePacket(Player player, StorageType storageType, Item item, ItemAddType addType) {
         switch (storageType) {
             case CUBE:
-                PacketSendUtility.sendPacket(player, new S_ADD_INVENTORY(Collections.singletonList(item), player, addType));
+                PacketSendUtility.sendPacket(player, new SM_INVENTORY_ADD_ITEM(Collections.singletonList(item), player, addType));
                 break;
             case LEGION_WAREHOUSE:
                 if (item.getItemTemplate().isKinah()) {

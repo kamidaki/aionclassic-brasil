@@ -11,7 +11,6 @@
 package com.aionemu.gameserver.model.stats.calc.functions;
 
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.model.items.ItemSlot;
 import com.aionemu.gameserver.model.stats.calc.Stat2;
 import com.aionemu.gameserver.skillengine.model.Effect;
 

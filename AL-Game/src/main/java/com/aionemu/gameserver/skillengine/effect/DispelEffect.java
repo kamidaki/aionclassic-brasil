@@ -5,11 +5,10 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.S_INVISIBLE_LEVEL;
 import com.aionemu.gameserver.skillengine.model.DispelType;
 import com.aionemu.gameserver.skillengine.model.Effect;
 import com.aionemu.gameserver.skillengine.model.SkillTargetSlot;
-import com.aionemu.gameserver.network.aion.serverpackets.S_INVISIBLE_LEVEL;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 
 public class DispelEffect extends EffectTemplate

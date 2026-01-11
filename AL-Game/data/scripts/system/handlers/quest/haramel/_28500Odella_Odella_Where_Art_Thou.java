@@ -11,12 +11,12 @@
 package quest.haramel;
 
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.model.QuestDialog;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.zone.ZoneName;
 
@@ -61,6 +61,8 @@ public class _28500Odella_Odella_Where_Art_Thou extends QuestHandler
 					} case REFUSE_QUEST: {
 				        return closeDialogWindow(env);
 					}
+				default:
+					break;
                 }
 			}
 		} else if (qs != null && qs.getStatus() == QuestStatus.START) {
@@ -75,6 +77,8 @@ public class _28500Odella_Odella_Where_Art_Thou extends QuestHandler
                         changeQuestStep(env, 0, 1, false);
 						return closeDialogWindow(env);
 					}
+				default:
+					break;
                 }
 			} if (targetId == 730306) {
                 switch (env.getDialog()) {
@@ -86,6 +90,8 @@ public class _28500Odella_Odella_Where_Art_Thou extends QuestHandler
                         changeQuestStep(env, 1, 2, false);
 						return closeDialogWindow(env);
 					}
+				default:
+					break;
                 }
 			} if (targetId == 730307) {
                 switch (env.getDialog()) {
@@ -96,9 +102,11 @@ public class _28500Odella_Odella_Where_Art_Thou extends QuestHandler
 					} case STEP_TO_3: {
 						changeQuestStep(env, 2, 3, false);
 						///Sneak into Haramel to pursue the suspicious Shugo!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_QUEST_SAY_IDNovice_03, 0);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_QUEST_SAY_IDNovice_03, 0);
 						return closeDialogWindow(env);
 					}
+				default:
+					break;
                 }
 			}
 		} else if (qs != null && qs.getStatus() == QuestStatus.REWARD) {

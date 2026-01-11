@@ -1,5 +1,13 @@
 package com.aionemu.gameserver.services.player;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.dao.PlayerBattlePassDAO;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.Race;
@@ -8,20 +16,24 @@ import com.aionemu.gameserver.model.gameobjects.player.battlePass.BattlePassQues
 import com.aionemu.gameserver.model.gameobjects.player.battlePass.BattlePassReward;
 import com.aionemu.gameserver.model.gameobjects.player.battlePass.BattlePassSeason;
 import com.aionemu.gameserver.model.gameobjects.player.battlePass.BattleQuestState;
-import com.aionemu.gameserver.model.templates.battle_pass.*;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.model.templates.battle_pass.ActionRequiredType;
+import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
+import com.aionemu.gameserver.model.templates.battle_pass.BattlePassQuestTemplate;
+import com.aionemu.gameserver.model.templates.battle_pass.BattlePassSeasonTemplate;
+import com.aionemu.gameserver.model.templates.battle_pass.BattleQuestType;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_BATTLEPASS_LIST;
+import com.aionemu.gameserver.network.aion.serverpackets.S_BATTLEPASS_UPDATED;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CLEAR_ACHIEVEMENT_EVENT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CREATE_ACHIEVEMENT_EVENT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PROGRESS_ACHIEVEMENT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_REWARD_ACHIEVEMENT_EVENT_RESULT;
 import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.idfactory.IDFactory;
+
 import javolution.util.FastList;
 import javolution.util.FastMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
 
 public class BattlePassService
 {
@@ -163,7 +175,7 @@ public class BattlePassService
     public void onGetReward(Player player, int passId) {
         if (player.getInventory().isFull() || player.getInventory().isFullSpecialCube()) {
             ///Your inventory is full. Try again after making space.
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DEVAPASS_REWARD_INVENTORY_FULL);
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DEVAPASS_REWARD_INVENTORY_FULL);
             return;
         }
         BattlePassSeason season = player.getPlayerBattlePass().getBattlePassSeason().get(passId);
@@ -237,12 +249,12 @@ public class BattlePassService
             }
             season.setLevel(season.getLevel() + level);
             PlayerBattlePassDAO.updateSeason(player, season);
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DEVAPASS_LEVEL_UP(season.getLevel()));
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DEVAPASS_LEVEL_UP(season.getLevel()));
             PacketSendUtility.sendPacket(player, new S_BATTLEPASS_UPDATED(season));
         } else {
             season.setLevel(season.getLevel() + 1);
             PlayerBattlePassDAO.updateSeason(player, season);
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DEVAPASS_LEVEL_UP(season.getLevel()));
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DEVAPASS_LEVEL_UP(season.getLevel()));
             PacketSendUtility.sendPacket(player, new S_BATTLEPASS_UPDATED(season));
         }
     }

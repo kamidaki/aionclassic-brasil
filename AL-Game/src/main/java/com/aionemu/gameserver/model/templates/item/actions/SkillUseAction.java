@@ -10,9 +10,14 @@
  */
 package com.aionemu.gameserver.model.templates.item.actions;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.skillengine.SkillEngine;
@@ -21,11 +26,6 @@ import com.aionemu.gameserver.skillengine.effect.SummonEffect;
 import com.aionemu.gameserver.skillengine.effect.TransformEffect;
 import com.aionemu.gameserver.skillengine.model.Skill;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SkillUseAction")
@@ -54,13 +54,13 @@ public class SkillUseAction extends AbstractItemAction
 		int nameId = parentItem.getItemTemplate().getNameId();
         byte levelRestrict = parentItem.getItemTemplate().getMaxLevelRestrict(player);
         if (levelRestrict != 0) {
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_USE_ITEM_TOO_LOW_LEVEL_MUST_BE_THIS_LEVEL(levelRestrict, nameId));
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_ITEM_TOO_LOW_LEVEL_MUST_BE_THIS_LEVEL(levelRestrict, nameId));
             return false;
         } if (player.isTransformed()) {
 			for (EffectTemplate template: skill.getSkillTemplate().getEffects().getEffects()) {
 				if (template instanceof TransformEffect) {
 					///You cannot use this skill while transformed.
-					PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_SKILL_CAN_NOT_CAST_IN_SHAPECHANGE, 0);
+					PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_SKILL_CAN_NOT_CAST_IN_SHAPECHANGE, 0);
 					return false;
 				}
 			}
@@ -68,13 +68,13 @@ public class SkillUseAction extends AbstractItemAction
 			for (EffectTemplate template: skill.getSkillTemplate().getEffects().getEffects()) {
 				if (template instanceof SummonEffect) {
 					///You already have a spirit following you.
-					PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_SKILL_SUMMON_ALREADY_HAVE_A_FOLLOWER, 0);
+					PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_SKILL_SUMMON_ALREADY_HAVE_A_FOLLOWER, 0);
 					return false;
 				}
 			}
 		} if (player.getEffectController().hasAbnormalEffect(skillid)) {
             ///You are already under the same effect.
-			PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_ITEM_SAME_EFFECT_ALREADY_TAKEN, 0);
+			PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_ITEM_SAME_EFFECT_ALREADY_TAKEN, 0);
             return false;
         }
 		return skill.canUseSkill();

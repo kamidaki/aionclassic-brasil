@@ -1,7 +1,7 @@
 package admincommands;
 
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_TIME;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_GAME_TIME;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 import com.aionemu.gameserver.utils.gametime.GameTimeManager;
@@ -50,7 +50,7 @@ public class Time extends AdminCommand
 		World.getInstance().doOnAllPlayers(new Visitor<Player>() {
 			@Override
 			public void visit(Player player) {
-				PacketSendUtility.sendPacket(player, new S_TIME());
+				PacketSendUtility.sendPacket(player, new SM_GAME_TIME());
 			}
 		});
 		PacketSendUtility.sendMessage(admin, "You changed the time to " + params[0].toString() + ".");

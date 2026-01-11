@@ -16,30 +16,31 @@
  */
 package ai.instance.kromedesTrial;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
+import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AIState;
-import com.aionemu.gameserver.ai2.AI2Actions;
 import com.aionemu.gameserver.ai2.AbstractAI;
 import com.aionemu.gameserver.ai2.manager.EmoteManager;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
-import com.aionemu.gameserver.controllers.effect.*;
+import com.aionemu.gameserver.controllers.effect.EffectController;
 import com.aionemu.gameserver.model.EmotionType;
-import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.skillengine.SkillEngine;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.services.NpcShoutsService;
+import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import com.aionemu.gameserver.world.*;
+import com.aionemu.gameserver.world.WorldMapInstance;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -138,7 +139,7 @@ public class Shadow_Judge_KaligaAI2 extends AggressiveNpcAI2
 					getOwner().getMoveController().moveToPoint(662.4417f, 782.4112f, 216.2621f);
 					WalkManager.startWalking(Shadow_Judge_KaligaAI2.this);
 					getOwner().setState(1);
-					PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
+					PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
 				}
 			}, 5000);
         } else if (point == 2) {
@@ -155,7 +156,7 @@ public class Shadow_Judge_KaligaAI2 extends AggressiveNpcAI2
 					getOwner().getMoveController().moveToPoint(659.0813f, 774.3127f, 216.2343f);
 					WalkManager.startWalking(Shadow_Judge_KaligaAI2.this);
 					getOwner().setState(1);
-					PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
+					PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
 				}
 			}, 5000);
         }
@@ -178,7 +179,7 @@ public class Shadow_Judge_KaligaAI2 extends AggressiveNpcAI2
 			((AbstractAI) npc.getAi2()).setStateIfNot(AIState.WALKING);
 			npc.setState(1);
 			npc.getMoveController().moveToTargetObject();
-			PacketSendUtility.broadcastPacket(npc, new S_ACTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
+			PacketSendUtility.broadcastPacket(npc, new SM_EMOTION(npc, EmotionType.START_EMOTE2, 0, npc.getObjectId()));
 		}
 	}
 	
@@ -229,7 +230,7 @@ public class Shadow_Judge_KaligaAI2 extends AggressiveNpcAI2
 		getOwner().getMoveController().moveToPoint(getOwner().getSpawn().getX(), getOwner().getSpawn().getY(), getOwner().getSpawn().getZ());
 		WalkManager.startWalking(Shadow_Judge_KaligaAI2.this);
 		getOwner().setState(1);
-		PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
+		PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getOwner().getObjectId()));
 		////////////////////////////////////////////
 		WorldMapInstance instance = getPosition().getWorldMapInstance();
 		killNpc(instance.getNpcs(282093));

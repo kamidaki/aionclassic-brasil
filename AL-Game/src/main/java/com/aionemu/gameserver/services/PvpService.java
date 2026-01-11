@@ -1,8 +1,16 @@
 package com.aionemu.gameserver.services;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.aionemu.gameserver.configs.main.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.commons.utils.Rnd;
+import com.aionemu.gameserver.configs.main.GroupConfig;
+import com.aionemu.gameserver.configs.main.LoggingConfig;
+import com.aionemu.gameserver.configs.main.PunishmentConfig;
+import com.aionemu.gameserver.configs.main.PvPConfig;
 import com.aionemu.gameserver.controllers.attack.AggroInfo;
 import com.aionemu.gameserver.controllers.attack.KillList;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
@@ -10,7 +18,7 @@ import com.aionemu.gameserver.model.gameobjects.player.RewardType;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAlliance;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.services.abyss.AbyssPointsService;
@@ -22,12 +30,6 @@ import com.aionemu.gameserver.utils.stats.AbyssRankEnum;
 import com.aionemu.gameserver.utils.stats.StatFunctions;
 
 import javolution.util.FastMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PvpService
 {
@@ -136,7 +138,7 @@ public class PvpService
 		}
 		BattlePassService.getInstance().onUpdateBattlePassMission(winner, 0, 1, BattlePassAction.PVP);
 		SerialKillerService.getInstance().updateRank(winner, victim);
-		PacketSendUtility.broadcastPacketAndReceive(victim, S_MESSAGE_CODE.STR_MSG_COMBAT_FRIENDLY_DEATH_TO_B(victim.getName(), winner.getName()));
+		PacketSendUtility.broadcastPacketAndReceive(victim, SM_SYSTEM_MESSAGE.STR_MSG_COMBAT_FRIENDLY_DEATH_TO_B(victim.getName(), winner.getName()));
 		if (LoggingConfig.LOG_KILL) {
 			log.info("[KILL] Player [" + winner.getName() + "] killed [" + victim.getName() + "]");
 		}

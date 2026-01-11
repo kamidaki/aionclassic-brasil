@@ -34,22 +34,22 @@ public abstract class AbstractCollisionObserver extends ActionObserver {
 	public void moved() {
 		if (!isRunning.getAndSet(true)) {
 			ThreadPoolManager.getInstance().execute(() -> {
-                try {
-                    Vector3f pos = new Vector3f(creature.getX(), creature.getY(), creature.getZ());
-                    Vector3f dir = oldPos.clone();
-                    float limit = pos.distance(dir);
-                    Objects.requireNonNull(dir.subtractLocal(pos)).normalizeLocal();
-                    Ray r = new Ray(pos, dir);
-                    r.setLimit(limit);
-                    CollisionResults results = new CollisionResults(intentions, creature.getInstanceId(), true);
-                    geometry.collideWith(r, results);
-                    onMoved(results);
-                    oldPos = pos;
-                }
-                finally {
-                    isRunning.set(false);
-                }
-            });
+				try {
+					Vector3f pos = new Vector3f(creature.getX(), creature.getY(), creature.getZ());
+					Vector3f dir = oldPos.clone();
+					float limit = pos.distance(dir);
+					Objects.requireNonNull(dir.subtractLocal(pos)).normalizeLocal();
+					Ray r = new Ray(pos, dir);
+					r.setLimit(limit);
+					CollisionResults results = new CollisionResults(intentions, creature.getInstanceId(), true);
+					geometry.collideWith(r, results);
+					onMoved(results);
+					oldPos = pos;
+				}
+				finally {
+					isRunning.set(false);
+				}
+			});
 		}
 	}
 

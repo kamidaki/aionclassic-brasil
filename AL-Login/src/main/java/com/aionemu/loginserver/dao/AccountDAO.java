@@ -1,19 +1,4 @@
-/*
- * This file is part of aion-emu <aion-emu.com>.
- * <p>
- * aion-emu is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * <p>
- * aion-emu is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * <p>
- * You should have received a copy of the GNU General Public License
- * along with aion-emu.  If not, see <http://www.gnu.org/licenses/>.
- */
+
 package com.aionemu.loginserver.dao;
 
 import com.aionemu.commons.database.DB;
@@ -245,7 +230,7 @@ public class AccountDAO
 	 */
 	public static boolean insertAccount(Account account)
 	{
-		System.out.println("Call insertAccount");
+		System.out.println("Criação Automática de Conta: Acionamento feito com sucesso.");
 		int result = 0;
 		PreparedStatement st = DB.prepareStatement("INSERT INTO account_data(`name`, `password`, access_level, membership, activated, last_server, last_ip, last_mac, ip_force, toll) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
@@ -262,7 +247,7 @@ public class AccountDAO
 			st.setLong(10, 0);
 			result = st.executeUpdate();
 		} catch (SQLException e) {
-			log.error("Can't inser account", e);
+			log.error("Criação Automática de Conta: houve um problema no registro", e);
 		} finally {
 			DB.close(st);
 		}

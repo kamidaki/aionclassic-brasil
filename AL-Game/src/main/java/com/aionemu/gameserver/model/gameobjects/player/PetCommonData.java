@@ -1,5 +1,7 @@
 package com.aionemu.gameserver.model.gameobjects.player;
 
+import java.sql.Timestamp;
+
 import com.aionemu.gameserver.dao.PlayerPetsDAO;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.IExpirable;
@@ -7,15 +9,13 @@ import com.aionemu.gameserver.model.templates.VisibleObjectTemplate;
 import com.aionemu.gameserver.model.templates.pet.PetDopingBag;
 import com.aionemu.gameserver.model.templates.pet.PetFunctionType;
 import com.aionemu.gameserver.model.templates.pet.PetTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.toypet.PetAdoptionService;
 import com.aionemu.gameserver.services.toypet.PetFeedProgress;
 import com.aionemu.gameserver.services.toypet.PetHungryLevel;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.utils.idfactory.IDFactory;
-
-import java.sql.Timestamp;
 
 public class PetCommonData extends VisibleObjectTemplate implements IExpirable
 {
@@ -298,7 +298,7 @@ public class PetCommonData extends VisibleObjectTemplate implements IExpirable
         if (player == null) {
             return;
         }
-        PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_PET_ABANDON_EXPIRE_TIME_COMPLETE(name));
+        PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_PET_ABANDON_EXPIRE_TIME_COMPLETE(name));
         PetAdoptionService.surrenderPet(player, petId);
     }
 

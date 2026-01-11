@@ -1,7 +1,8 @@
 package com.aionemu.gameserver.controllers;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.List;
 
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.configs.main.SecurityConfig;
 import com.aionemu.gameserver.controllers.observer.StartMovingListener;
 import com.aionemu.gameserver.dataholders.DataManager;
@@ -13,9 +14,9 @@ import com.aionemu.gameserver.model.gameobjects.player.RewardType;
 import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
 import com.aionemu.gameserver.model.templates.gather.GatherableTemplate;
 import com.aionemu.gameserver.model.templates.gather.Material;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_QUEST;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_STATUS;
 import com.aionemu.gameserver.services.PunishmentService;
 import com.aionemu.gameserver.services.RespawnService;
 import com.aionemu.gameserver.services.player.BattlePassService;
@@ -25,8 +26,6 @@ import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.RndSelector;
 import com.aionemu.gameserver.utils.captcha.CAPTCHAUtil;
 import com.aionemu.gameserver.world.World;
-
-import java.util.List;
 
 public class GatherableController extends VisibleObjectController<Gatherable>
 {
@@ -48,12 +47,12 @@ public class GatherableController extends VisibleObjectController<Gatherable>
 		if (template.getLevelLimit() > 0) {
 			if (player.getLevel() < template.getLevelLimit()) {
 				///You must be at least level %0 to perform extraction.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400737, template.getLevelLimit()));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400737, template.getLevelLimit()));
 				return;
 			}
 		} if (player.getInventory().isFull()) {
 			///You must have at least one free space in your cube to gather.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_GATHER_INVENTORY_IS_FULL);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_GATHER_INVENTORY_IS_FULL);
 			return;
 		} if (MathUtil.getDistance(getOwner(), player) > 5) {
 			return;
@@ -75,7 +74,7 @@ public class GatherableController extends VisibleObjectController<Gatherable>
 					player.setCaptchaImage(CAPTCHAUtil.createCAPTCHA(player.getCaptchaWord()).array());
 					PunishmentService.setIsNotGatherable(player, 0, true, SecurityConfig.CAPTCHA_EXTRACTION_BAN_TIME * 1000);
 					//You were poisoned during extraction and cannot extract for (Time remaining: 10Min)
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_CAPTCHA_RESTRICTED("10"));
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_CAPTCHA_RESTRICTED("10"));
 					PacketSendUtility.sendPacket(player, new S_QUEST(0, 60));
 				}
 			}
@@ -127,13 +126,13 @@ public class GatherableController extends VisibleObjectController<Gatherable>
 		int harvestSkillId = template.getHarvestSkill();
 		if (!player.getSkillList().isSkillPresent(harvestSkillId)) {
 			if (harvestSkillId == 30001) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_GATHER_INCORRECT_SKILL);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_GATHER_INCORRECT_SKILL);
 			} else {
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1330054, new DescriptionId(DataManager.SKILL_DATA.getSkillTemplate(harvestSkillId).getNameId())));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1330054, new DescriptionId(DataManager.SKILL_DATA.getSkillTemplate(harvestSkillId).getNameId())));
 			}
 			return false;
 		} if (player.getSkillList().getSkillLevel(harvestSkillId) < template.getSkillLevel()) {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1330001, new DescriptionId(DataManager.SKILL_DATA.getSkillTemplate(harvestSkillId).getNameId())));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1330001, new DescriptionId(DataManager.SKILL_DATA.getSkillTemplate(harvestSkillId).getNameId())));
 			return false;
 		}
 		return true;
@@ -153,7 +152,7 @@ public class GatherableController extends VisibleObjectController<Gatherable>
 				return (byte) (condOk ? 1 : 2);
 			} else if (template.getCheckType() == 2) {
 				if (player.getInventory().getItemCountByItemId(template.getRequiredItemId()) < template.getEraseValue()) {
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400376, new DescriptionId(template.getRequiredItemNameId())));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400376, new DescriptionId(template.getRequiredItemNameId())));
 					return 0;
 				} else {
 					return 1;
@@ -166,7 +165,7 @@ public class GatherableController extends VisibleObjectController<Gatherable>
 	private boolean checkGatherable(final Player player, final GatherableTemplate template) {
 		if (player.isNotGatherable()) {
 			//You are currently unable to extract. (Time remaining: 10Min)
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400273, (int) ((player.getGatherableTimer() - (System.currentTimeMillis() - player .getStopGatherable())) / 1000)));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400273, (int) ((player.getGatherableTimer() - (System.currentTimeMillis() - player .getStopGatherable())) / 1000)));
 			return false;
 		}
 		return true;
@@ -185,11 +184,11 @@ public class GatherableController extends VisibleObjectController<Gatherable>
 			int skillLvl = getOwner().getObjectTemplate().getSkillLevel();
 			int xpReward = (int) ((0.0031 * (skillLvl + 5.3) * (skillLvl + 1592.8) + 60));
 			if (player.getSkillList().addSkillXp(player, getOwner().getObjectTemplate().getHarvestSkill(), (int) RewardType.GATHERING.calcReward(player, xpReward), skillLvl)) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_EXTRACT_GATHERING_SUCCESS_GETEXP);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_EXTRACT_GATHERING_SUCCESS_GETEXP);
 				player.getCommonData().addExp(xpReward, RewardType.GATHERING);
-			    PacketSendUtility.sendPacket(player, new S_STATUS(player));
+			    PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
 			} else {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DONT_GET_PRODUCTION_EXP(new DescriptionId(DataManager.SKILL_DATA.getSkillTemplate(getOwner().getObjectTemplate().getHarvestSkill()).getNameId())));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DONT_GET_PRODUCTION_EXP(new DescriptionId(DataManager.SKILL_DATA.getSkillTemplate(getOwner().getObjectTemplate().getHarvestSkill()).getNameId())));
 			}
 			BattlePassService.getInstance().onUpdateBattlePassMission(player, getOwner().getObjectTemplate().getTemplateId(), 1, BattlePassAction.GATHERING);
 		}

@@ -18,16 +18,17 @@
  */
 package com.aionemu.gameserver.taskmanager.tasks;
 
+import java.util.Collection;
+import java.util.Map;
+
 import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.taskmanager.AbstractPeriodicTaskManager;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
-import javolution.util.FastMap;
 
-import java.util.Collection;
-import java.util.Map;
+import javolution.util.FastMap;
 
 public class TemporaryTradeTimeTask extends AbstractPeriodicTaskManager
 {
@@ -89,7 +90,7 @@ public class TemporaryTradeTimeTask extends AbstractPeriodicTaskManager
 						Player player = World.getInstance().findPlayer(playerId);
 						if (player != null) {
 							///%0's temporary trade time has expired. %0 can no longer be traded.
-							PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_END_OF_EXCHANGE_TIME(item.getNameId(), time));
+							PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_END_OF_EXCHANGE_TIME(item.getNameId(), time));
 						}
 					}
 				} else if (time <= 0) {
@@ -97,7 +98,7 @@ public class TemporaryTradeTimeTask extends AbstractPeriodicTaskManager
 						Player player = World.getInstance().findPlayer(playerId);
 						if (player != null) {
 							///%0's temporary trade time has expired and can no longer be traded.
-							PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_EXCHANGE_TIME_OVER(item.getNameId()));
+							PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_EXCHANGE_TIME_OVER(item.getNameId()));
 						}
 					}
 					item.setTemporaryExchangeTime(0);

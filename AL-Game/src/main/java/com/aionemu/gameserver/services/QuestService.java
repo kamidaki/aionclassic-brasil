@@ -1,5 +1,17 @@
 package com.aionemu.gameserver.services;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Future;
+
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.configs.main.GroupConfig;
@@ -27,9 +39,26 @@ import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.templates.QuestTemplate;
 import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
 import com.aionemu.gameserver.model.templates.npc.NpcTemplate;
-import com.aionemu.gameserver.model.templates.quest.*;
+import com.aionemu.gameserver.model.templates.quest.CollectItem;
+import com.aionemu.gameserver.model.templates.quest.CollectItems;
+import com.aionemu.gameserver.model.templates.quest.HandlerSideDrop;
+import com.aionemu.gameserver.model.templates.quest.InventoryItem;
+import com.aionemu.gameserver.model.templates.quest.InventoryItems;
+import com.aionemu.gameserver.model.templates.quest.QuestBonuses;
+import com.aionemu.gameserver.model.templates.quest.QuestCategory;
+import com.aionemu.gameserver.model.templates.quest.QuestDrop;
+import com.aionemu.gameserver.model.templates.quest.QuestItems;
+import com.aionemu.gameserver.model.templates.quest.QuestMentorType;
+import com.aionemu.gameserver.model.templates.quest.QuestRepeatCycle;
+import com.aionemu.gameserver.model.templates.quest.QuestWorkItems;
+import com.aionemu.gameserver.model.templates.quest.Rewards;
+import com.aionemu.gameserver.model.templates.quest.XMLStartCondition;
 import com.aionemu.gameserver.model.templates.spawns.SpawnSearchResult;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_STATS_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_EVENT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_LOOT;
+import com.aionemu.gameserver.network.aion.serverpackets.S_QUEST;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.handlers.HandlerResult;
 import com.aionemu.gameserver.questEngine.handlers.models.WorkOrdersData;
@@ -51,18 +80,8 @@ import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.utils.audit.AuditLogger;
 import com.aionemu.gameserver.utils.stats.AbyssRankEnum;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-
-import org.joda.time.DateTime;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.concurrent.Future;
 
 public final class QuestService
 {
@@ -102,7 +121,7 @@ public final class QuestService
 			return setFinishingState(env, template, reward);
 		} if (player.getInventory().isFullSpecialCube() || player.getInventory().isFull()) {
 			///You cannot acquire the item because there is no space in the inventory.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_INVEN_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_INVEN_ERROR);
 			return false;
 		}
 		player.getController().updateNearbyQuests();
@@ -259,7 +278,7 @@ public final class QuestService
 		BattlePassService.getInstance().onUpdateBattlePassMission(player, env.getQuestId(), 1, BattlePassAction.QUEST);
 		player.getController().updateZone();
 		player.getController().updateNearbyQuests();
-		PacketSendUtility.sendPacket(player, new S_STATUS(player));
+		PacketSendUtility.sendPacket(player, new SM_STATS_INFO(player));
 	}
 	
 	private static boolean setFinishingState(QuestEnv env, QuestTemplate template, int reward) {
@@ -313,7 +332,7 @@ public final class QuestService
 			if (now.isAfter(repeatDate)) {
 				repeatDate = repeatDate.plusHours(24);
 			}
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400855, "9"));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400855, "9"));
 		} else if (template.getQuestCoolTime() > 0) {
 			repeatDate = repeatDate.plusSeconds(template.getQuestCoolTime());
 		} else {
@@ -332,7 +351,7 @@ public final class QuestService
 				daysToAdd = 7 - repeatDate.getDayOfWeek() + startDay;
 			}
 			repeatDate = repeatDate.plusDays(daysToAdd);
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400857, new DescriptionId(1800667), "9"));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400857, new DescriptionId(1800667), "9"));
 		}
 		return new Timestamp(repeatDate.getMillis());
 	}
@@ -355,27 +374,27 @@ public final class QuestService
 		if (levelDiff > 2 && template.getMinlevelPermitted() != 999) {
 			return false;
 		} if (warn && levelDiff > 0 && (template.getMinlevelPermitted() != 999)) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_QUEST_ACQUIRE_ERROR_MIN_LEVEL(Integer.toString(template.getMinlevelPermitted())));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_QUEST_ACQUIRE_ERROR_MIN_LEVEL(Integer.toString(template.getMinlevelPermitted())));
 			return false;
 		} if (template.getMaxlevelPermitted() != 0 && player.getLevel() > template.getMaxlevelPermitted()) {
 			if (warn) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_QUEST_ACQUIRE_ERROR_MAX_LEVEL(Integer.toString(template.getMaxlevelPermitted())));
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_QUEST_ACQUIRE_ERROR_MAX_LEVEL(Integer.toString(template.getMaxlevelPermitted())));
 			}
 			return false;
 		} if (!template.getClassPermitted().isEmpty() && !template.getClassPermitted().contains(player.getCommonData().getPlayerClass())) {
 			if (warn) {
-				//PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_QUEST_ACQUIRE_ERROR_CLASS);
+				//PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_QUEST_ACQUIRE_ERROR_CLASS);
 			}
 			return false;
 		} if (template.getGenderPermitted() != null && template.getGenderPermitted() != player.getGender()) {
 			if (warn) {
-				PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_QUEST_ACQUIRE_ERROR_GENDER);
+				PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_QUEST_ACQUIRE_ERROR_GENDER);
 			}
 			return false;
 		} if (template.getRequiredRank() != 0) {
             if (player.getAbyssRank().getRank().getId() < template.getRequiredRank()) {
                 if (warn) {
-                    PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_QUEST_ACQUIRE_ERROR_MIN_RANK(AbyssRankEnum.getRankById(template.getRequiredRank()).getDescriptionId()));
+                    PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_QUEST_ACQUIRE_ERROR_MIN_RANK(AbyssRankEnum.getRankById(template.getRequiredRank()).getDescriptionId()));
                 }
                 return false;
             }
@@ -383,7 +402,7 @@ public final class QuestService
 			if (!player.getTitleList().contains(template.getTitleId())) {
                 if (warn) {
 					//You can only receive this quest when you have the %0 title.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300588, template.getTitleId()));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300588, template.getTitleId()));
 				}
 				return false;
             }
@@ -462,9 +481,9 @@ public final class QuestService
 			return false;
 		} if (!template.isNoCount() && !checkQuestListSize(qsl)) {
 			//Your quest tracker is full.
-			PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_QUEST_IND_EXCESS, 0);
+			PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_QUEST_IND_EXCESS, 0);
 			//You cannot receive any more quests
-			PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_QUEST_ACQUIRE_ERROR_MAX_NORMAL, 2000);
+			PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_QUEST_ACQUIRE_ERROR_MAX_NORMAL, 2000);
 			return false;
 		} if (qs != null) {
 			if (!qs.canRepeat()) {
@@ -482,7 +501,7 @@ public final class QuestService
 		PacketSendUtility.sendPacket(player, new S_QUEST(id, status.value(), 0));
 		if (template.getCategory() == QuestCategory.MISSION) {
 			//You have a new campaign quest.
-			PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MISSION_ACQUIRE_MESSAGE, 0);
+			PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MISSION_ACQUIRE_MESSAGE, 0);
 		}
 		player.getController().updateZone();
 		player.getController().updateNearbyQuests();
@@ -659,7 +678,7 @@ public final class QuestService
 				break;
 			}
 		} if (requiredItemNameId != 0 && showWarning) {
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_QUEST_ACQUIRE_ERROR_INVENTORY_ITEM(new DescriptionId(requiredItemNameId)));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_QUEST_ACQUIRE_ERROR_INVENTORY_ITEM(new DescriptionId(requiredItemNameId)));
 		}
 		return requiredItemNameId == 0;
 	}
@@ -969,9 +988,9 @@ public final class QuestService
 				player.getState() == CreatureState.GLIDING.getId() || player.getState() == CreatureState.LOOTING.getId() ||
 				player.getState() == CreatureState.PRIVATE_SHOP.getId() || player.getState() == CreatureState.CHAIR.getId() ||
 				player.getState() == CreatureState.TREATMENT.getId() || player.getState() == CreatureState.DEAD.getId()) {
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1401742));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1401742));
 			} else if (searchResult == null) {
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1401744));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1401744));
 				return;
 			}
 			TeleportService2.teleportToNpc(player, npcId);

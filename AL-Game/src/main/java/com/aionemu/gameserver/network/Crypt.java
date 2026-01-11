@@ -16,11 +16,12 @@
  */
 package com.aionemu.gameserver.network;
 
-import com.aionemu.commons.utils.Rnd;
+import java.nio.ByteBuffer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.ByteBuffer;
+import com.aionemu.commons.utils.Rnd;
 
 /**
  * Crypt will encrypt server packet and decrypt client packet.

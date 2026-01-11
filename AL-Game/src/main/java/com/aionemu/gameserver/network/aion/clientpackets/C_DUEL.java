@@ -22,7 +22,7 @@ import com.aionemu.gameserver.model.gameobjects.player.DeniedStatus;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.DuelService;
 
 /**
@@ -75,21 +75,21 @@ public class C_DUEL extends AionClientPacket
 			Player targetPlayer = (Player) target;
 
 			if (duelService.isDueling(activePlayer.getObjectId())) {
-				sendPacket(S_MESSAGE_CODE.STR_DUEL_YOU_ARE_IN_DUEL_ALREADY);
+				sendPacket(SM_SYSTEM_MESSAGE.STR_DUEL_YOU_ARE_IN_DUEL_ALREADY);
 				return;
 			}
 			if (duelService.isDueling(targetPlayer.getObjectId())) {
-				sendPacket(S_MESSAGE_CODE.STR_DUEL_PARTNER_IN_DUEL_ALREADY(target.getName()));
+				sendPacket(SM_SYSTEM_MESSAGE.STR_DUEL_PARTNER_IN_DUEL_ALREADY(target.getName()));
 				return;
 			}
 			if (targetPlayer.getPlayerSettings().isInDeniedStatus(DeniedStatus.DUEL)) {
-				sendPacket(S_MESSAGE_CODE.STR_MSG_REJECTED_DUEL(targetPlayer.getName()));
+				sendPacket(SM_SYSTEM_MESSAGE.STR_MSG_REJECTED_DUEL(targetPlayer.getName()));
 				return;
 			}
 			duelService.onDuelRequest(activePlayer, targetPlayer);
 			duelService.confirmDuelWith(activePlayer, targetPlayer);
 		} else {
-			sendPacket(S_MESSAGE_CODE.STR_DUEL_PARTNER_INVALID(target.getName()));
+			sendPacket(SM_SYSTEM_MESSAGE.STR_DUEL_PARTNER_INVALID(target.getName()));
 		}
 	}
 }

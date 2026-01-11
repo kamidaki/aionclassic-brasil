@@ -16,10 +16,10 @@
  */
 package com.aionemu.gameserver.utils;
 
-import javolution.util.FastList;
-
 import java.nio.ByteBuffer;
 import java.util.List;
+
+import javolution.util.FastList;
 
 /**
  * @author -Nemesiss-

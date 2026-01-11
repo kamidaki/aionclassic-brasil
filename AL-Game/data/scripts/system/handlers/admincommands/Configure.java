@@ -1,16 +1,40 @@
 package admincommands;
 
+import java.lang.reflect.Field;
+
 import com.aionemu.gameserver.configs.administration.AdminConfig;
 import com.aionemu.gameserver.configs.administration.DeveloperConfig;
-import com.aionemu.gameserver.configs.main.*;
+import com.aionemu.gameserver.configs.main.AIConfig;
+import com.aionemu.gameserver.configs.main.CacheConfig;
+import com.aionemu.gameserver.configs.main.CraftConfig;
+import com.aionemu.gameserver.configs.main.CustomConfig;
+import com.aionemu.gameserver.configs.main.DropConfig;
+import com.aionemu.gameserver.configs.main.EnchantsConfig;
+import com.aionemu.gameserver.configs.main.EventsConfig;
+import com.aionemu.gameserver.configs.main.FallDamageConfig;
+import com.aionemu.gameserver.configs.main.GSConfig;
+import com.aionemu.gameserver.configs.main.GeoDataConfig;
+import com.aionemu.gameserver.configs.main.GroupConfig;
+import com.aionemu.gameserver.configs.main.HTMLConfig;
+import com.aionemu.gameserver.configs.main.InGameShopConfig;
+import com.aionemu.gameserver.configs.main.LegionConfig;
+import com.aionemu.gameserver.configs.main.MembershipConfig;
+import com.aionemu.gameserver.configs.main.PeriodicSaveConfig;
+import com.aionemu.gameserver.configs.main.PricesConfig;
+import com.aionemu.gameserver.configs.main.PunishmentConfig;
+import com.aionemu.gameserver.configs.main.RankingConfig;
+import com.aionemu.gameserver.configs.main.RateConfig;
+import com.aionemu.gameserver.configs.main.SecurityConfig;
+import com.aionemu.gameserver.configs.main.ShutdownConfig;
+import com.aionemu.gameserver.configs.main.SiegeConfig;
+import com.aionemu.gameserver.configs.main.ThreadConfig;
+import com.aionemu.gameserver.configs.main.WorldConfig;
 import com.aionemu.gameserver.configs.network.IPConfig;
 import com.aionemu.gameserver.configs.network.NetworkConfig;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 import com.google.common.collect.ImmutableMap;
-
-import java.lang.reflect.Field;
 
 public class Configure extends AdminCommand
 {

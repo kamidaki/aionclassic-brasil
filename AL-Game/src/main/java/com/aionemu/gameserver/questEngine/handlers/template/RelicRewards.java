@@ -1,15 +1,19 @@
 package com.aionemu.gameserver.questEngine.handlers.template;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
 import com.aionemu.gameserver.services.QuestService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.*;
 
 public class RelicRewards extends QuestHandler
 {
@@ -54,7 +58,7 @@ public class RelicRewards extends QuestHandler
                     case EXCHANGE_COIN: {
                         if (player.getCommonData().getLevel() < 30) {
 							//You can only receive this quest when your level is %0 or above.
-                            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_QUEST_ACQUIRE_ERROR_MIN_LEVEL(Integer.toString(30)));
+                            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_QUEST_ACQUIRE_ERROR_MIN_LEVEL(Integer.toString(30)));
 							return sendQuestDialog(env, 27);
                         } else if (player.getCommonData().getLevel() >= 30) {
                             if ((player.getInventory().getItemCountByItemId(relicVar1) > 0)
@@ -70,6 +74,8 @@ public class RelicRewards extends QuestHandler
                             return sendQuestDialog(env, 3398);
                         }
                     }
+				default:
+					break;
                 }
             }
         } else if (qs != null && qs.getStatus() == QuestStatus.START && qs.getQuestVarById(0) == 0) {
@@ -123,6 +129,8 @@ public class RelicRewards extends QuestHandler
                         } else {
                             return sendQuestDialog(env, 1009);
                         }
+				default:
+					break;
                 }
             }
         } else if (qs != null && qs.getStatus() == QuestStatus.REWARD) {

@@ -2,7 +2,7 @@ package com.aionemu.gameserver.skillengine.properties;
 
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.skillengine.model.Skill;
 import com.aionemu.gameserver.skillengine.properties.Properties.CastState;
 import com.aionemu.gameserver.utils.MathUtil;
@@ -28,13 +28,13 @@ public class FirstTargetRangeProperty
 			return true;
 		} if (!MathUtil.isInAttackRange(effector, firstTarget, firstTargetRange + 2)) {
 			if (effector instanceof Player) {
-				PacketSendUtility.sendPacket((Player) effector, S_MESSAGE_CODE.STR_ATTACK_TOO_FAR_FROM_TARGET);
+				PacketSendUtility.sendPacket((Player) effector, SM_SYSTEM_MESSAGE.STR_ATTACK_TOO_FAR_FROM_TARGET);
 			}
 			return false;
 		} if (skill.getSkillTemplate().getSkillId() != 1606) {
 			if (!GeoService.getInstance().canSee(effector, firstTarget)) {
 				if (effector instanceof Player) {
-					PacketSendUtility.sendPacket((Player) effector, S_MESSAGE_CODE.STR_SKILL_OBSTACLE);
+					PacketSendUtility.sendPacket((Player) effector, SM_SYSTEM_MESSAGE.STR_SKILL_OBSTACLE);
 				}
 				return false;
 			}

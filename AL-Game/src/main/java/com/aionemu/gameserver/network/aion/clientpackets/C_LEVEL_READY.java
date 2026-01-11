@@ -9,12 +9,23 @@ import com.aionemu.gameserver.model.templates.windstreams.Location2D;
 import com.aionemu.gameserver.model.templates.windstreams.WindstreamTemplate;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CUSTOM_ANIM;
+import com.aionemu.gameserver.network.aion.serverpackets.S_EVENT;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_WIND_STATE_INFO;
 import com.aionemu.gameserver.questEngine.QuestEngine;
 import com.aionemu.gameserver.questEngine.model.QuestEnv;
-import com.aionemu.gameserver.services.*;
+import com.aionemu.gameserver.services.SiegeService;
+import com.aionemu.gameserver.services.WeatherService;
 import com.aionemu.gameserver.services.rift.RiftInformer;
 import com.aionemu.gameserver.world.World;
+
+
+import com.aionemu.gameserver.configs.main.GeoDataConfig;
+import com.aionemu.gameserver.world.geo.nav.NavData;
+import com.aionemu.gameserver.model.templates.world.WorldMapTemplate;
+import com.aionemu.gameserver.utils.PacketSendUtility;
+
 
 public class C_LEVEL_READY extends AionClientPacket
 {
@@ -32,10 +43,19 @@ public class C_LEVEL_READY extends AionClientPacket
 	protected void runImpl()
 	{
 		Player activePlayer = getConnection().getActivePlayer();
-		sendPacket(new S_PUT_USER(activePlayer, false));
+		sendPacket(new SM_PLAYER_INFO(activePlayer, false));
 		activePlayer.getController().startProtectionActiveTask();
 		sendPacket(new S_CUSTOM_ANIM(activePlayer.getObjectId(), activePlayer.getMotions().getActiveMotions()));
 		WindstreamTemplate template = DataManager.WINDSTREAM_DATA.getStreamTemplate(activePlayer.getPosition().getMapId());
+		WorldMapTemplate templateMaps = DataManager.WORLD_MAPS_DATA.getTemplate(activePlayer.getWorldId());
+		String mapName = templateMaps != null && templateMaps.getName() != null ? templateMaps.getName() : "ID " + activePlayer.getWorldId();
+
+		boolean hasNavMesh = GeoDataConfig.GEO_NAV_ENABLE && NavData.getInstance().getNavMap(activePlayer.getWorldId()) != null;
+		String message = hasNavMesh ? String.format("\uE027 Mapa: %s | Navegação NPC: Ativado \uE052", mapName)
+				: String.format("\uE027 Mapa: %s | Navegação NPC: Sem dados disponíveis \uE051", mapName);
+		PacketSendUtility.sendWhiteMessage(activePlayer, message);
+
+
 		Location2D location;
 		if (template != null) {
 			for (int i = 0; i < template.getLocations().getLocation().size(); i++) {

@@ -1,5 +1,7 @@
 package com.aionemu.gameserver.services.player;
 
+import java.util.List;
+
 import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.configs.main.EventsConfig;
 import com.aionemu.gameserver.dataholders.DataManager;
@@ -8,13 +10,11 @@ import com.aionemu.gameserver.model.gameobjects.player.PlayerUpgradeArcade;
 import com.aionemu.gameserver.model.items.storage.Storage;
 import com.aionemu.gameserver.model.templates.arcadeupgrade.ArcadeTab;
 import com.aionemu.gameserver.model.templates.arcadeupgrade.ArcadeTabItem;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.need.S_GOTCHA_NOTIFY;
 import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
-
-import java.util.List;
 
 public class ArcadeUpgradeService
 {
@@ -51,7 +51,7 @@ public class ArcadeUpgradeService
         }
         PacketSendUtility.sendPacket(player, new S_GOTCHA_NOTIFY(11));
         //You've reached Frenzy four times and received %1 %0!
-        PacketSendUtility.sendPacket(player, itemCount > 1 ? S_MESSAGE_CODE.STR_MSG_GACHA_FEVER_ITEM_REWARD_MULTI(item.getItemId(), itemCount) : S_MESSAGE_CODE.STR_MSG_GACHA_FEVER_ITEM_REWARD(item.getItemId()));
+        PacketSendUtility.sendPacket(player, itemCount > 1 ? SM_SYSTEM_MESSAGE.STR_MSG_GACHA_FEVER_ITEM_REWARD_MULTI(item.getItemId(), itemCount) : SM_SYSTEM_MESSAGE.STR_MSG_GACHA_FEVER_ITEM_REWARD(item.getItemId()));
         ItemService.addItem(player, item.getItemId(), itemCount);
         arcade.setFrenzy(false);
     }
@@ -86,15 +86,15 @@ public class ArcadeUpgradeService
         Storage localStorage = player.getInventory();
         if (player.getInventory().isFull()) {
             //Your cube is full.
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_FULL_INVENTORY);
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_FULL_INVENTORY);
             return;
         } if ((arcade.getFrenzyLevel() == 1) && (!localStorage.decreaseByItemId(186000389, 1))) {
             //You do not have enough %0s.
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_NOT_ENOUGH_TRADE_MONEY);
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_NOT_ENOUGH_TRADE_MONEY);
             return;
         } if (arcade.isReTry() && (!localStorage.decreaseByItemId(186000389, 2))) {
             //You do not have enough %0s.
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_NOT_ENOUGH_TRADE_MONEY);
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_NOT_ENOUGH_TRADE_MONEY);
             return;
         }
         if (arcade.isFailed() || arcade.getFrenzyLevel() == 1) {
@@ -159,7 +159,7 @@ public class ArcadeUpgradeService
             getSpecialRewardItem(player);
         }
         //Upgrade Frenzy!
-        PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_GACHA_FEVERTIME_START);
+        PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_GACHA_FEVERTIME_START);
         PacketSendUtility.sendPacket(player, new S_GOTCHA_NOTIFY(7, frenzyTime, arcade.getFrenzyCount()));
         ThreadPoolManager.getInstance().schedule(new Runnable() {
             @Override
@@ -184,10 +184,10 @@ public class ArcadeUpgradeService
         int itemCount = arcade.isFrenzy() ? item.getNormalCount() : item.getFrenzyCount();
         if (arcade.isFrenzy()) {
             //You've reached Frenzy four times and received %1 %0!
-            PacketSendUtility.sendPacket(player, itemCount >= 1 ? S_MESSAGE_CODE.STR_MSG_GACHA_FEVER_ITEM_REWARD_MULTI(item.getItemId(), itemCount) : S_MESSAGE_CODE.STR_MSG_GACHA_FEVER_ITEM_REWARD(item.getItemId()));
+            PacketSendUtility.sendPacket(player, itemCount >= 1 ? SM_SYSTEM_MESSAGE.STR_MSG_GACHA_FEVER_ITEM_REWARD_MULTI(item.getItemId(), itemCount) : SM_SYSTEM_MESSAGE.STR_MSG_GACHA_FEVER_ITEM_REWARD(item.getItemId()));
         } else {
             //You won %1 of %0 from the Upgrade Arcade.
-            PacketSendUtility.sendPacket(player, itemCount >= 1 ? S_MESSAGE_CODE.STR_MSG_GACHA_ITEM_REWARD_MULTI(item.getItemId(), itemCount) : S_MESSAGE_CODE.STR_MSG_GACHA_ITEM_REWARD(item.getItemId()));
+            PacketSendUtility.sendPacket(player, itemCount >= 1 ? SM_SYSTEM_MESSAGE.STR_MSG_GACHA_ITEM_REWARD_MULTI(item.getItemId(), itemCount) : SM_SYSTEM_MESSAGE.STR_MSG_GACHA_ITEM_REWARD(item.getItemId()));
         } if (itemCount == 0) {
             ItemService.addItem(player, item.getItemId(), item.getFrenzyCount());
         } else {

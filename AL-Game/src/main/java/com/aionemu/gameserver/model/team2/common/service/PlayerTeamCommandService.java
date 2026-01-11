@@ -18,9 +18,8 @@ import com.aionemu.gameserver.model.team2.common.events.TeamCommand;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
 import com.aionemu.gameserver.model.team2.league.LeagueMember;
 import com.aionemu.gameserver.model.team2.league.LeagueService;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
 import com.google.common.base.Preconditions;
 
 public class PlayerTeamCommandService
@@ -37,7 +36,7 @@ public class PlayerTeamCommandService
 			    ///This code prevents some players kick other players in instance, for steal loot!!!
 				if (teamSubjective.isInInstance()) {
 					//You cannot use invite, leave or kick commands related to your group or alliance in this region.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_CANT_OPERATE_PARTY_COMMAND);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_CANT_OPERATE_PARTY_COMMAND);
 					return;
 				} else {
 				   PlayerGroupService.banPlayer(teamSubjective, player);
@@ -62,7 +61,7 @@ public class PlayerTeamCommandService
 			    ///This code prevents some players kick other players in instance, for steal loot!!!
                 if (teamSubjective.isInInstance()) {
 					//You cannot use invite, leave or kick commands related to your group or alliance in this region.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_CANT_OPERATE_PARTY_COMMAND);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_CANT_OPERATE_PARTY_COMMAND);
 					return;
 				} else {
 					PlayerAllianceService.banPlayer(teamSubjective, player);
@@ -91,12 +90,14 @@ public class PlayerTeamCommandService
 			    ///This code prevents some players kick other players in instance, for steal loot!!!
                 if (teamSubjective.isInInstance()) {
 					//You cannot use invite, leave or kick commands related to your group or alliance in this region.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_CANT_OPERATE_PARTY_COMMAND);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_CANT_OPERATE_PARTY_COMMAND);
 					return;
 				} else {
 					LeagueService.expelAlliance(teamSubjective, player);
 				}
             break;
+		default:
+			break;
         }
     }
 	

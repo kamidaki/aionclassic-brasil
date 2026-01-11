@@ -25,12 +25,12 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
 import com.aionemu.gameserver.model.stats.container.StatEnum;
 import com.aionemu.gameserver.model.templates.item.ItemAttackType;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.LOG;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS.TYPE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ATTACK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.LOG;
-import com.aionemu.gameserver.network.aion.serverpackets.S_HIT_POINT_OTHER.TYPE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_MOVE_NEW;
-import com.aionemu.gameserver.network.aion.serverpackets.S_SKILL_CANCELED;
-import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_CHANGED_TARGET;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_LOOKATOBJECT;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_CANCEL;
 import com.aionemu.gameserver.skillengine.SkillEngine;
 import com.aionemu.gameserver.skillengine.model.HealType;
 import com.aionemu.gameserver.skillengine.model.Skill;
@@ -56,7 +56,7 @@ public abstract class CreatureController<T extends Creature> extends VisibleObje
 		super.notSee(object, isOutOfRange);
 		if (object == getOwner().getTarget()) {
 			getOwner().setTarget(null);
-			PacketSendUtility.broadcastPacket(getOwner(), new S_NPC_CHANGED_TARGET(getOwner()));
+			PacketSendUtility.broadcastPacket(getOwner(), new SM_LOOKATOBJECT(getOwner()));
 		}
 	}
 	
@@ -372,7 +372,7 @@ public abstract class CreatureController<T extends Creature> extends VisibleObje
 		creature.setCasting(null);
 		creature.setNextSkillUse(0);
 		if (castingSkill.getSkillMethod() == SkillMethod.CAST) {
-			PacketSendUtility.broadcastPacket(creature, new S_SKILL_CANCELED(creature, castingSkill.getSkillTemplate().getSkillId()));
+			PacketSendUtility.broadcastPacket(creature, new SM_SKILL_CANCEL(creature, castingSkill.getSkillTemplate().getSkillId()));
 		} if (getOwner().getAi2() instanceof NpcAI2) {
 			NpcAI2 npcAI = (NpcAI2) getOwner().getAi2();
 			npcAI.setSubStateIfNot(AISubState.NONE);

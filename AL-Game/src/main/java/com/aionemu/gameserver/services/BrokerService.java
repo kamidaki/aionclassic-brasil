@@ -1,5 +1,16 @@
 package com.aionemu.gameserver.services;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.gameserver.configs.main.BrokerConfig;
 import com.aionemu.gameserver.configs.main.LoggingConfig;
 import com.aionemu.gameserver.configs.main.SecurityConfig;
@@ -17,9 +28,9 @@ import com.aionemu.gameserver.model.gameobjects.PersistentState;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.PlayerCommonData;
 import com.aionemu.gameserver.model.items.ManaStone;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK_QUIT_RESULT;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_REMOVE_INVENTORY;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_DELETE_ITEM;
 import com.aionemu.gameserver.network.aion.serverpackets.S_VENDOR;
 import com.aionemu.gameserver.restrictions.RestrictionsManager;
 import com.aionemu.gameserver.services.item.ItemFactory;
@@ -29,13 +40,8 @@ import com.aionemu.gameserver.taskmanager.AbstractFIFOPeriodicTaskManager;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.World;
-import javolution.util.FastMap;
-import org.apache.commons.lang.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.sql.Timestamp;
-import java.util.*;
+import javolution.util.FastMap;
 
 /**
  * @author kosyachok
@@ -285,7 +291,7 @@ public class BrokerService {
                     + buyingItem.getSeller() + "] for [Price: " + TotalBuyPrice + "]");
             return;
         } if ((buyingItem.isSold() || buyingItem.isSettled()) && (buyingItem.getItem() != null)) {
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_VENDOR_SOLD_OUT(buyingItem.getItem().getNameId()));
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_VENDOR_SOLD_OUT(buyingItem.getItem().getNameId()));
             return;
         } if (SecurityConfig.BROKER_PREBUY_CHECK) {
             if (!(BrokerDAO.preBuyCheck(itemUniqueId))) {
@@ -293,17 +299,17 @@ public class BrokerService {
                 return;
             }
         } if (buyingItem.getSellerId() == player.getObjectId()) {
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_VENDOR_CAN_NOT_BUY_MY_REGISTER_ITEM);
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_VENDOR_CAN_NOT_BUY_MY_REGISTER_ITEM);
             return;
         }
         synchronized (this) {
             if (buyingItem.isSold() || buyingItem.isCanceled()) {
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_VENDOR_SOLD_OUT(buyingItem.getItem().getNameId()));
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_VENDOR_SOLD_OUT(buyingItem.getItem().getNameId()));
                 return;
             }
             Item item = buyingItem.getItem();
             if (player.getInventory().isFull(item.getItemTemplate().getExtraInventoryId())) {
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_FULL_INVENTORY);
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_FULL_INVENTORY);
                 return;
             } if (player.getInventory().getKinah() < TotalBuyPrice) {
                 return;
@@ -379,7 +385,7 @@ public class BrokerService {
         Player seller = World.getInstance().findPlayer(brokerItem.getSellerId());
         if (seller != null) {
             PacketSendUtility.sendPacket(seller, new S_VENDOR(true, getTotalSettledKinah(seller)));
-            PacketSendUtility.sendPacket(seller, S_MESSAGE_CODE.STR_VENDOR_REGISTER_SOLD_OUT(itemNameId));
+            PacketSendUtility.sendPacket(seller, SM_SYSTEM_MESSAGE.STR_VENDOR_REGISTER_SOLD_OUT(itemNameId));
         }
         return newItem;
     }
@@ -451,7 +457,7 @@ public class BrokerService {
         if (seller != null) {
             PacketSendUtility.sendPacket(seller, new S_VENDOR(true, getTotalSettledKinah(seller)));
             if (isSold) {
-                PacketSendUtility.sendPacket(seller, S_MESSAGE_CODE.STR_VENDOR_REGISTER_SOLD_OUT(itemNameId));
+                PacketSendUtility.sendPacket(seller, SM_SYSTEM_MESSAGE.STR_VENDOR_REGISTER_SOLD_OUT(itemNameId));
             }
         }
     }
@@ -497,7 +503,7 @@ public class BrokerService {
 
         // check if item is not soulbound
         if (itemToRegister.isSoulBound()) {
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_VENDOR_REGISTER_USED_ITEM);
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_VENDOR_REGISTER_USED_ITEM);
             return;
         }
 
@@ -547,7 +553,7 @@ public class BrokerService {
             itemToRegister = ItemFactory.newItem(itemId, count);
         } else {
             player.getInventory().remove(itemToRegister);
-            PacketSendUtility.sendPacket(player, new S_REMOVE_INVENTORY(itemToRegister.getObjectId()));
+            PacketSendUtility.sendPacket(player, new SM_DELETE_ITEM(itemToRegister.getObjectId()));
         }
 
         itemToRegister.setItemLocation(126);
@@ -721,7 +727,7 @@ public class BrokerService {
                 return;
             }
             if (player.getInventory().isFull()) {
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_VENDOR_FULL_INVENTORY);
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_VENDOR_FULL_INVENTORY);
                 return;
             }
             synchronized (this) {

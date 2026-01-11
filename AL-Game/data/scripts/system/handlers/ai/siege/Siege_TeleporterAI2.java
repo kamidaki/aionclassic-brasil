@@ -10,7 +10,6 @@
  */
 package ai.siege;
 
-import ai.GeneralNpcAI2;
 import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.siege.SiegeNpc;
@@ -19,6 +18,8 @@ import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_ABYSS_TELEPORT
 import com.aionemu.gameserver.services.SiegeService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.knownlist.Visitor;
+
+import ai.GeneralNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)

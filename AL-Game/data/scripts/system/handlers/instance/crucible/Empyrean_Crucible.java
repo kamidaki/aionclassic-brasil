@@ -10,9 +10,12 @@
  */
 package instance.crucible;
 
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
 
+import com.aionemu.commons.network.util.ThreadPoolManager;
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
 import com.aionemu.gameserver.model.DescriptionId;
 import com.aionemu.gameserver.model.Race;
@@ -23,23 +26,18 @@ import com.aionemu.gameserver.model.instance.InstanceScoreType;
 import com.aionemu.gameserver.model.instance.StageType;
 import com.aionemu.gameserver.model.instance.playerreward.CruciblePlayerReward;
 import com.aionemu.gameserver.model.items.storage.Storage;
-import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_INSTANT_DUNGEON_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_WORLD_SCENE_STATUS;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.services.*;
+import com.aionemu.gameserver.services.NpcShoutsService;
 import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.skillengine.model.DispelCategoryType;
-import com.aionemu.gameserver.skillengine.model.Effect;
-import com.aionemu.gameserver.utils.RndArray;
 import com.aionemu.gameserver.utils.PacketSendUtility;
+import com.aionemu.gameserver.utils.RndArray;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
-
-import java.util.*;
-import java.util.concurrent.Future;
 
 /****/
 /** Author Rinzler (Encom)
@@ -371,7 +369,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///"Player Name" has reentered the Illusion Stadium.
-				        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400964, player.getName()));
+				        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400964, player.getName()));
 					}
 				});
 				PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npc.getObjectId(), 0));
@@ -386,7 +384,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///"Player Name" has reentered the Illusion Stadium.
-				        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400964, player.getName()));
+				        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400964, player.getName()));
 					}
 				});
 				PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npc.getObjectId(), 0));
@@ -401,7 +399,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///"Player Name" has reentered the Illusion Stadium.
-				        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400964, player.getName()));
+				        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400964, player.getName()));
 					}
 				});
 				PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npc.getObjectId(), 0));
@@ -416,7 +414,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///"Player Name" has reentered the Illusion Stadium.
-				        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400964, player.getName()));
+				        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400964, player.getName()));
 					}
 				});
 				PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npc.getObjectId(), 0));
@@ -431,7 +429,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///"Player Name" has reentered the Illusion Stadium.
-				        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400964, player.getName()));
+				        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400964, player.getName()));
 					}
 				});
 				PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npc.getObjectId(), 0));
@@ -446,7 +444,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///"Player Name" has reentered the Illusion Stadium.
-				        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400964, player.getName()));
+				        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400964, player.getName()));
 					}
 				});
 				PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npc.getObjectId(), 0));
@@ -461,7 +459,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///"Player Name" has reentered the Illusion Stadium.
-				        PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400964, player.getName()));
+				        PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400964, player.getName()));
 					}
 				});
 				PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(npc.getObjectId(), 0));
@@ -789,9 +787,9 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(1), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(1), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(1), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(1), 4000);
 					}
 				});
 				spawn(799568, 345.25000f, 349.24000f, 96.09097f, (byte) 0); //Empyrean RecordKeeper.
@@ -923,9 +921,9 @@ public class Empyrean_Crucible extends Crucible_System
 								@Override
 								public void visit(Player player) {
 									///You have eliminated all enemies in Round %0.
-									PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(2), 2000);
+									PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(2), 2000);
 									///You have passed Stage %0!
-									PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(2), 4000);
+									PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(2), 4000);
 								}
 							});
 						}
@@ -941,9 +939,9 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(2), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(2), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(2), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(2), 4000);
 					}
 				});
 			break;
@@ -1209,9 +1207,9 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(5), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(5), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(5), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(5), 4000);
 					}
 				});
 			break;
@@ -1301,9 +1299,9 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(5), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(5), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(5), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(5), 4000);
 					}
 				});
 			break;
@@ -1365,9 +1363,9 @@ public class Empyrean_Crucible extends Crucible_System
 								@Override
 								public void visit(Player player) {
 									///You have eliminated all enemies in Round %0.
-									PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(6), 2000);
+									PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(6), 2000);
 									///You have passed Stage %0!
-									PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(6), 4000);
+									PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(6), 4000);
 								}
 							});
 						}
@@ -1384,9 +1382,9 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(6), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(6), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(6), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(6), 4000);
 					}
 				});
             break;
@@ -1431,9 +1429,9 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(7), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(7), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(7), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(7), 4000);
 					}
 				});
             break;
@@ -1474,9 +1472,9 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(7), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(7), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(7), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(7), 4000);
 					}
 				});
             break;
@@ -1516,9 +1514,9 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(8), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(8), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(8), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(8), 4000);
 					}
 				});
 			break;
@@ -1560,9 +1558,9 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(9), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(9), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(9), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(9), 4000);
 					}
 				});
             break;
@@ -1616,9 +1614,9 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(10), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(10), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(10), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(10), 4000);
 					}
 				});
             break;
@@ -1662,9 +1660,9 @@ public class Empyrean_Crucible extends Crucible_System
 											@Override
 											public void visit(Player player) {
 												///You have eliminated all enemies in Round %0.
-												PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(3), 2000);
+												PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(3), 2000);
 												///You have passed Stage %0!
-												PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(3), 4000);
+												PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(3), 4000);
 											}
 										});
 									}
@@ -1739,9 +1737,9 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///You have eliminated all enemies in Round %0.
-				        PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(4), 2000);
+				        PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_ROUND_IDARENA(4), 2000);
 						///You have passed Stage %0!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(4), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_COMPLETE_STAGE_IDARENA(4), 4000);
 					}
 				});
 			}
@@ -1858,10 +1856,10 @@ public class Empyrean_Crucible extends Crucible_System
 			public void visit(Player p) {
 				if (player.getObjectId() == p.getObjectId()) {
 					///You failed the training and have been sent to the Ready Room.
-					PacketSendUtility.sendPacket(p, new S_MESSAGE_CODE(1400932));
+					PacketSendUtility.sendPacket(p, new SM_SYSTEM_MESSAGE(1400932));
 				} else {
 					///"Player Name" failed the training and has been sent to the Ready Room.
-					PacketSendUtility.sendPacket(p, new S_MESSAGE_CODE(1400933, player.getName()));
+					PacketSendUtility.sendPacket(p, new SM_SYSTEM_MESSAGE(1400933, player.getName()));
 				}
 			}
 		});
@@ -1900,7 +1898,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///Round %0 begins!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(1), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(1), 4000);
 					}
 				});
             break;
@@ -1916,7 +1914,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///Round %0 begins!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(2), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(2), 4000);
 					}
 				});
 			break;
@@ -1954,7 +1952,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///Round %0 begins!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(3), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(3), 4000);
 					}
 				});
 			break;
@@ -1970,7 +1968,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///Round %0 begins!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(4), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(4), 4000);
 					}
 				});
 			break;
@@ -1991,7 +1989,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///Round %0 begins!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(5), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(5), 4000);
 					}
 				});
 			break;
@@ -2005,7 +2003,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///Round %0 begins!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(5), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(5), 4000);
 					}
 				});
 			break;
@@ -2025,7 +2023,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///Round %0 begins!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(6), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(6), 4000);
 					}
 				});
 				ThreadPoolManager.getInstance().schedule(new Runnable() {
@@ -2050,7 +2048,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///Round %0 begins!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(7), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(7), 4000);
 					}
 				});
 			break;
@@ -2067,7 +2065,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///Round %0 begins!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(8), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(8), 4000);
 					}
 				});
 				switch (Rnd.get(1, 2)) {
@@ -2093,7 +2091,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///Round %0 begins!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(9), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(9), 4000);
 					}
 				});
 			break;
@@ -2113,7 +2111,7 @@ public class Empyrean_Crucible extends Crucible_System
 					@Override
 					public void visit(Player player) {
 						///Round %0 begins!
-						PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_INSTANCE_START_ROUND_IDARENA(10), 4000);
+						PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_INSTANCE_START_ROUND_IDARENA(10), 4000);
 					}
 				});
             break;
@@ -2236,7 +2234,7 @@ public class Empyrean_Crucible extends Crucible_System
 		removeItems(player);
 		TeleportService2.moveToInstanceExit(player, mapId, player.getRace());
 		///"Player Name" dropped out of training and left the Crucible.
-		PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400962, player.getName()));
+		PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400962, player.getName()));
 	}
 	
 	private void removeItems(Player player) {
@@ -2275,7 +2273,7 @@ public class Empyrean_Crucible extends Crucible_System
 				if (player.isOnline()) {
 					CruciblePlayerReward playerReward = getPlayerReward(player.getObjectId());
 					if (nameId != 0) {
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400237, new DescriptionId(nameId * 2 + 1), points));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400237, new DescriptionId(nameId * 2 + 1), points));
 					} if (!playerReward.isRewarded()) {
 						playerReward.addPoints(points);
 					}

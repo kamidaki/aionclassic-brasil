@@ -10,14 +10,14 @@
  */
 package ai.instance.empyreanCrucible;
 
-import ai.GeneralNpcAI2;
-
-import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.AI2Actions;
+import com.aionemu.gameserver.ai2.AIName;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.model.EmotionType;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.utils.PacketSendUtility;
+
+import ai.GeneralNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -39,7 +39,7 @@ public class Arminos_DrakyAI2 extends GeneralNpcAI2
 		getSpawnTemplate().setWalkerId(walkerId);
 		WalkManager.startWalking(this);
 		getOwner().setState(1);
-		PacketSendUtility.broadcastPacket(getOwner(), new S_ACTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
+		PacketSendUtility.broadcastPacket(getOwner(), new SM_EMOTION(getOwner(), EmotionType.START_EMOTE2, 0, getObjectId()));
 	}
 	
 	@Override

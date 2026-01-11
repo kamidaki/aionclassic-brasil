@@ -10,6 +10,12 @@
  */
 package com.aionemu.gameserver.model.team2.league;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.callbacks.util.GlobalCallbackHelper;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAlliance;
@@ -18,15 +24,10 @@ import com.aionemu.gameserver.model.team2.league.events.LeagueDisbandEvent;
 import com.aionemu.gameserver.model.team2.league.events.LeagueEnteredEvent;
 import com.aionemu.gameserver.model.team2.league.events.LeagueInvite;
 import com.aionemu.gameserver.model.team2.league.events.LeagueLeftEvent;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.google.common.base.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class LeagueService
 {
@@ -42,7 +43,7 @@ public class LeagueService
             LeagueInvite invite = new LeagueInvite(inviter, invited);
             if (invited.getResponseRequester().putRequest(S_ASK.STR_MSGBOX_UNION_INVITE_ME, invite)) {
                 if (invited.isInAlliance2()) {
-					PacketSendUtility.sendPacket(inviter, S_MESSAGE_CODE.STR_UNION_INVITE_HIM(invited.getName(), inviter.getName()));
+					PacketSendUtility.sendPacket(inviter, SM_SYSTEM_MESSAGE.STR_UNION_INVITE_HIM(invited.getName(), inviter.getName()));
 				}
 				PacketSendUtility.sendPacket(invited, new S_ASK(S_ASK.STR_MSGBOX_UNION_INVITE_ME, 0, 0, inviter.getName()));
             }

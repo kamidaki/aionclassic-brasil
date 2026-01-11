@@ -16,21 +16,20 @@
  */
 package com.aionemu.gameserver.services.drop;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.model.actions.PlayerMode;
 import com.aionemu.gameserver.model.drop.DropItem;
 import com.aionemu.gameserver.model.gameobjects.DropNpc;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.team2.common.legacy.LootGroupRules;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_GROUP_ITEM_DIST;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Set;
 
 public class DropDistributionService
 {
@@ -49,11 +48,11 @@ public class DropDistributionService
         if (player.isInGroup2() || player.isInAlliance2()) {
             if (roll == 0) {
 				//You gave up rolling the dice.
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_GIVEUP_ME);
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_GIVEUP_ME);
             } else {
 				luck = Rnd.get(1, 100);
 				//You rolled the dice and got %0 (max. %num1).
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_RESULT_ME(luck, 100));
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_RESULT_ME(luck, 100));
             } for (Player member : dropNpc.getInRangePlayers()) {
                 if (member == null) {
 					log.warn("member null Owner is in group? " + player.isInGroup2() + " Owner is in Alliance? " + player.isInAlliance2());
@@ -64,10 +63,10 @@ public class DropDistributionService
                 if (!player.equals(member) && member.isOnline()) {
 					if (roll == 0) {
 						//%0gave up rolling the dice.
-						PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_MSG_DICE_GIVEUP_OTHER(player.getName()));
+						PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_MSG_DICE_GIVEUP_OTHER(player.getName()));
 					} else {
 						//%0rolled the dice and got %1 (max. %num2).
-						PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_MSG_DICE_RESULT_OTHER(player.getName(), luck, 100));
+						PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_MSG_DICE_RESULT_OTHER(player.getName(), luck, 100));
 					}
 				}
             }
@@ -86,10 +85,10 @@ public class DropDistributionService
                 bid = 0;
             } if (bid > 0) {
 				//The account was instantly settled.
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_PAY_RESULT_ME);
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_PAY_RESULT_ME);
             } else {
 				//You gave up the Bidding.
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_PAY_GIVEUP_ME);
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_PAY_GIVEUP_ME);
             } for (Player member : dropNpc.getInRangePlayers()) {
                 if (member == null) {
 					log.warn("member null Owner is in group? " + player.isInGroup2() + " Owner is in Alliance? " + player.isInAlliance2());
@@ -100,10 +99,10 @@ public class DropDistributionService
 				if (!player.equals(member) && member.isOnline()) {
 					if (bid > 0) {
 						//%0 settled the account instantly.
-						PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_MSG_PAY_RESULT_OTHER(player.getName()));
+						PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_MSG_PAY_RESULT_OTHER(player.getName()));
 					}  else {
 						//%0 gave up the Bidding.
-						PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_MSG_PAY_GIVEUP_OTHER(player.getName()));
+						PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_MSG_PAY_GIVEUP_OTHER(player.getName()));
 					}
 				}
             }
@@ -141,7 +140,7 @@ public class DropDistributionService
                 if (member == null) {
                     continue;
                 } if (requestedItem.getWinningPlayer() == null) {
-                    PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_MSG_PAY_ALL_GIVEUP);
+                    PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_MSG_PAY_ALL_GIVEUP);
                 }
                 int teamId = member.getCurrentTeamId();
 			    PacketSendUtility.sendPacket(member, new S_GROUP_ITEM_DIST(teamId, requestedItem.getWinningPlayer() != null ? requestedItem.getWinningPlayer().getObjectId() : 1, itemId, npcId, dropNpc.getDistributionId(), 0xFFFFFFFF, requestedItem.getIndex()));

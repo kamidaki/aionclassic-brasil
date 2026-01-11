@@ -1,6 +1,5 @@
 package com.aionemu.gameserver.network.aion.serverpackets.need;
 
-import com.aionemu.gameserver.model.account.Account;
 import com.aionemu.gameserver.model.gameobjects.blackcloud.BlackcloudItem;
 import com.aionemu.gameserver.model.gameobjects.blackcloud.BlackcloudLetter;
 import com.aionemu.gameserver.model.gameobjects.player.Player;

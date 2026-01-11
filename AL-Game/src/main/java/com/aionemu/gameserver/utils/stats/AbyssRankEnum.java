@@ -1,14 +1,13 @@
 package com.aionemu.gameserver.utils.stats;
 
-import com.aionemu.gameserver.configs.main.RateConfig;
-import com.aionemu.gameserver.model.DescriptionId;
-import com.aionemu.gameserver.model.Race;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
+import javax.xml.bind.annotation.XmlEnum;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.annotation.XmlEnum;
+import com.aionemu.gameserver.model.DescriptionId;
+import com.aionemu.gameserver.model.Race;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
 
 /**
  * Update Aion Classic 2.5

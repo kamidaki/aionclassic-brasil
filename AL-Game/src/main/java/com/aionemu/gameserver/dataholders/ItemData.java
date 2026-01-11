@@ -10,21 +10,27 @@
  */
 package com.aionemu.gameserver.dataholders;
 
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.model.items.ItemMask;
-import com.aionemu.gameserver.model.templates.item.ItemTemplate;
-import com.aionemu.gameserver.model.templates.restriction.ItemCleanupTemplate;
-import com.aionemu.gameserver.utils.PacketSendUtility;
-import gnu.trove.map.hash.TIntObjectHashMap;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.model.items.ItemMask;
+import com.aionemu.gameserver.model.templates.item.ItemTemplate;
+import com.aionemu.gameserver.model.templates.restriction.ItemCleanupTemplate;
+import com.aionemu.gameserver.utils.PacketSendUtility;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  * @author Luno
@@ -47,13 +53,18 @@ public class ItemData extends ReloadableData {
     
     @XmlTransient
     Map<Integer, ItemTemplate> allItems;
+    
+    @XmlTransient
+    Map<String, ItemTemplate> nameIndex;
 
     void afterUnmarshal(Unmarshaller u, Object parent) {
         items = new TIntObjectHashMap<ItemTemplate>();
         allItems = new HashMap<Integer, ItemTemplate>();
+        nameIndex = new HashMap<>();
         for (ItemTemplate it : its) {
             items.put(it.getTemplateId(), it);
             allItems.put(it.getTemplateId(), it);
+            nameIndex.put(it.getName(),it);
             //if (it.getCategory().equals(ItemCategory.MANASTONE)) {
 			//	int level = it.getLevel();
 			//	if (!manastones.containsKey(level)) {
@@ -96,8 +107,8 @@ public class ItemData extends ReloadableData {
         return items.get(itemId);
     }
     
-    public Map<Integer, ItemTemplate> getAllItems() {
-    	return allItems;
+    public ItemTemplate getItemTemplate(String name) {
+    	return nameIndex.get(name);
     }
 
     /**

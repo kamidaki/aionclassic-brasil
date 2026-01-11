@@ -16,10 +16,10 @@ import com.aionemu.gameserver.model.team2.alliance.PlayerAllianceMember;
 import com.aionemu.gameserver.model.team2.alliance.PlayerAllianceService;
 import com.aionemu.gameserver.model.team2.common.events.PlayerLeavedEvent;
 import com.aionemu.gameserver.model.team2.common.legacy.PlayerAllianceEvent;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ALLIANCE_INFO;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ALLIANCE_MEMBER_INFO;
 import com.aionemu.gameserver.network.aion.serverpackets.S_GROUP_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.instance.InstanceService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
@@ -66,12 +66,12 @@ public class PlayerAllianceLeavedEvent extends PlayerLeavedEvent<PlayerAllianceM
                     }
                 }
                 if (reason == LeaveReson.BAN) {
-                    PacketSendUtility.sendPacket(leavedPlayer, S_MESSAGE_CODE.STR_FORCE_BAN_ME(banPersonName));
+                    PacketSendUtility.sendPacket(leavedPlayer, SM_SYSTEM_MESSAGE.STR_FORCE_BAN_ME(banPersonName));
                 }
 
                 break;
             case DISBAND:
-                PacketSendUtility.sendPacket(leavedPlayer, S_MESSAGE_CODE.STR_PARTY_ALLIANCE_DISPERSED);
+                PacketSendUtility.sendPacket(leavedPlayer, SM_SYSTEM_MESSAGE.STR_PARTY_ALLIANCE_DISPERSED);
                 break;
         }
 
@@ -100,18 +100,18 @@ public class PlayerAllianceLeavedEvent extends PlayerLeavedEvent<PlayerAllianceM
         switch (reason) {
             case LEAVE_TIMEOUT:
                 PacketSendUtility.sendPacket(player,
-                        S_MESSAGE_CODE.STR_PARTY_ALLIANCE_HE_LEAVED_PARTY(leavedPlayer.getName()));
+                		SM_SYSTEM_MESSAGE.STR_PARTY_ALLIANCE_HE_LEAVED_PARTY(leavedPlayer.getName()));
                 break;
             case LEAVE:
                 PacketSendUtility.sendPacket(player,
-                        S_MESSAGE_CODE.STR_PARTY_ALLIANCE_HE_LEAVED_PARTY(leavedPlayer.getName()));
+                		SM_SYSTEM_MESSAGE.STR_PARTY_ALLIANCE_HE_LEAVED_PARTY(leavedPlayer.getName()));
                 break;
             case DISBAND:
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_PARTY_ALLIANCE_DISPERSED);
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_PARTY_ALLIANCE_DISPERSED);
                 break;
             case BAN:
                 PacketSendUtility
-                        .sendPacket(player, S_MESSAGE_CODE.STR_FORCE_BAN_HIM(banPersonName, leavedPlayer.getName()));
+                        .sendPacket(player, SM_SYSTEM_MESSAGE.STR_FORCE_BAN_HIM(banPersonName, leavedPlayer.getName()));
                 break;
         }
 

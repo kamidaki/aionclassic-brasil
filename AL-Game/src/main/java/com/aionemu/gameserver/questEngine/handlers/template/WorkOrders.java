@@ -1,5 +1,7 @@
 package com.aionemu.gameserver.questEngine.handlers.template;
 
+import java.util.Iterator;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.QuestTemplate;
@@ -7,7 +9,8 @@ import com.aionemu.gameserver.model.templates.quest.CollectItem;
 import com.aionemu.gameserver.model.templates.quest.CollectItems;
 import com.aionemu.gameserver.model.templates.quest.QuestItems;
 import com.aionemu.gameserver.model.templates.quest.QuestWorkItems;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_NPC_HTML_MESSAGE;
 import com.aionemu.gameserver.questEngine.handlers.QuestHandler;
 import com.aionemu.gameserver.questEngine.handlers.models.WorkOrdersData;
 import com.aionemu.gameserver.questEngine.model.QuestDialog;
@@ -18,8 +21,6 @@ import com.aionemu.gameserver.services.QuestService;
 import com.aionemu.gameserver.services.RecipeService;
 import com.aionemu.gameserver.services.item.ItemService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import java.util.Iterator;
 
 public class WorkOrders extends QuestHandler
 {
@@ -53,7 +54,7 @@ public class WorkOrders extends QuestHandler
 					} case ACCEPT_QUEST: {
 						if (player.getInventory().isFullSpecialCube()) {
 							///Your inventory is full. Try again after making space.
-							PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DEVAPASS_REWARD_INVENTORY_FULL);
+							PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DEVAPASS_REWARD_INVENTORY_FULL);
 							return false;
 						} else if (RecipeService.validateNewRecipe(player, workOrdersData.getRecipeId()) != null) {
 							if (QuestService.startQuest(env)) {
@@ -68,6 +69,8 @@ public class WorkOrders extends QuestHandler
 						PacketSendUtility.sendPacket(player, new S_NPC_HTML_MESSAGE(env.getVisibleObject().getObjectId(), 28));
 						return true;
 					}
+				default:
+					break;
 				}
 			} else if (qs != null && qs.getStatus() == QuestStatus.START) {
 				if (env.getDialog() == QuestDialog.START_DIALOG) {

@@ -1,8 +1,8 @@
 package com.aionemu.gameserver.model.team.legion;
 
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-
 import java.sql.Timestamp;
+
+import com.aionemu.gameserver.model.gameobjects.player.Player;
 
 public class LegionJoinRequest {
     private int legionId = 0;

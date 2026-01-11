@@ -6,8 +6,8 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.RequestResponseHandler;
 import com.aionemu.gameserver.model.templates.battle_pass.BattlePassAction;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.services.SerialKillerService;
 import com.aionemu.gameserver.services.player.BattlePassService;
 import com.aionemu.gameserver.services.rift.RiftEnum;
@@ -15,6 +15,7 @@ import com.aionemu.gameserver.services.rift.RiftInformer;
 import com.aionemu.gameserver.services.rift.RiftManager;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.utils.PacketSendUtility;
+
 import javolution.util.FastMap;
 
 public class RVController extends NpcController
@@ -51,7 +52,7 @@ public class RVController extends NpcController
 			return;
 		} else if (SerialKillerService.getInstance().isRestrictPortal(player)) {
 			//You cannot use a Rift until the curse is removed.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_CANNOT_USE_DIRECT_PORTAL_BY_SLAYER);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_DIRECT_PORTAL_BY_SLAYER);
 			return;
 		} else if (player.getSKInfo().getRank() > 0) {
             return;
@@ -91,15 +92,15 @@ public class RVController extends NpcController
 			return false;
 		} if (player.getLevel() > getMaxLevel() || player.getLevel() < getMinLevel()) {
 			//You cannot use a Rift at your level.
-			PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_CANNOT_USE_DIRECT_PORTAL_LEVEL_LIMIT, 0);
+			PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_DIRECT_PORTAL_LEVEL_LIMIT, 0);
 			//You cannot use a Rift here.
-			PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_CANNOT_USE_DIRECT_PORTAL_FAR_FROM_NPC, 2000);
+			PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_DIRECT_PORTAL_FAR_FROM_NPC, 2000);
 			return false;
 		} if (getUsedEntries() >= getMaxEntries()) {
 			//The Rift has already had the maximum number of people travel through it.
-			PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_CANNOT_USE_DIRECT_PORTAL_USE_COUNT_LIMIT, 0);
+			PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_DIRECT_PORTAL_USE_COUNT_LIMIT, 0);
 			//This Rift is not usable.
-			PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_CANNOT_USE_DIRECT_PORTAL_NO_PORTAL, 2000);
+			PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_CANNOT_USE_DIRECT_PORTAL_NO_PORTAL, 2000);
 			return false;
 		}
 		return true;

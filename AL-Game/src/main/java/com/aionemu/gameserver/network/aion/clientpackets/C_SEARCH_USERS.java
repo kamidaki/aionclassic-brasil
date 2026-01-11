@@ -1,19 +1,19 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.aionemu.gameserver.configs.main.CustomConfig;
 import com.aionemu.gameserver.model.gameobjects.player.FriendList.Status;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_SEARCH_USER_RESULT;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.Util;
 import com.aionemu.gameserver.world.World;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class C_SEARCH_USERS extends AionClientPacket
 {
@@ -65,7 +65,7 @@ public class C_SEARCH_USERS extends AionClientPacket
 		List<Player> matches = new ArrayList<Player>(MAX_RESULTS);
 		if (activePlayer.getLevel() < 9) {
 			//Characters under level 9 cannot use the search function.
-			PacketSendUtility.sendPacket(activePlayer, S_MESSAGE_CODE.STR_CANT_WHO_LEVEL("9"));
+			PacketSendUtility.sendPacket(activePlayer, SM_SYSTEM_MESSAGE.STR_CANT_WHO_LEVEL("9"));
 			return;
 		}
 		while (it.hasNext() && matches.size() < MAX_RESULTS) {

@@ -10,6 +10,10 @@
  */
 package com.aionemu.gameserver.spawnengine;
 
+import static ch.lambdaj.Lambda.by;
+import static ch.lambdaj.Lambda.group;
+import static ch.lambdaj.Lambda.on;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +23,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.lambdaj.Lambda.*;
-import ch.lambdaj.group.Group;
-
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.gameobjects.Npc;
 import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
 import com.aionemu.gameserver.model.templates.walker.WalkerTemplate;
+
+import ch.lambdaj.group.Group;
 
 /**
  * Forms the walker groups on initial spawn<br>

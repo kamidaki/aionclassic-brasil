@@ -10,12 +10,15 @@
  */
 package ai.siege;
 
-import com.aionemu.gameserver.ai2.*;
-import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.ai2.AI2Actions;
+import com.aionemu.gameserver.ai2.AIName;
+import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.model.gameobjects.AionObject;
+import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.templates.spawns.siegespawns.SiegeSpawnTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ABYSS_SHIELD_INFO;
 import com.aionemu.gameserver.services.SiegeService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.World;
@@ -45,7 +48,7 @@ public class Siege_ShieldAI2 extends NpcAI2
 				if (winner instanceof Creature) {
 					final Creature kill = (Creature) winner;
 					//"Player Name" of the "Race" killed the Aetheric Field Generator.
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1301048, kill.getRace().getRaceDescriptionId(), kill.getName()));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1301048, kill.getRace().getRaceDescriptionId(), kill.getName()));
 				}
 			}
 		});

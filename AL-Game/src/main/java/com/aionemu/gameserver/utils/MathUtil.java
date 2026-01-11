@@ -1,17 +1,17 @@
 package com.aionemu.gameserver.utils;
 
-import com.aionemu.gameserver.controllers.movement.NpcMoveController;
-import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.model.gameobjects.VisibleObject;
-import com.aionemu.gameserver.model.geometry.Point3D;
-import com.aionemu.gameserver.model.templates.zone.Point2D;
-
-import java.awt.*;
+import java.awt.Point;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+
+import com.aionemu.gameserver.controllers.movement.NpcMoveController;
+import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.VisibleObject;
+import com.aionemu.gameserver.model.geometry.Point3D;
+import com.aionemu.gameserver.model.templates.zone.Point2D;
 
 public class MathUtil
 {
@@ -84,9 +84,20 @@ public class MathUtil
         }
         float dx = (object2.getX() - object1.getX());
         float dy = (object2.getY() - object1.getY());
-        return dx * dx + dy * dy < range * range;
+        return dx * dx + dy * dy <= range * range;
     }
-	
+
+    public static boolean isInRange(VisibleObject obj, float x, float y, float z, float range) {
+        return isInRange(obj.getX(), obj.getY(), obj.getZ(), x, y, z, range);
+    }
+
+    public static boolean isInRange(float x1, float y1, float z1, float x2, float y2, float z2, float range) {
+        float dx = x1 - x2;
+        float dy = y1 - y2;
+        float dz = z1 - z2;
+        return dx * dx + dy * dy + dz * dz <= range * range;
+    }
+
     public static boolean isIn3dRange(VisibleObject object1, VisibleObject object2, float range) {
         if (object1.getWorldId() != object2.getWorldId() || object1.getInstanceId() != object2.getInstanceId()) {
             return false;

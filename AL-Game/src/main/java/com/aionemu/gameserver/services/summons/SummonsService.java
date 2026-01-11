@@ -9,7 +9,12 @@ import com.aionemu.gameserver.model.gameobjects.VisibleObject;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.summons.SummonMode;
 import com.aionemu.gameserver.model.summons.UnsummonType;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.S_ADD_PET;
+import com.aionemu.gameserver.network.aion.serverpackets.S_CHANGE_PET_STATUS;
+import com.aionemu.gameserver.network.aion.serverpackets.S_REMOVE_PET;
+import com.aionemu.gameserver.network.aion.serverpackets.S_RESET_SKILL_COOLING_TIME;
 import com.aionemu.gameserver.spawnengine.VisibleObjectSpawner;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
@@ -18,7 +23,7 @@ public class SummonsService
 {
 	public static void createSummon(final Player master, int npcId, int skillId, int skillLevel, int time) {
         if (master.getSummon() != null) {
-            PacketSendUtility.sendPacket(master, new S_MESSAGE_CODE(1300072, new Object[0]));
+            PacketSendUtility.sendPacket(master, new SM_SYSTEM_MESSAGE(1300072, new Object[0]));
             return;
         }
         final Summon summon = VisibleObjectSpawner.spawnSummon(master, npcId, skillId, skillLevel, time);
@@ -27,7 +32,7 @@ public class SummonsService
         }
         master.setSummon(summon);
         PacketSendUtility.sendPacket(master, new S_ADD_PET(summon));
-        PacketSendUtility.broadcastPacket(summon, new S_ACTION(summon, EmotionType.START_EMOTE2));
+        PacketSendUtility.broadcastPacket(summon, new SM_EMOTION(summon, EmotionType.START_EMOTE2));
         PacketSendUtility.broadcastPacket(summon, new S_CHANGE_PET_STATUS(summon));
     }
 	
@@ -40,11 +45,11 @@ public class SummonsService
         Player master = summon.getMaster();
         switch (unsummonType) {
             case COMMAND:
-                PacketSendUtility.sendPacket(master, S_MESSAGE_CODE.STR_SKILL_SUMMON_UNSUMMON_FOLLOWER(summon.getNameId()));
+                PacketSendUtility.sendPacket(master, SM_SYSTEM_MESSAGE.STR_SKILL_SUMMON_UNSUMMON_FOLLOWER(summon.getNameId()));
                 PacketSendUtility.sendPacket(master, new S_CHANGE_PET_STATUS(summon));
             break;
             case DISTANCE:
-                PacketSendUtility.sendPacket(master, S_MESSAGE_CODE.STR_SKILL_SUMMON_UNSUMMON_BY_TOO_DISTANCE);
+                PacketSendUtility.sendPacket(master, SM_SYSTEM_MESSAGE.STR_SKILL_SUMMON_UNSUMMON_BY_TOO_DISTANCE);
                 PacketSendUtility.sendPacket(master, new S_CHANGE_PET_STATUS(summon));
 			break;
 			case UNSPECIFIED:
@@ -59,7 +64,7 @@ public class SummonsService
         summon.getController().cancelCurrentSkill();
         summon.setMode(SummonMode.REST);
         Player master = summon.getMaster();
-        PacketSendUtility.sendPacket(master, S_MESSAGE_CODE.STR_SKILL_SUMMON_REST_MODE(summon.getNameId()));
+        PacketSendUtility.sendPacket(master, SM_SYSTEM_MESSAGE.STR_SKILL_SUMMON_REST_MODE(summon.getNameId()));
         PacketSendUtility.sendPacket(master, new S_CHANGE_PET_STATUS(summon));
         summon.getLifeStats().triggerRestoreTask();
     }
@@ -74,7 +79,7 @@ public class SummonsService
         summon.getController().cancelCurrentSkill();
         summon.setMode(SummonMode.GUARD);
         Player master = summon.getMaster();
-        PacketSendUtility.sendPacket(master, S_MESSAGE_CODE.STR_SKILL_SUMMON_GUARD_MODE(summon.getNameId()));
+        PacketSendUtility.sendPacket(master, SM_SYSTEM_MESSAGE.STR_SKILL_SUMMON_GUARD_MODE(summon.getNameId()));
         PacketSendUtility.sendPacket(master, new S_CHANGE_PET_STATUS(summon));
         summon.getLifeStats().triggerRestoreTask();
     }
@@ -82,7 +87,7 @@ public class SummonsService
     public static void attackMode(Summon summon) {
         summon.setMode(SummonMode.ATTACK);
         Player master = summon.getMaster();
-        PacketSendUtility.sendPacket(master, S_MESSAGE_CODE.STR_SKILL_SUMMON_ATTACK_MODE(summon.getNameId()));
+        PacketSendUtility.sendPacket(master, SM_SYSTEM_MESSAGE.STR_SKILL_SUMMON_ATTACK_MODE(summon.getNameId()));
         PacketSendUtility.sendPacket(master, new S_CHANGE_PET_STATUS(summon));
         summon.getLifeStats().cancelRestoreTask();
     }
@@ -152,7 +157,7 @@ public class SummonsService
                 case COMMAND: 
                 case DISTANCE: 
                 case UNSPECIFIED:
-                    PacketSendUtility.sendPacket(this.master, S_MESSAGE_CODE.STR_SKILL_SUMMON_UNSUMMONED(this.owner.getNameId()));
+                    PacketSendUtility.sendPacket(this.master, SM_SYSTEM_MESSAGE.STR_SKILL_SUMMON_UNSUMMONED(this.owner.getNameId()));
                     PacketSendUtility.sendPacket(this.master, new S_REMOVE_PET(this.owner.getObjectId()));
                     PacketSendUtility.sendPacket(this.master, new S_RESET_SKILL_COOLING_TIME(0, 0));
                     if (target instanceof Creature) {

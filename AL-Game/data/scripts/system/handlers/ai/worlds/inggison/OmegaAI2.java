@@ -10,27 +10,26 @@
  */
 package ai.worlds.inggison;
 
-import ai.AggressiveNpcAI2;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import com.aionemu.commons.utils.Rnd;
 import com.aionemu.commons.network.util.ThreadPoolManager;
-
+import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.ai2.AIName;
-import com.aionemu.gameserver.ai2.AI2Actions;
-import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.actions.CreatureActions;
+import com.aionemu.gameserver.model.gameobjects.Creature;
+import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.services.NpcShoutsService;
 import com.aionemu.gameserver.skillengine.SkillEngine;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
 import com.aionemu.gameserver.utils.MathUtil;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ai.AggressiveNpcAI2;
 
 /****/
 /** Author Rinzler (Encom)
@@ -227,7 +226,7 @@ public class OmegaAI2 extends AggressiveNpcAI2
 			public void visit(Player player) {
 				if (player.isOnline()) {
 					//Omega summons a creature.
-					PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_LF4_RaidShowTime_Phase1, 0);
+					PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_LF4_RaidShowTime_Phase1, 0);
 				}
 			}
 		});
@@ -238,7 +237,7 @@ public class OmegaAI2 extends AggressiveNpcAI2
 			public void visit(Player player) {
 				if (player.isOnline()) {
 					//Omega summons a powerful creature.
-					PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_LF4_RaidShowTime_Phase2, 0);
+					PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_LF4_RaidShowTime_Phase2, 0);
 				}
 			}
 		});
@@ -249,7 +248,7 @@ public class OmegaAI2 extends AggressiveNpcAI2
 			public void visit(Player player) {
 				if (player.isOnline()) {
 					//Omega summons a healing creature.
-					PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_LF4_RaidShowTime_Phase3, 0);
+					PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_LF4_RaidShowTime_Phase3, 0);
 				}
 			}
 		});
@@ -260,7 +259,7 @@ public class OmegaAI2 extends AggressiveNpcAI2
 			public void visit(Player player) {
 				if (player.isOnline()) {
 					//Omega summons a creature that creates barriers.
-					PacketSendUtility.npcSendPacketTime(getOwner(), S_MESSAGE_CODE.STR_MSG_LF4_RaidShowTime_Phase4, 0);
+					PacketSendUtility.npcSendPacketTime(getOwner(), SM_SYSTEM_MESSAGE.STR_MSG_LF4_RaidShowTime_Phase4, 0);
 				}
 			}
 		});

@@ -13,8 +13,8 @@ package com.aionemu.gameserver.model.team2.group.events;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.team2.common.events.ChangeLeaderEvent;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_PARTY_INFO;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.google.common.base.Predicate;
 
@@ -50,9 +50,9 @@ public class ChangeGroupLeaderEvent extends ChangeLeaderEvent<PlayerGroup> {
             public boolean apply(Player member) {
                 PacketSendUtility.sendPacket(member, new S_PARTY_INFO(team));
                 if (!player.equals(member)) {
-                    PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_PARTY_HE_IS_NEW_LEADER(player.getName()));
+                    PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_PARTY_HE_IS_NEW_LEADER(player.getName()));
                 } else {
-                    PacketSendUtility.sendPacket(member, S_MESSAGE_CODE.STR_PARTY_YOU_BECOME_NEW_LEADER);
+                    PacketSendUtility.sendPacket(member, SM_SYSTEM_MESSAGE.STR_PARTY_YOU_BECOME_NEW_LEADER);
                 }
                 return true;
             }

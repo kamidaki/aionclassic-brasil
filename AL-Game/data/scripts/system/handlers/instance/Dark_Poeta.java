@@ -10,37 +10,41 @@
  */
 package instance;
 
-import com.aionemu.commons.utils.Rnd;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
 
 import com.aionemu.gameserver.ai2.NpcAI2;
 import com.aionemu.gameserver.ai2.manager.WalkManager;
 import com.aionemu.gameserver.instance.handlers.GeneralInstanceHandler;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
-import com.aionemu.gameserver.model.*;
-import com.aionemu.gameserver.model.gameobjects.*;
+import com.aionemu.gameserver.model.DescriptionId;
+import com.aionemu.gameserver.model.EmotionType;
+import com.aionemu.gameserver.model.Race;
+import com.aionemu.gameserver.model.gameobjects.Gatherable;
+import com.aionemu.gameserver.model.gameobjects.Npc;
+import com.aionemu.gameserver.model.gameobjects.StaticDoor;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.instance.InstanceScoreType;
 import com.aionemu.gameserver.model.instance.instancereward.DarkPoetaReward;
 import com.aionemu.gameserver.model.team2.group.PlayerGroup;
 import com.aionemu.gameserver.model.team2.group.PlayerGroupService;
-import com.aionemu.gameserver.model.templates.spawns.SpawnTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
-import com.aionemu.gameserver.services.item.ItemService;
-import com.aionemu.gameserver.services.instance.InstanceService;
-import com.aionemu.gameserver.services.teleport.TeleportService2;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
+import com.aionemu.gameserver.network.aion.serverpackets.S_INSTANT_DUNGEON_INFO;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_PLAY_CUTSCENE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.spawnengine.SpawnEngine;
-import com.aionemu.gameserver.utils.stats.AbyssRankEnum;
+import com.aionemu.gameserver.services.instance.InstanceService;
+import com.aionemu.gameserver.services.item.ItemService;
+import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
+import com.aionemu.gameserver.utils.stats.AbyssRankEnum;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 
-import javolution.util.*;
-
-import java.util.*;
-import java.util.concurrent.Future;
+import javolution.util.FastList;
 
 /****/
 /** Author Rinzler (Encom)
@@ -84,7 +88,7 @@ public class Dark_Poeta extends GeneralInstanceHandler
 							});
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 					case ASMODIANS:
@@ -100,7 +104,7 @@ public class Dark_Poeta extends GeneralInstanceHandler
 							});
 						} else {
 							///You have not acquired this quest.
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1390254));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1390254));
 						}
 					break;
 				}
@@ -440,37 +444,37 @@ public class Dark_Poeta extends GeneralInstanceHandler
 		idlf1_b_02_lizardas_50_ae.getSpawn().setWalkerId("idlf1_b_path_mob_rush_1");
 		WalkManager.startWalking((NpcAI2) idlf1_b_02_lizardas_50_ae.getAi2());
 		idlf1_b_02_lizardas_50_ae.setState(1);
-		PacketSendUtility.broadcastPacket(idlf1_b_02_lizardas_50_ae, new S_ACTION(idlf1_b_02_lizardas_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_02_lizardas_50_ae.getObjectId()));
+		PacketSendUtility.broadcastPacket(idlf1_b_02_lizardas_50_ae, new SM_EMOTION(idlf1_b_02_lizardas_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_02_lizardas_50_ae.getObjectId()));
 		//idlf1_b_02_lizardpr_50_ae
 		final Npc idlf1_b_02_lizardpr_50_ae = (Npc) spawn(214839, 806.178162f, 483.325409f, 107.952164f, (byte) 0);
 		idlf1_b_02_lizardpr_50_ae.getSpawn().setWalkerId("idlf1_b_path_mob_rush_2");
 		WalkManager.startWalking((NpcAI2) idlf1_b_02_lizardpr_50_ae.getAi2());
 		idlf1_b_02_lizardpr_50_ae.setState(1);
-		PacketSendUtility.broadcastPacket(idlf1_b_02_lizardpr_50_ae, new S_ACTION(idlf1_b_02_lizardpr_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_02_lizardpr_50_ae.getObjectId()));
+		PacketSendUtility.broadcastPacket(idlf1_b_02_lizardpr_50_ae, new SM_EMOTION(idlf1_b_02_lizardpr_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_02_lizardpr_50_ae.getObjectId()));
 		//idlf1_b_lizardfinamed_50_ae
 		final Npc idlf1_b_lizardfinamed_50_ae = (Npc) spawn(214841, 807.178162f, 486.325409f, 107.952164f, (byte) 0);
 		idlf1_b_lizardfinamed_50_ae.getSpawn().setWalkerId("idlf1_b_path_mob_rush_3");
 		WalkManager.startWalking((NpcAI2) idlf1_b_lizardfinamed_50_ae.getAi2());
 		idlf1_b_lizardfinamed_50_ae.setState(1);
-		PacketSendUtility.broadcastPacket(idlf1_b_lizardfinamed_50_ae, new S_ACTION(idlf1_b_lizardfinamed_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_lizardfinamed_50_ae.getObjectId()));
+		PacketSendUtility.broadcastPacket(idlf1_b_lizardfinamed_50_ae, new SM_EMOTION(idlf1_b_lizardfinamed_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_lizardfinamed_50_ae.getObjectId()));
 		//idlf1_b_02_lizardra_50_ae
 		final Npc idlf1_b_02_lizardra_50_ae = (Npc) spawn(214838, 873.178162f, 494.325409f, 112.952164f, (byte) 0);
 		idlf1_b_02_lizardra_50_ae.getSpawn().setWalkerId("idlf1_b_path_mob_rush_4");
 		WalkManager.startWalking((NpcAI2) idlf1_b_02_lizardra_50_ae.getAi2());
 		idlf1_b_02_lizardra_50_ae.setState(1);
-		PacketSendUtility.broadcastPacket(idlf1_b_02_lizardra_50_ae, new S_ACTION(idlf1_b_02_lizardra_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_02_lizardra_50_ae.getObjectId()));
+		PacketSendUtility.broadcastPacket(idlf1_b_02_lizardra_50_ae, new SM_EMOTION(idlf1_b_02_lizardra_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_02_lizardra_50_ae.getObjectId()));
 		//idlf1_b_lizardasnamed_50_ae
 		final Npc idlf1_b_lizardasnamed_50_ae = (Npc) spawn(214842, 871.178162f, 491.325409f, 112.952164f, (byte) 0);
 		idlf1_b_lizardasnamed_50_ae.getSpawn().setWalkerId("idlf1_b_path_mob_rush_5");
 		WalkManager.startWalking((NpcAI2) idlf1_b_lizardasnamed_50_ae.getAi2());
 		idlf1_b_lizardasnamed_50_ae.setState(1);
-		PacketSendUtility.broadcastPacket(idlf1_b_lizardasnamed_50_ae, new S_ACTION(idlf1_b_lizardasnamed_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_lizardasnamed_50_ae.getObjectId()));
+		PacketSendUtility.broadcastPacket(idlf1_b_lizardasnamed_50_ae, new SM_EMOTION(idlf1_b_lizardasnamed_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_lizardasnamed_50_ae.getObjectId()));
 		//idlf1_b_02_lizardfi_50_ae
 		final Npc idlf1_b_02_lizardfi_50_ae = (Npc) spawn(214836, 867.178162f, 488.325409f, 111.952164f, (byte) 0);
 		idlf1_b_02_lizardfi_50_ae.getSpawn().setWalkerId("idlf1_b_path_mob_rush_6");
 		WalkManager.startWalking((NpcAI2) idlf1_b_02_lizardfi_50_ae.getAi2());
 		idlf1_b_02_lizardfi_50_ae.setState(1);
-		PacketSendUtility.broadcastPacket(idlf1_b_02_lizardfi_50_ae, new S_ACTION(idlf1_b_02_lizardfi_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_02_lizardfi_50_ae.getObjectId()));
+		PacketSendUtility.broadcastPacket(idlf1_b_02_lizardfi_50_ae, new SM_EMOTION(idlf1_b_02_lizardfi_50_ae, EmotionType.START_EMOTE2, 0, idlf1_b_02_lizardfi_50_ae.getObjectId()));
 	}
 	
 	private boolean marabataOfStrength() {
@@ -539,7 +543,7 @@ public class Dark_Poeta extends GeneralInstanceHandler
 			@Override
 			public void visit(Player player) {
 				if (nameId != 0) {
-					PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400237, new DescriptionId(nameId * 2 + 1), point));
+					PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400237, new DescriptionId(nameId * 2 + 1), point));
 				}
 				PacketSendUtility.sendPacket(player, new S_INSTANT_DUNGEON_INFO(getTime(), instanceReward, null));
 			}
@@ -737,7 +741,7 @@ public class Dark_Poeta extends GeneralInstanceHandler
 	@Override
 	public void onLeaveInstance(Player player) {
 		//"Player Name" has left the battle.
-		PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400255, player.getName()));
+		PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400255, player.getName()));
 		if (player.isInGroup2()) {
             PlayerGroupService.removePlayer(player);
         }
@@ -759,7 +763,7 @@ public class Dark_Poeta extends GeneralInstanceHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});

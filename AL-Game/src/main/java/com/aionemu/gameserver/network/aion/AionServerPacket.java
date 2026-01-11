@@ -16,14 +16,15 @@
  */
 package com.aionemu.gameserver.network.aion;
 
+import java.nio.ByteBuffer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aionemu.commons.network.packet.BaseServerPacket;
 import com.aionemu.gameserver.configs.network.NetworkConfig;
 import com.aionemu.gameserver.network.Crypt;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.nio.ByteBuffer;
 
 /**
  * Base class for every GS -> Aion Server Packet.
@@ -75,8 +76,7 @@ public abstract class AionServerPacket extends BaseServerPacket {
 	 * @param buf
 	 */
 	public final void write(AionConnection con, ByteBuffer buffer) {
-		// Removendo a restrição de STAFF, para que todos do desenvolvimento possam ver os pacotes.
-		if (con.getState().equals(AionConnection.State.IN_GAME) && NetworkConfig.DISPLAY_PACKETS) {
+		if (con.getState().equals(AionConnection.State.IN_GAME) && con.getActivePlayer().getPlayerAccount().getAccessLevel() == 5 && NetworkConfig.DISPLAY_PACKETS) {
 			if (!this.getPacketName().equals("SM_MESSAGE")) {
 				PacketSendUtility.sendMessage(con.getActivePlayer(), "0x" + Integer.toHexString(this.getOpcode()).toUpperCase() + " : " + this.getPacketName());
 			}

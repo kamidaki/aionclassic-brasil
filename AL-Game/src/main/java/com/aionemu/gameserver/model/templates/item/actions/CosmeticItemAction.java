@@ -1,5 +1,10 @@
 package com.aionemu.gameserver.model.templates.item.actions;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+
 import com.aionemu.gameserver.dao.PlayerAppearanceDAO;
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.DescriptionId;
@@ -7,14 +12,9 @@ import com.aionemu.gameserver.model.gameobjects.Item;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.PlayerAppearance;
 import com.aionemu.gameserver.model.templates.cosmeticitems.CosmeticItemTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.network.aion.serverpackets.S_PUT_USER;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_INFO;
 import com.aionemu.gameserver.utils.PacketSendUtility;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CosmeticItemAction")
@@ -36,7 +36,7 @@ public class CosmeticItemAction extends AbstractItemAction
 			}
 		} if (player.getController().isInCombat() || player.isAttackMode()) {
 			///You cannot use %1 while in combat.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_SKILL_ITEM_RESTRICTED_AREA(new DescriptionId(2800159), parentItem.getNameId()));
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_SKILL_ITEM_RESTRICTED_AREA(new DescriptionId(2800159), parentItem.getNameId()));
 			return false;
 		}
 		return !player.getMoveController().isInMove();
@@ -78,7 +78,7 @@ public class CosmeticItemAction extends AbstractItemAction
 		}
 		PlayerAppearanceDAO.store(player);
 		player.getInventory().delete(targetItem);
-		PacketSendUtility.sendPacket(player, new S_PUT_USER(player, false));
+		PacketSendUtility.sendPacket(player, new SM_PLAYER_INFO(player, false));
 		player.clearKnownlist();
         player.updateKnownlist();
 	}

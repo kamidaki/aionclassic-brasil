@@ -1,9 +1,9 @@
 package com.aionemu.gameserver.model.gameobjects.player;
 
+import java.sql.Timestamp;
+
 import com.aionemu.gameserver.dataholders.DataManager;
 import com.aionemu.gameserver.model.templates.event.EventsWindowTemplate;
-
-import java.sql.Timestamp;
 
 public class PlayerEventWindow {
 

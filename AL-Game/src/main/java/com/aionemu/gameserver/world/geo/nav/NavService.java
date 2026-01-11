@@ -37,54 +37,12 @@ public final class NavService {
 			return;
 		}
 
-		LOG.info("NavMesh está habilitado.");
+		LOG.info("Sistema de navegação NavMesh está habilitado, inicializando carregamentos.");
 		if (!GeoDataConfig.getPreloadWorlds().isEmpty()) {
 			navData.preloadNavMaps(GeoDataConfig.getPreloadWorlds());
 		} else {
 			LOG.info("NAVMESH: Pré-carregamento automático desativado, malhas serão carregadas sob demanda.");
 		}
-	}
-
-	/**
-	 * This method checks if one entity (creature) can pull (forcibly move) another (target) by checking if the
-	 * navmesh is continuous between the creature and the target. This method will immediately return true if the
-	 * target is flying, will otherwise return true if the navmesh is continuous in a straight line between the two
-	 * given entities, and will return false if no such continuous path exists. As a side-effect of how pathfinding is
-	 * implemented, this method may also return false if the creature is flying too far above the navmesh; since this mimics
-	 * retail behaviour, it will be left as is.
-	 * <p>
-	 * It's assumed that the entities can see eachother.
-	 * <p>
-	 * If {@link GeoDataConfig#GEO_NAV_ENABLE} is set to false, this method will immediately return true.
-	 *
-	 * @param creature -- The entity attempting to pull {@code target}.
-	 * @param target -- The target entity that {@code creature} is attempting to pull.
-	 * @return true if the target can be pulled, false otherwise.
-	 */
-	public boolean canPullTarget(Creature creature, Creature target) {
-		if (!GeoDataConfig.GEO_NAV_ENABLE) return true;
-		if (creature == null || target == null) return true;
-		int worldId = creature.getWorldId();
-		if (CityMapUtil.isDefaultPathfinding(worldId)) return true;
-		if (target.isFlying()) return true;
-		float x1 = creature.getX(), y1 = creature.getY(), z1 = creature.getZ();
-		NavGeometry tile1 = getNavTile(worldId, x1, y1, z1);
-		if (tile1 == null) {
-			tile1 = getNavTileWithBox(worldId, x1, y1, z1);
-			if (tile1 == null) return false;
-		}
-		float x2 = target.getX(), y2 = target.getY(), z2 = target.getZ();
-		int targetWorldId = target.getWorldId();
-		if (CityMapUtil.isDefaultPathfinding(targetWorldId)) return true;
-		NavGeometry tile2 = getNavTile(targetWorldId, x2, y2, z2);
-		if (tile2 == null) {
-			tile2 = getNavTileWithBox(targetWorldId, x2, y2, z2);
-			if (tile2 == null) return false;
-		}
-		//They're flipped around because the path needs to exist from the target (though it doesn't actually matter)
-		float[][] path = attemptStraightLinePath(tile2, tile1, x2, y2, z2, x1, y1, z1);
-		if (path != null && path.length == 1) return true;
-		return false;
 	}
 
 	private float[][] attemptStraightLinePath(NavGeometry tile1, NavGeometry tile2, float x1, float y1, float z1, float x2, float y2, float z2) {
@@ -160,29 +118,24 @@ public final class NavService {
 	}
 
 	public float[][] navigateToTarget(Creature pathOwner, Creature target) {
-		//basic checks
 		if (pathOwner == null) return null;
 		if (pathOwner.getLifeStats().isAlreadyDead()) return null;
 		if (target == null) return null;
-//		if (target.getLifeStats().isAlreadyDead()) return null;
 		if (pathOwner.getWorldId() != target.getWorldId()) return null;
 
 		int worldId = pathOwner.getWorldId();
 		if (CityMapUtil.isDefaultPathfinding(worldId)) return null;
 		float x1 = pathOwner.getX(), y1 = pathOwner.getY(), z1 = pathOwner.getZ();
 		float x2 = target.getX(), y2 = target.getY(), z2 = target.getZ();
-		//TO-DO: Use Cached Tile for Creature
 		return navigateFromLocationToLocation(worldId, null, null, x1, y1, z1, x2, y2, z2);
 	}
 
 	public float[][] navigateToLocation(Creature pathOwner, float x, float y, float z) {
-		//basic checks
 		if (pathOwner == null) return null;
 		if (pathOwner.getLifeStats().isAlreadyDead()) return null;
 		int worldId = pathOwner.getWorldId();
 		if (CityMapUtil.isDefaultPathfinding(worldId)) return null;
 		float x1 = pathOwner.getX(), y1 = pathOwner.getY(), z1 = pathOwner.getZ();
-		//TO-DO: Use Cached Tile for Creature
 		return navigateFromLocationToLocation(worldId, null, null, x1, y1, z1, x, y, z);
 	}
 
@@ -375,9 +328,8 @@ public final class NavService {
 		}
 	}
 
-	private static float crossZ(float[] vec1, float[] vec2/*, float x1, float y1, float x2, float y2*/) {
+	private static float crossZ(float[] vec1, float[] vec2) {
 		return ((vec1[0] * vec2[1]) - (vec1[1] * vec2[0]));
-//		return ((x1 * y2) - (y1 * x2));
 	}
 
 	private NavGeometry getNavTile(int worldId, float x, float y, float z) {

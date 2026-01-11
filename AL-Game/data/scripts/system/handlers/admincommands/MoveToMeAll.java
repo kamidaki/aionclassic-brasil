@@ -2,7 +2,7 @@ package admincommands;
 
 import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_WORLD;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_SPAWN;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
@@ -29,7 +29,7 @@ public class MoveToMeAll extends AdminCommand {
 				if (!p.equals(admin)) {
 					TeleportService2.teleportTo(p, admin.getWorldId(), admin.getInstanceId(), admin.getX(), admin.getY(),
 						admin.getZ(), admin.getHeading());
-					PacketSendUtility.sendPacket(p, new S_WORLD(p));
+					PacketSendUtility.sendPacket(p, new SM_PLAYER_SPAWN(p));
 
 					PacketSendUtility.sendMessage(admin, "Player " + p.getName() + " teleported.");
 					PacketSendUtility.sendMessage(p, "Teleportd by " + admin.getName() + ".");
@@ -43,7 +43,7 @@ public class MoveToMeAll extends AdminCommand {
 					if (p.getRace() == Race.ELYOS) {
 						TeleportService2.teleportTo(p, admin.getWorldId(), admin.getInstanceId(), admin.getX(), admin.getY(),
 							admin.getZ(), admin.getHeading());
-						PacketSendUtility.sendPacket(p, new S_WORLD(p));
+						PacketSendUtility.sendPacket(p, new SM_PLAYER_SPAWN(p));
 
 						PacketSendUtility.sendMessage(admin, "Player " + p.getName() + " teleported.");
 						PacketSendUtility.sendMessage(p, "Teleportd by " + admin.getName() + ".");
@@ -58,7 +58,7 @@ public class MoveToMeAll extends AdminCommand {
 					if (p.getRace() == Race.ASMODIANS) {
 						TeleportService2.teleportTo(p, admin.getWorldId(), admin.getInstanceId(), admin.getX(), admin.getY(),
 							admin.getZ(), admin.getHeading());
-						PacketSendUtility.sendPacket(p, new S_WORLD(p));
+						PacketSendUtility.sendPacket(p, new SM_PLAYER_SPAWN(p));
 
 						PacketSendUtility.sendMessage(admin, "Player " + p.getName() + " teleported.");
 						PacketSendUtility.sendMessage(p, "Teleportd by " + admin.getName() + ".");

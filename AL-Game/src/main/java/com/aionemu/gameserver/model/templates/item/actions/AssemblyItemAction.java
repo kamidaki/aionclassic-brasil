@@ -1,23 +1,22 @@
 package com.aionemu.gameserver.model.templates.item.actions;
 
-import com.aionemu.commons.utils.Rnd;
-import com.aionemu.commons.network.util.ThreadPoolManager;
-
-import com.aionemu.gameserver.controllers.observer.ItemUseObserver;
-import com.aionemu.gameserver.dataholders.DataManager;
-import com.aionemu.gameserver.model.*;
-import com.aionemu.gameserver.model.gameobjects.Item;
-import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.model.templates.item.AssemblyItem;
-import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
-import com.aionemu.gameserver.services.item.ItemService;
-import com.aionemu.gameserver.utils.PacketSendUtility;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+
+import com.aionemu.commons.network.util.ThreadPoolManager;
+import com.aionemu.commons.utils.Rnd;
+import com.aionemu.gameserver.controllers.observer.ItemUseObserver;
+import com.aionemu.gameserver.dataholders.DataManager;
+import com.aionemu.gameserver.model.TaskId;
+import com.aionemu.gameserver.model.gameobjects.Item;
+import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.model.templates.item.AssemblyItem;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.S_USE_ITEM;
+import com.aionemu.gameserver.services.item.ItemService;
+import com.aionemu.gameserver.utils.PacketSendUtility;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AssemblyItemAction")
@@ -41,7 +40,7 @@ public class AssemblyItemAction extends AbstractItemAction
 			}
 		} if (player.getInventory().isFull()) {
 			//You cannot acquire the item because there is no space in the inventory.
-			PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_DICE_INVEN_ERROR);
+			PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_DICE_INVEN_ERROR);
 			return false;
 		}
 		return true;
@@ -61,7 +60,7 @@ public class AssemblyItemAction extends AbstractItemAction
 				player.getController().cancelTask(TaskId.ITEM_USE);
 				player.removeItemCoolDown(parentItem.getItemTemplate().getUseLimits().getDelayId());
 				//Assembly canceled.
-				PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1401123));
+				PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1401123));
 				PacketSendUtility.broadcastPacket(player, new S_USE_ITEM(player.getObjectId(), parentItem.getObjectId(), parentItem.getItemTemplate().getTemplateId(), 0, 2, 0), true);
 				player.getObserveController().removeObserver(this);
 			}
@@ -82,7 +81,7 @@ public class AssemblyItemAction extends AbstractItemAction
 						}
 						player.getInventory().decreaseByItemId(itemId, 1);
 						//Assembly success.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1401122));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1401122));
 						PacketSendUtility.broadcastPacketAndReceive(player, new S_USE_ITEM(player.getObjectId(), parentItem.getObjectId(), parentItem.getItemId(), 0, validAssembly ? 1 : 2, 384));
 						player.getController().cancelTask(TaskId.ITEM_USE);
 						if (assemblyItem.getProcAssembly() != 0) {
@@ -100,7 +99,7 @@ public class AssemblyItemAction extends AbstractItemAction
 						}
 						player.getInventory().decreaseByItemId(itemId, 1);
 						//Assembly success.
-						PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1401122));
+						PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1401122));
 						PacketSendUtility.broadcastPacketAndReceive(player, new S_USE_ITEM(player.getObjectId(), parentItem.getObjectId(), parentItem.getItemId(), 0, validAssembly ? 1 : 2, 384));
 						player.getController().cancelTask(TaskId.ITEM_USE);
 					}

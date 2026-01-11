@@ -1,13 +1,13 @@
 package admincommands;
 
+import java.util.NoSuchElementException;
+
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.services.PunishmentService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.Util;
 import com.aionemu.gameserver.utils.chathandlers.AdminCommand;
 import com.aionemu.gameserver.world.World;
-
-import java.util.NoSuchElementException;
 
 /**
  * @author lord_rex Command: //rprison <player> This command is removing player from prison.

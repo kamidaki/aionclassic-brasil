@@ -10,26 +10,25 @@
  */
 package instance.quest;
 
+import java.util.Map;
+import java.util.concurrent.Future;
+
 import com.aionemu.gameserver.instance.handlers.GeneralInstanceHandler;
 import com.aionemu.gameserver.instance.handlers.InstanceID;
-import com.aionemu.gameserver.model.*;
+import com.aionemu.gameserver.model.Race;
 import com.aionemu.gameserver.model.gameobjects.Npc;
-import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.StaticDoor;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.questEngine.model.QuestState;
 import com.aionemu.gameserver.questEngine.model.QuestStatus;
-import com.aionemu.gameserver.services.*;
-import com.aionemu.gameserver.network.aion.serverpackets.*;
+import com.aionemu.gameserver.services.ClassChangeService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.WorldMapInstance;
 import com.aionemu.gameserver.world.knownlist.Visitor;
 import com.aionemu.gameserver.world.zone.ZoneInstance;
 import com.aionemu.gameserver.world.zone.ZoneName;
-
-import java.util.*;
-import java.util.concurrent.Future;
 
 /****/
 /** Author Rinzler (Encom)
@@ -127,19 +126,19 @@ public class Closed_Tiak_Research_CenterQ extends GeneralInstanceHandler
             if (!tiakEvent1) {
 				tiakEvent1 = true;
 				///This base is non-operational.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_GOSSHIP_IDTiamatLab_Q_Mission_01, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_GOSSHIP_IDTiamatLab_Q_Mission_01, 0);
 			}
 		} else if (zone.getAreaTemplate().getZoneName() == ZoneName.get("CENTRAL_CONTROL_ZONE_300460000")) {
             if (!tiakEvent2) {
 				tiakEvent2 = true;
 				///Destroying all stored documents.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_GOSSHIP_IDTiamatLab_Q_Mission_03, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_GOSSHIP_IDTiamatLab_Q_Mission_03, 0);
 			}
 		} else if (zone.getAreaTemplate().getZoneName() == ZoneName.get("CONTROL_PASSAGE_1_300460000")) {
             if (!tiakEvent3) {
 				tiakEvent3 = true;
 				///Defeat the gatekeeper to open the barrier.
-				PacketSendUtility.playerSendPacketTime(player, S_MESSAGE_CODE.STR_MSG_IDTiamatLab_Q_Doorkeeper, 0);
+				PacketSendUtility.playerSendPacketTime(player, SM_SYSTEM_MESSAGE.STR_MSG_IDTiamatLab_Q_Doorkeeper, 0);
 			}
 		}
     }
@@ -152,7 +151,7 @@ public class Closed_Tiak_Research_CenterQ extends GeneralInstanceHandler
 					@Override
 					public void visit(Player player) {
 						if (player.getRace().equals(race) || race.equals(Race.PC_ALL)) {
-							PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(msg));
+							PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(msg));
 						}
 					}
 				});

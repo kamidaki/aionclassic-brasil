@@ -10,6 +10,12 @@
  */
 package com.aionemu.gameserver.skillengine.model;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
+
 import com.aionemu.commons.utils.Rnd;
 import com.aionemu.gameserver.controllers.attack.AttackStatus;
 import com.aionemu.gameserver.controllers.observer.ActionObserver;
@@ -24,20 +30,30 @@ import com.aionemu.gameserver.model.gameobjects.state.CreatureState;
 import com.aionemu.gameserver.model.stats.calc.StatOwner;
 import com.aionemu.gameserver.model.stats.container.StatEnum;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
-import com.aionemu.gameserver.network.aion.serverpackets.S_TOGGLE_SKILL_ON_OFF;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SKILL_ACTIVATION;
 import com.aionemu.gameserver.skillengine.condition.Conditions;
-import com.aionemu.gameserver.skillengine.effect.*;
+import com.aionemu.gameserver.skillengine.effect.AuthorizeBoostEffect;
+import com.aionemu.gameserver.skillengine.effect.BindEffect;
+import com.aionemu.gameserver.skillengine.effect.DamageEffect;
+import com.aionemu.gameserver.skillengine.effect.DelayedSpellAttackInstantEffect;
+import com.aionemu.gameserver.skillengine.effect.EffectTemplate;
+import com.aionemu.gameserver.skillengine.effect.Effects;
+import com.aionemu.gameserver.skillengine.effect.EnchantBoostEffect;
+import com.aionemu.gameserver.skillengine.effect.FearEffect;
+import com.aionemu.gameserver.skillengine.effect.HideEffect;
+import com.aionemu.gameserver.skillengine.effect.ParalyzeEffect;
+import com.aionemu.gameserver.skillengine.effect.PetOrderUseUltraSkillEffect;
+import com.aionemu.gameserver.skillengine.effect.RootEffect;
+import com.aionemu.gameserver.skillengine.effect.SanctuaryEffect;
+import com.aionemu.gameserver.skillengine.effect.SleepEffect;
+import com.aionemu.gameserver.skillengine.effect.SummonEffect;
+import com.aionemu.gameserver.skillengine.effect.TransformEffect;
 import com.aionemu.gameserver.skillengine.periodicaction.PeriodicAction;
 import com.aionemu.gameserver.skillengine.periodicaction.PeriodicActions;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
-import javolution.util.FastMap;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
+import javolution.util.FastMap;
 
 public class Effect implements StatOwner
 {
@@ -752,14 +768,14 @@ public class Effect implements StatOwner
 	 * Will activate toggle skill and start checking task
 	 */
 	private void activateToggleSkill() {
-		PacketSendUtility.sendPacket((Player) effector, new S_TOGGLE_SKILL_ON_OFF(getSkillId(), true));
+		PacketSendUtility.sendPacket((Player) effector, new SM_SKILL_ACTIVATION(getSkillId(), true));
 	}
 
 	/**
 	 * Will deactivate toggle skill and stop checking task
 	 */
 	private void deactivateToggleSkill() {
-		PacketSendUtility.sendPacket((Player) effector, new S_TOGGLE_SKILL_ON_OFF(getSkillId(), false));
+		PacketSendUtility.sendPacket((Player) effector, new SM_SKILL_ACTIVATION(getSkillId(), false));
 	}
 
 	/**

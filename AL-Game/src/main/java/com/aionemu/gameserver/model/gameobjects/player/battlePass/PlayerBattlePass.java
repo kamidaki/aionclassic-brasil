@@ -1,9 +1,8 @@
 package com.aionemu.gameserver.model.gameobjects.player.battlePass;
 
-import com.aionemu.gameserver.model.templates.battle_pass.BattleQuestType;
-import javolution.util.FastMap;
-
 import java.util.Map;
+
+import javolution.util.FastMap;
 
 public class PlayerBattlePass {
 

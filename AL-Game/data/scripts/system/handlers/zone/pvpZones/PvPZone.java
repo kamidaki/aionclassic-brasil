@@ -13,8 +13,8 @@ package zone.pvpZones;
 import com.aionemu.gameserver.model.EmotionType;
 import com.aionemu.gameserver.model.gameobjects.Creature;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
-import com.aionemu.gameserver.network.aion.serverpackets.S_ACTION;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_EMOTION;
 import com.aionemu.gameserver.services.player.PlayerReviveService;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
@@ -40,12 +40,12 @@ public abstract class PvPZone implements AdvencedZoneHandler
 			return false;
 		}
 		final Player player = (Player) target;
-		PacketSendUtility.broadcastPacket(player, new S_ACTION(player, EmotionType.DIE, 0, player.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()), true);
+		PacketSendUtility.broadcastPacket(player, new SM_EMOTION(player, EmotionType.DIE, 0, player.equals(lastAttacker) ? 0 : lastAttacker.getObjectId()), true);
 		if (zone instanceof SiegeZoneInstance) {
 			((SiegeZoneInstance) zone).doOnAllPlayers(new Visitor<Player>() {
 				@Override
 				public void visit(Player p) {
-					PacketSendUtility.sendPacket(p, S_MESSAGE_CODE.STR_PvPZONE_OUT_MESSAGE(player.getName()));
+					PacketSendUtility.sendPacket(p, SM_SYSTEM_MESSAGE.STR_PvPZONE_OUT_MESSAGE(player.getName()));
 				}
 			});
 			ThreadPoolManager.getInstance().schedule(new Runnable() {
@@ -53,7 +53,7 @@ public abstract class PvPZone implements AdvencedZoneHandler
 				public void run() {
 					PlayerReviveService.duelRevive(player);
 					doTeleport(player, zone.getZoneTemplate().getName());
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_PvPZONE_MY_DEATH_TO_B(lastAttacker.getName()));
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_PvPZONE_MY_DEATH_TO_B(lastAttacker.getName()));
 				}
 			}, 5000);
 		}

@@ -16,22 +16,22 @@
  */
 package com.aionemu.gameserver.services;
 
+import java.util.Calendar;
+import java.util.concurrent.Future;
+
 import com.aionemu.gameserver.configs.main.GSConfig;
 import com.aionemu.gameserver.dao.PlayerPunishmentsDAO;
 import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_ASK_QUIT_RESULT;
 import com.aionemu.gameserver.network.aion.serverpackets.S_CAPTCHA;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
 import com.aionemu.gameserver.network.chatserver.ChatServer;
 import com.aionemu.gameserver.services.teleport.TeleportService2;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
 import com.aionemu.gameserver.world.World;
 import com.aionemu.gameserver.world.WorldMapType;
-
-import java.util.Calendar;
-import java.util.concurrent.Future;
 
 /**
  * @author lord_rex, Cura, nrg
@@ -215,7 +215,7 @@ public class PunishmentService {
 			PlayerPunishmentsDAO.punishPlayer(player, PunishmentType.GATHER, "Possible gatherbot");
 		}
 		else {
-			PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1400269));
+			PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1400269));
 			player.setCaptchaWord(null);
 			player.setCaptchaImage(null);
 			player.setGatherableTimer(0);

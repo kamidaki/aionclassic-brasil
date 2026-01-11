@@ -8,9 +8,9 @@ import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.model.gameobjects.player.WardrobeEntry;
 import com.aionemu.gameserver.model.templates.item.ItemTemplate;
 import com.aionemu.gameserver.model.templates.item.actions.DyeAction;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.network.aion.serverpackets.S_USER_CLASSIC_WARDROBE_LOAD;
-import com.aionemu.gameserver.network.aion.serverpackets.S_WIELD;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_UPDATE_PLAYER_APPEARANCE;
 import com.aionemu.gameserver.network.aion.serverpackets.need.S_USER_CLASSIC_WARDROBE_DATA_UPDATED;
 import com.aionemu.gameserver.network.aion.serverpackets.need.S_USER_CLASSIC_WARDROBE_INFO_UPDATED;
 import com.aionemu.gameserver.services.item.ItemPacketService;
@@ -30,8 +30,8 @@ public class PlayerWardrobeService {
         player.getInventory().decreaseByItemId(186000166, 1);
         player.getCommonData().setWardrobeSlot(player.getCommonData().getWardrobeSlot() + 1);
         PacketSendUtility.sendPacket(player, new S_USER_CLASSIC_WARDROBE_INFO_UPDATED(unk));
-        PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_WARDROBE_COMPLETE_EXPAND_SLOT);
-        PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_USE_CASH_TYPE_ITEM1(template.getNameId()));
+        PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_WARDROBE_COMPLETE_EXPAND_SLOT);
+        PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_USE_CASH_TYPE_ITEM1(template.getNameId()));
     }
 
     public void onRegisterItem(Player player, int objectId) {
@@ -40,7 +40,7 @@ public class PlayerWardrobeService {
             WardrobeEntry entry = new WardrobeEntry(IDFactory.getInstance().nextId(), skin.getItemId(), 0, false);
             player.getPlayerWardrobe().put(entry.getObjectId(), entry);
             PlayerWardrobeDAO.addItem(player, entry);
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_WARDROBE_COMPLETE_REGISTER_ITEM(skin.getItemTemplate().getNameId()));
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_WARDROBE_COMPLETE_REGISTER_ITEM(skin.getItemTemplate().getNameId()));
             PacketSendUtility.sendPacket(player, new S_USER_CLASSIC_WARDROBE_DATA_UPDATED(1, entry));
         }
     }
@@ -52,8 +52,8 @@ public class PlayerWardrobeService {
             item.setItemSkinTemplate(entry.getItemSkinTemplate());
             item.setItemColor(entry.getColor());
             ItemPacketService.updateItemAfterInfoChange(player, item);
-            PacketSendUtility.sendPacket(player, new S_WIELD(player.getObjectId(), player.getEquipment().getEquippedItemsWithoutStigma()));
-            PacketSendUtility.sendPacket(player, new S_MESSAGE_CODE(1300483, new DescriptionId(item.getItemTemplate().getNameId())));
+            PacketSendUtility.sendPacket(player, new SM_UPDATE_PLAYER_APPEARANCE(player.getObjectId(), player.getEquipment().getEquippedItemsWithoutStigma()));
+            PacketSendUtility.sendPacket(player, new SM_SYSTEM_MESSAGE(1300483, new DescriptionId(item.getItemTemplate().getNameId())));
         }
     }
 
@@ -63,7 +63,7 @@ public class PlayerWardrobeService {
             entry.setLiked(like);
             PlayerWardrobeDAO.updateItem(player, entry);
             if(like) {
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_WARDROBE_FAVORITE_ITEM(entry.getItemSkinTemplate().getNameId()));
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_WARDROBE_FAVORITE_ITEM(entry.getItemSkinTemplate().getNameId()));
             }
             PacketSendUtility.sendPacket(player, new S_USER_CLASSIC_WARDROBE_DATA_UPDATED(4, entry));
         }
@@ -76,12 +76,12 @@ public class PlayerWardrobeService {
             DyeAction color = (DyeAction) colorObject.getItemTemplate().getActions().getItemActions().get(0);
             if(color.color.equals("no")) {
                 entry.setColor(0);
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_WARDROBE_COMPLETE_REMOVE_DYE(entry.getItemSkinTemplate().getNameId()));
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_WARDROBE_COMPLETE_REMOVE_DYE(entry.getItemSkinTemplate().getNameId()));
             } else {
                 int rgb = Integer.parseInt(color.color, 16);
                 int bgra = 0xFF | ((rgb & 0xFF) << 24) | ((rgb & 0xFF00) << 8) | ((rgb & 0xFF0000) >>> 8);
                 entry.setColor(bgra);
-                PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_WARDROBE_COMPLETE_DYE(entry.getItemSkinTemplate().getNameId(), colorObject.getNameId()));
+                PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_WARDROBE_COMPLETE_DYE(entry.getItemSkinTemplate().getNameId(), colorObject.getNameId()));
             }
             PacketSendUtility.sendPacket(player, new S_USER_CLASSIC_WARDROBE_DATA_UPDATED(3, entry));
             PlayerWardrobeDAO.updateItem(player, entry);
@@ -93,7 +93,7 @@ public class PlayerWardrobeService {
         if (entry != null) {
             PlayerWardrobeDAO.deleteItem(player, entry);
             player.getPlayerWardrobe().remove(objectId);
-            PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_MSG_WARDROBE_DELETE_ITEM(entry.getItemSkinTemplate().getNameId()));
+            PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_MSG_WARDROBE_DELETE_ITEM(entry.getItemSkinTemplate().getNameId()));
             PacketSendUtility.sendPacket(player, new S_USER_CLASSIC_WARDROBE_DATA_UPDATED(2, entry));
         }
     }

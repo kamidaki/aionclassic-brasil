@@ -1,16 +1,16 @@
 package com.aionemu.gameserver.network.aion.clientpackets;
 
+import java.util.concurrent.Future;
+
 import com.aionemu.gameserver.model.TaskId;
 import com.aionemu.gameserver.model.gameobjects.LetterType;
 import com.aionemu.gameserver.model.gameobjects.player.Player;
 import com.aionemu.gameserver.network.aion.AionClientPacket;
 import com.aionemu.gameserver.network.aion.AionConnection.State;
-import com.aionemu.gameserver.network.aion.serverpackets.S_MESSAGE_CODE;
+import com.aionemu.gameserver.network.aion.serverpackets.SM_SYSTEM_MESSAGE;
 import com.aionemu.gameserver.spawnengine.VisibleObjectSpawner;
 import com.aionemu.gameserver.utils.PacketSendUtility;
 import com.aionemu.gameserver.utils.ThreadPoolManager;
-
-import java.util.concurrent.Future;
 
 public class C_MAIL_POSTMAN extends AionClientPacket
 {
@@ -51,19 +51,19 @@ public class C_MAIL_POSTMAN extends AionClientPacket
 			case 1:
 				if (player.getPostman() != null) {
 					//An express courier has already arrived.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_POSTMAN_ALREADY_SUMMONED);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_POSTMAN_ALREADY_SUMMONED);
 					return;
 				} else if (player.isInPrison()) {
 					//You cannot call a courier here.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_POSTMAN_UNABLE_POSITION);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_POSTMAN_UNABLE_POSITION);
 					return;
 				} else if (player.isFlying()) {
 					//You cannot call a courier while flying.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_POSTMAN_UNABLE_IN_FLIGHT);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_POSTMAN_UNABLE_IN_FLIGHT);
 					return;
 				} else if (player.getController().hasScheduledTask(TaskId.EXPRESS_MAIL_USE)) {
 					//Please wait for a while before you call for the courier again.
-					PacketSendUtility.sendPacket(player, S_MESSAGE_CODE.STR_POSTMAN_UNABLE_IN_COOLTIME);
+					PacketSendUtility.sendPacket(player, SM_SYSTEM_MESSAGE.STR_POSTMAN_UNABLE_IN_COOLTIME);
 					return;
 				} else if (haveUnreadExpress) {
 					VisibleObjectSpawner.spawnPostman(player);
