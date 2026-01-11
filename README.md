@@ -1,4 +1,4 @@
-# Aion Classic 2.4 ~ 2.8 (EU)
+# Aion Classic 2.4 (EU)
 
 <div align="center">
 
@@ -10,7 +10,7 @@
 
 <br>
 
-<strong>O emulador mais completo e tecnicamente avançado para Aion Classic 2.4 ~ 2.8</strong>
+<strong>O emulador mais atualizado e tecnicamente avançado para Aion Classic 2.4 EU</strong>
 
 </div>
 
@@ -18,7 +18,7 @@
 
 ## Visão Geral
 
-Este repositório contém um **emulador avançado** para o MMORPG **Aion: Classic (EU) versões 2.4 até 2.8**.  
+Este repositório contém um **emulador avançado** para o MMORPG **Aion: Classic (EU) de versão 2.4**.  
 O objetivo do projeto é preservar a experiência clássica original, mantendo fidelidade ao conteúdo classic, ao mesmo tempo em que evolui a base técnica com correções, otimizações e sistemas personalizados.
 
 ---
@@ -95,16 +95,6 @@ https://drive.google.com/drive/folders/1cnowlvXpMKdeCnXYtZ1nXpEGEyM-PIK9
 
 **Observação:**  
 Esta versão **não possui a classe MONK**.
-
----
-
-### Client 2.8
-
-**Status:**  
-Versão estável **ainda não definida**.
-
-**Observação:**  
-Esta versão **possui a classe MONK**.
 
 ---
 
